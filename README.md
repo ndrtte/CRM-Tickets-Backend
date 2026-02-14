@@ -39,13 +39,13 @@ Para clonar el proyecto utilizaremos Git Bash.
 2. Ejecutar el siguiente comando:
 
 ```bash
-git clone https://github.com/ndrtte/crmtickets-backend.git
+git clone https://github.com/ndrtte/CRM-Tickets-Backend.git
 ```
 
 3. Una vez finalizada la clonación, ingresar al directorio del proyecto:
 
 ```bash
-cd crmtickets-backend
+cd CRM-Tickets-Backend
 ```
 
 4. Para abrir el proyecto en Visual Studio Code, ejecutar:
@@ -61,7 +61,7 @@ code .
 El proyecto tendrá la siguiente estructura:
 
 ```text
-CRMTICKETS-BACKEND/
+CRM-Tickets-Backend/
 └── gestiontickets/
     ├── .mvn/
     ├── .vscode/
@@ -86,6 +86,5 @@ Dentro del directorio `src/main/java/com/crm/gestiontickets/`, ubicar el archivo
 
 Abrir el archivo y verificar que en la parte superior derecha aparezcan las opciones **Run** y **Debug**.
 
-**Importante:**  
-Si las opciones no aparecen, significa que el entorno de desarrollo no está correctamente configurado.
+**Importante:** Si las opciones no aparecen, significa que el entorno de desarrollo no está correctamente configurado.
 
