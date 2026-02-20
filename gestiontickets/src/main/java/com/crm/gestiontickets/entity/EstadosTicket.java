@@ -29,6 +29,7 @@ public class EstadosTicket {
     @Column(name = "estado_ticket", length = 10)
     private String estadoTicket;
 
+    @Column(length = 100)
     private String descripcion;
 }
 

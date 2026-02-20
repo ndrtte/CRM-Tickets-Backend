@@ -26,13 +26,16 @@ public class Documentos {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_documento")
-    private Integer id;
+    private Integer idDocumento;
+
+    @Column(length = 100)
     private String nombre;
+
+    @Column(length = 10)
     private String tipo;
 
     @Lob
-    @Column(name = "archivo")
-    private byte[] contenido; // VARBINARY(MAX)
+    private String archivo;
 
     @ManyToOne()
     @JoinColumn(name = "id_nota")

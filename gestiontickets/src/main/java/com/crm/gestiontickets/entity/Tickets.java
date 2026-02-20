@@ -24,7 +24,7 @@ import lombok.Setter;
 public class Tickets {
     @Id
     @Column(name = "id_ticket", length = 20)
-    private String id; // Es VARCHAR en tu SQL, no IDENTITY
+    private String idTicket;
 
     @ManyToOne()
     @JoinColumn(name = "id_cliente")
@@ -46,7 +46,8 @@ public class Tickets {
     @JoinColumn(name = "id_estado_actual")
     private EstadosTicket estado;
 
-    private String activo;
+    @Column(nullable = false, length = 1)
+    private boolean activo;
 
     @Column(name = "fecha_creacion", insertable = false, updatable = false)
     private LocalDateTime fechaCreacion;

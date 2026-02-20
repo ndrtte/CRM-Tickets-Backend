@@ -22,24 +22,24 @@ public class Clientes {
     @Id
     @Column(name = "id_cliente")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_cliente;
+    private int idCliente;
 
-    @Column(name = "nombre")
+    @Column(length = 100, nullable = false)
     private String nombre;
 
-    @Column(name = "apellido")
+    @Column(length = 100, nullable = false)
     private String apellido;
 
-    @Column(name = "celular")
+    @Column(length = 15, nullable = false)
     private String celular;
 
-    @Column(name = "correo")
+    @Column(length = 320, nullable = false)
     private String correo;
 
-    @Column(name = "num_identidad")
+    @Column(name = "num_identidad", length = 15, nullable = false)
     private String numeroIdentidad;
 
-    @Column(name = "activo")
+    @Column(nullable = false, length = 1)
     private boolean activo;
 
     @Column(name = "fecha_creacion", insertable = false, updatable = false)

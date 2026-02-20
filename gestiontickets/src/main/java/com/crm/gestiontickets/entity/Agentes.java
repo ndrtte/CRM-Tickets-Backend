@@ -29,7 +29,7 @@ public class Agentes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_agente")
-    private Integer id;
+    private Integer idAgente;
 
     @Column(nullable = false, length = 100)
     private String nombre;
@@ -44,7 +44,7 @@ public class Agentes {
     private String contrasenia;
 
     @Column(nullable = false, length = 1)
-    private String activo;
+    private boolean activo;
 
     @ManyToOne(fetch = FetchType.LAZY) //Sujeta a cambios
     @JoinColumn(name = "id_rol", nullable = false)

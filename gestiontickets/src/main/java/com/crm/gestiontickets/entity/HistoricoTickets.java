@@ -29,7 +29,7 @@ public class HistoricoTickets {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_historico_tickets")
-    private Integer id;
+    private Integer idHistoricoTickets;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_ticket", nullable = false)
