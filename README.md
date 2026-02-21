@@ -45,7 +45,7 @@ git clone https://github.com/ndrtte/CRM-Tickets-Backend.git
 3. Una vez finalizada la clonación, ingresar al directorio del proyecto:
 
 ```bash
-cd CRM-Tickets-Backend
+cd CRM-Tickets-Backend\gestiontickets
 ```
 
 4. Para abrir el proyecto en Visual Studio Code, ejecutar:
@@ -88,3 +88,84 @@ Abrir el archivo y verificar que en la parte superior derecha aparezcan las opci
 
 **Importante:** Si las opciones no aparecen, significa que el entorno de desarrollo no está correctamente configurado.
 
+## Configuración de Variables de Entorno en Visual Studio Code
+
+A continuación se describen los pasos necesarios para configurar correctamente las variables de entorno del proyecto en Visual Studio Code.
+
+### 1. Ubicarse en el directorio raíz
+
+Asegúrate de estar dentro del directorio raíz del proyecto `gestiontickets` y de tenerlo abierto como Workspace en Visual Studio Code.
+
+En la raíz del proyecto (al mismo nivel que `src` y `pom.xml`) encontrarás el archivo:
+
+`env.template`
+
+Este archivo es únicamente una plantilla del archivo real que utilizaremos para definir las variables de entorno (`.env`).
+
+### 2. Crear el archivo `.env`
+
+1. Copia el archivo `env.template`.
+2. Renombra la copia a `.env`.
+3. Abre el archivo `.env` y completa las variables con tus valores correspondientes. Por ejemplo:
+
+DB_HOST=localhost
+DB_PORT=1433
+DB_NAME=NOMBRE_BASE_DE_DATOS
+DB_USER=Usuario123
+DB_PASSWORD=ContraseñaSegura1234
+
+**Importante:**  
+Verifica previamente que las credenciales, el puerto, el nombre de la base de datos y la configuración de red sean correctos.
+
+
+### 3. Crear la carpeta `.vscode`
+
+En la raíz del proyecto (al mismo nivel que `src` y `.env`), crea una carpeta llamada:
+
+`.vscode`
+
+Si ya existe, puedes utilizarla sin necesidad de crear una nueva.
+
+### 4. Configurar el archivo `launch.json`
+
+Dentro de la carpeta `.vscode`, crea un archivo llamado:
+
+`launch.json`
+
+Agrega la siguiente configuración:
+
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "GestionTickets",
+            "request": "launch",
+            "mainClass": "com.crm.gestiontickets.GestionTicketsApplication",
+            "projectName": "gestiontickets",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
+
+Esta configuración permite que, cada vez que ejecutes la aplicación Spring Boot desde Visual Studio Code, las variables definidas en el archivo `.env` se carguen automáticamente.
+
+### 5. Configurar `.gitignore`
+
+Por razones de seguridad, es fundamental evitar que el archivo `.env` y la carpeta `.vscode` se incluyan en los commits.
+
+Abre el archivo `.gitignore` y agrega lo siguiente:
+
+.vscode/
+.env
+
+Después de esto, estos archivos deberían mostrarse en un tono más gris en el panel de control de cambios, indicando que Git ya no los incluirá en los commits.
+
+### 6. Ejecutar la aplicación
+
+Una vez completados todos los pasos:
+
+1. Verifica que las credenciales sean correctas.
+2. Ejecuta la aplicación desde la configuración creada en Visual Studio Code.
+
+Si todo está correctamente configurado, la aplicación debería iniciar sin inconvenientes utilizando las variables de entorno definidas.
