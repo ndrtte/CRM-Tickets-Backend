@@ -35,7 +35,7 @@ public class Clientes {
     @Column(name = "num_identidad")
     private String numeroIdentidad;
 
-    private boolean activo;
+    private Character activo;
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;

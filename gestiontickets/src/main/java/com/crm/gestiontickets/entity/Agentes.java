@@ -39,7 +39,7 @@ public class Agentes {
 
     private String contrasenia;
 
-    private boolean activo;
+    private Character activo;
 
     @ManyToOne(fetch = FetchType.LAZY) //Sujeta a cambios
     @JoinColumn(name = "id_rol", nullable = false)

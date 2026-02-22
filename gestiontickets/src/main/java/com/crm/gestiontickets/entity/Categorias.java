@@ -40,7 +40,7 @@ public class Categorias {
     @Column(name = "nombre_categoria")
     private String nombre;
 
-    private String activo;
+    private Character activo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria_padre")
