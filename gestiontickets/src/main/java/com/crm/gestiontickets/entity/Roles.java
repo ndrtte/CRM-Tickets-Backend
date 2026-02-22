@@ -36,10 +36,10 @@ public class Roles {
     @Column(name = "id_rol")
     private Integer idRol;
 
-    @Column(name = "nombre_rol", length = 20, nullable = false)
+    @Column(name = "nombre_rol")
     private String nombre;
 
-    @Column(name = "descripcion_rol", length = 250)
+    @Column(name = "descripcion_rol")
     private String descripcion;
 
 
@@ -55,6 +55,6 @@ public class Roles {
     )
     private List<Permisos> permiso;
 
-    @Column(name = "fecha_creacion", insertable = false, updatable = false)
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 }

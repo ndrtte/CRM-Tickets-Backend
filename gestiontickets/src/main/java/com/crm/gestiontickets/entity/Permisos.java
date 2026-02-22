@@ -26,10 +26,8 @@ public class Permisos {
     @Column(name = "id_permiso")
     private Integer idPermiso;
 
-    @Column(length = 10, nullable = false)
     private String codigo;
 
-    @Column(length = 100)
     private String descripcion;
 
 }

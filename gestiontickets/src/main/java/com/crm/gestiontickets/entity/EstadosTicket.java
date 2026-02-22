@@ -26,10 +26,9 @@ public class EstadosTicket {
     @Column(name = "id_estado_ticket")
     private Integer idEstadoTicket;
 
-    @Column(name = "estado_ticket", length = 10)
+    @Column(name = "estado_ticket")
     private String estadoTicket;
 
-    @Column(length = 100)
     private String descripcion;
 }
 

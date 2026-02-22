@@ -23,7 +23,7 @@ import lombok.Setter;
 @Table(name = "tbl_tickets")
 public class Tickets {
     @Id
-    @Column(name = "id_ticket", length = 20)
+    @Column(name = "id_ticket")
     private String idTicket;
 
     @ManyToOne()
@@ -46,9 +46,8 @@ public class Tickets {
     @JoinColumn(name = "id_estado_actual")
     private EstadosTicket estado;
 
-    @Column(nullable = false, length = 1)
     private boolean activo;
 
-    @Column(name = "fecha_creacion", insertable = false, updatable = false)
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 }

@@ -28,10 +28,8 @@ public class PasosFlujo {
     @Column(name = "id_pasos_flujo")
     private Integer idPasosFlujo;
 
-    @Column(nullable = false)
     private Integer orden;
 
-    @Column(length = 100)
     private String descripcion;
 
     @ManyToOne(fetch = FetchType.LAZY)

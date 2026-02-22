@@ -33,17 +33,16 @@ public class Flujos {
     @Column(name = "id_flujo")
     private Integer idFlujo;
 
-    @Column(nullable = false, length = 100)
     private String descripcion;
 
     @OneToOne
-    @JoinColumn(name = "id_categoria", unique = true, nullable = false)
+    @JoinColumn(name = "id_categoria")
     private Categorias categoria;
 
     @OneToMany(mappedBy = "idFlujo", cascade = CascadeType.ALL)
     @OrderBy("orden ASC")
     private List<PasosFlujo> pasos;
 
-    @Column(name = "fecha_creacion", insertable = false, updatable = false)
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 }

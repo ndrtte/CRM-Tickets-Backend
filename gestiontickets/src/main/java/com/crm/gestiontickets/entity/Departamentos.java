@@ -34,7 +34,7 @@ public class Departamentos {
     @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "fecha_creacion", insertable = false, updatable = false)
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion")

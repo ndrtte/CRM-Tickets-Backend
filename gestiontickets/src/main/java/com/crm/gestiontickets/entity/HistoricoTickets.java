@@ -32,11 +32,11 @@ public class HistoricoTickets {
     private Integer idHistoricoTickets;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_ticket", nullable = false)
+    @JoinColumn(name = "id_ticket")
     private Tickets ticket;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_agente_origen", nullable = false)
+    @JoinColumn(name = "id_agente_origen")
     private Agentes agenteOrigen;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,14 +44,14 @@ public class HistoricoTickets {
     private Agentes agenteDestino;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_paso_origen", nullable = false)
+    @JoinColumn(name = "id_paso_origen")
     private PasosFlujo pasoOrigen;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_paso_destino", nullable = false)
+    @JoinColumn(name = "id_paso_destino")
     private PasosFlujo pasoDestino;
 
-    @Column(name = "fecha_creacion", insertable = false, updatable = false)
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion")

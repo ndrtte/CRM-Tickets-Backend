@@ -31,19 +31,14 @@ public class Agentes {
     @Column(name = "id_agente")
     private Integer idAgente;
 
-    @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false, length = 100)
     private String apellido;
 
-    @Column(nullable = false, length = 5)
     private String usuario;
 
-    @Column(nullable = false, length = 15)
     private String contrasenia;
 
-    @Column(nullable = false, length = 1)
     private boolean activo;
 
     @ManyToOne(fetch = FetchType.LAZY) //Sujeta a cambios
@@ -54,7 +49,7 @@ public class Agentes {
     @JoinColumn(name = "id_departamento", nullable = false)
     private Departamentos departamento;
 
-    @Column(name = "fecha_creacion", insertable = false, updatable = false)
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion")

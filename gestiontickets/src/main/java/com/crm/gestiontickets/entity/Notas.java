@@ -37,7 +37,6 @@ public class Notas {
     private Tickets ticket;
 
     @Lob
-    @Column(nullable = false)
     private String descripcion;
 
     @OneToMany(mappedBy = "nota", cascade = CascadeType.ALL)

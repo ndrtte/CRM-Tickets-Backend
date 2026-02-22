@@ -40,7 +40,6 @@ public class Categorias {
     @Column(name = "nombre_categoria")
     private String nombre;
 
-    @Column(name = "activo")
     private String activo;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,7 +51,7 @@ public class Categorias {
     @JsonManagedReference
     private List<Categorias> subcategorias;
 
-    @Column(name = "fecha_creacion", insertable = false, updatable = false)
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion")
