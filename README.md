@@ -108,11 +108,13 @@ Este archivo es únicamente una plantilla del archivo real que utilizaremos para
 2. Renombra la copia a `.env`.
 3. Abre el archivo `.env` y completa las variables con tus valores correspondientes. Por ejemplo:
 
+```
 DB_HOST=localhost
 DB_PORT=1433
 DB_NAME=NOMBRE_BASE_DE_DATOS
 DB_USER=Usuario123
-DB_PASSWORD=ContraseñaSegura1234
+DB_PASSWORD=ContraseñaSegura1234.
+```
 
 **Importante:**  
 Verifica previamente que las credenciales, el puerto, el nombre de la base de datos y la configuración de red sean correctos.
@@ -133,7 +135,7 @@ Dentro de la carpeta `.vscode`, crea un archivo llamado:
 `launch.json`
 
 Agrega la siguiente configuración:
-
+```json
 {
     "version": "0.2.0",
     "configurations": [
@@ -147,6 +149,7 @@ Agrega la siguiente configuración:
         }
     ]
 }
+```
 
 Esta configuración permite que, cada vez que ejecutes la aplicación Spring Boot desde Visual Studio Code, las variables definidas en el archivo `.env` se carguen automáticamente.
 
@@ -156,8 +159,10 @@ Por razones de seguridad, es fundamental evitar que el archivo `.env` y la carpe
 
 Abre el archivo `.gitignore` y agrega lo siguiente:
 
+```
 .vscode/
 .env
+```
 
 Después de esto, estos archivos deberían mostrarse en un tono más gris en el panel de control de cambios, indicando que Git ya no los incluirá en los commits.
 
@@ -169,3 +174,80 @@ Una vez completados todos los pasos:
 2. Ejecuta la aplicación desde la configuración creada en Visual Studio Code.
 
 Si todo está correctamente configurado, la aplicación debería iniciar sin inconvenientes utilizando las variables de entorno definidas.
+
+## Configuración de Docker para SQL Server
+
+En este apartado se explica cómo crear y ejecutar un contenedor de SQL Server utilizando Docker Desktop.
+
+### 1. Instalación de Docker Desktop
+
+Para comenzar, es necesario tener instalada la aplicación de escritorio Docker Desktop.
+
+Sitio oficial de descarga:  
+https://www.docker.com/products/docker-desktop/
+
+#### Pasos de instalación
+
+1. Descarga la versión correspondiente a tu sistema operativo y arquitectura de procesador (ARM o AMD).
+2. Ejecuta el instalador y sigue las instrucciones del asistente.
+3. Durante la instalación, Docker puede solicitar:
+   - Activar WSL 2 (en Windows).
+   - Habilitar la virtualización en la BIOS.
+4. Si todo está correcto, el instalador pedirá reiniciar el equipo.
+5. Una vez reiniciado, Docker Desktop debería iniciar correctamente.
+
+
+### 2. Creación y ejecución del contenedor SQL Server
+
+Antes de ejecutar el contenedor, asegúrate de lo siguiente:
+
+- Estar exactamente en el directorio donde se encuentra el archivo `docker-compose.yaml`.  
+  En este proyecto, el directorio raíz es `gestiontickets`.
+
+
+- Tener Docker Desktop ejecutándose en segundo plano.
+
+#### Ejecutar el contenedor
+
+Abre una terminal en el directorio raíz del proyecto y ejecuta:
+
+```bash
+docker compose up -d
+```
+
+Este comando:
+
+- Lee el archivo `docker-compose.yaml`.
+- Descarga la imagen de SQL Server (si no existe).
+- Crea y ejecuta el contenedor en segundo plano (`-d` = detached mode).
+
+No cerrar la terminal hasta que el proceso haya finalizado correctamente.
+
+#### Verificar que el contenedor está corriendo
+
+En el mismo directorio, ejecuta:
+
+```bash
+docker ps
+```
+
+Si todo está correcto, deberías ver el contenedor de SQL Server en la lista.
+
+También puedes verificarlo desde Docker Desktop, en la sección de contenedores.
+
+### Recomendaciones
+
+Se recomienda instalar alguna de las siguientes extensiones en Visual Studio Code:
+
+- Docker
+- Container Tools
+
+Ambas extensiones son desarrolladas por Microsoft.
+
+### Orden para ejecutar este repositorio
+
+Para ejecutar correctamente el proyecto, sigue este orden:
+
+1. Iniciar Docker Desktop.
+2. Ejecutar el contenedor de SQL Server con `docker compose up -d`.
+3. Ejecutar el proyecto Java Spring Boot.
