@@ -1,0 +1,21 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-CU14-ubuntu-22.04
+    container_name: crm_bd
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - crm_bd_network
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    ports:
+      - "${DB_PORT}:1433"
+    restart: unless-stopped
+
+networks:
+  crm_bd_network:
+    driver: bridge
+
+volumes:
+  sqlserver_data:
