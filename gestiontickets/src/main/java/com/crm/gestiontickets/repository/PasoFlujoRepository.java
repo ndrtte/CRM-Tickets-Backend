@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.crm.gestiontickets.entity.PasoFlujo;
 
-public interface PasosFlujoRepository extends JpaRepository<PasoFlujo, Integer>{
+public interface PasoFlujoRepository extends JpaRepository<PasoFlujo, Integer>{
     
 }
