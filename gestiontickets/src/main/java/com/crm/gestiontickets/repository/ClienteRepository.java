@@ -10,12 +10,10 @@ import com.crm.gestiontickets.entity.Cliente;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     @Query("SELECT c FROM Cliente c " +
-            "WHERE c.primerNombre LIKE %:valor% " +
-            "   OR c.segundoNombre LIKE %:valor% " +
-            "   OR c.primerApellido LIKE %:valor% " +
-            "   OR c.segundoApellido LIKE %:valor% " +
-            "   OR c.celular LIKE %:valor% " +
+            "WHERE c.nombre LIKE %:valor% " +
+            "   OR c.apellido LIKE %:valor% " +
             "   OR c.correo LIKE %:valor% " +
-            "   OR c.numIdentidad LIKE %:valor%")
+            "   OR c.celular LIKE %:valor% " +
+            "   OR c.numeroIdentidad LIKE %:valor%")
     List<Cliente> buscarPorCualquierCampo(String valor);
 }
