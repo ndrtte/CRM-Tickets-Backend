@@ -1,6 +1,5 @@
 package com.crm.gestiontickets.entity;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -10,9 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,23 +25,20 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_flujos")
-public class Flujos {
-    @Id
+@Table(name = "tbl_notas")
+public class Nota {
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_flujo")
-    private Integer idFlujo;
+    @Column(name = "id_nota")
+    private Integer id;
 
+    @ManyToOne()
+    @JoinColumn(name = "id_ticket")
+    private Ticket ticket;
+
+    @Lob
     private String descripcion;
 
-    @OneToOne
-    @JoinColumn(name = "id_categoria")
-    private Categorias categoria;
-
-    @OneToMany(mappedBy = "idFlujo", cascade = CascadeType.ALL)
-    @OrderBy("orden ASC")
-    private List<PasosFlujo> pasos;
-
-    @Column(name = "fecha_creacion")
-    private LocalDateTime fechaCreacion;
+    @OneToMany(mappedBy = "nota", cascade = CascadeType.ALL)
+    private List<Documento> documentos;
 }

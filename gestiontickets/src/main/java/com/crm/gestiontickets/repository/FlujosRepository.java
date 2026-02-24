@@ -2,8 +2,8 @@ package com.crm.gestiontickets.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.crm.gestiontickets.entity.Flujos;
+import com.crm.gestiontickets.entity.Flujo;
 
-public interface FlujosRepository extends JpaRepository<Flujos, Integer> {
+public interface FlujosRepository extends JpaRepository<Flujo, Integer> {
     
 }

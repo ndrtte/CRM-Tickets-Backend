@@ -23,41 +23,36 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_historico_tickets")
-public class HistoricoTickets {
+@Table(name = "tbl_agentes")
+public class Agente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_historico_tickets")
-    private Integer idHistoricoTickets;
+    @Column(name = "id_agente")
+    private Integer idAgente;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_ticket")
-    private Tickets ticket;
+    private String nombre;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_agente_origen")
-    private Agentes agenteOrigen;
+    private String apellido;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_agente_destino")
-    private Agentes agenteDestino;
+    private String usuario;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_paso_origen")
-    private PasosFlujo pasoOrigen;
+    private String contrasenia;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_paso_destino")
-    private PasosFlujo pasoDestino;
+    private Character activo;
+
+    @ManyToOne(fetch = FetchType.LAZY) //Sujeta a cambios
+    @JoinColumn(name = "id_rol", nullable = false)
+    private Rol rol;
+
+    @ManyToOne(fetch = FetchType.LAZY) //Sujeta a cambios x2
+    @JoinColumn(name = "id_departamento", nullable = false)
+    private Departamento departamento;
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
-
-    @Column(name = "fecha_asignacion")
-    private LocalDateTime fechaAsignacion;
-
 }
+

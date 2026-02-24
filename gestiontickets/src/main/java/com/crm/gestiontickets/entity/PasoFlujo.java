@@ -1,12 +1,13 @@
 package com.crm.gestiontickets.entity;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,24 +21,22 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_departamentos")
-public class Departamentos {
-    
-    @Id
-    @Column(name = "id_departamento")
+@Table(name = "tbl_pasos_flujo")
+public class PasoFlujo {
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idDepartamento;
+    @Column(name = "id_pasos_flujo")
+    private Integer idPasosFlujo;
 
-    @Column(name = "nombre_departamento")
-    private String nombreDepartamento;
+    private Integer orden;
 
-    @Column(name = "descripcion")
     private String descripcion;
 
-    @Column(name = "fecha_creacion")
-    private LocalDateTime fechaCreacion;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_flujo")
+    private Flujo idFlujo;
 
-    @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
-
+    @ManyToOne
+    @JoinColumn(name = "id_departamento")
+    private Departamento idDepartamento;
 }

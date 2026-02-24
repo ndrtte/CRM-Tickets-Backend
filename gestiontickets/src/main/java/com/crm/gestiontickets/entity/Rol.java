@@ -1,6 +1,9 @@
 package com.crm.gestiontickets.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +12,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,36 +28,33 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "tbl_agentes")
-public class Agentes {
+@Table(name = "tbl_roles")
+public class Rol {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_agente")
-    private Integer idAgente;
+    @Column(name = "id_rol")
+    private Integer idRol;
 
+    @Column(name = "nombre_rol")
     private String nombre;
 
-    private String apellido;
+    @Column(name = "descripcion_rol")
+    private String descripcion;
 
-    private String usuario;
 
-    private String contrasenia;
+    @OneToMany(mappedBy = "rol")
+    @JsonIgnore
+    private List<Agente> agentes;
 
-    private Character activo;
-
-    @ManyToOne(fetch = FetchType.LAZY) //Sujeta a cambios
-    @JoinColumn(name = "id_rol", nullable = false)
-    private Roles rol;
-
-    @ManyToOne(fetch = FetchType.LAZY) //Sujeta a cambios x2
-    @JoinColumn(name = "id_departamento", nullable = false)
-    private Departamentos departamento;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "tbl_roles_permisos",
+        joinColumns = @JoinColumn(name = "id_rol"),
+        inverseJoinColumns = @JoinColumn(name = "id_permiso")
+    )
+    private List<Permiso> permiso;
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
-
-    @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
 }
-
