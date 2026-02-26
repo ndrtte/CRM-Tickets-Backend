@@ -20,32 +20,29 @@ public class CategoriaService {
         List<CategoriaDTO> listaCategoriasDTO = new ArrayList<>();
         List<Categoria> listaCategorias = categoriaRepository.findAll();
 
-        // Filtro para las categorías que no tienen padre
         for (Categoria categoria : listaCategorias) {
-            if (categoria.getPadre() != null) {
-                continue;
+            if (categoria.getPadre() == null) {
+                listaCategoriasDTO.add(convertirACategoriaDTO(categoria));
             }
-
-            CategoriaDTO categoriaDTO = new CategoriaDTO();
-            categoriaDTO.setIdCategoria(categoria.getIdCategoria());
-            categoriaDTO.setNombre(categoria.getNombre());
-
-            List<CategoriaDTO> listaSubCategoriaDTO = new ArrayList<>();
-            List<Categoria> listaSubcategorias = categoria.getSubcategorias();
-
-            for (Categoria subcategoria : listaSubcategorias) {
-                CategoriaDTO subcategoriaDTO = new CategoriaDTO();
-                subcategoriaDTO.setIdCategoria(subcategoria.getIdCategoria());
-                subcategoriaDTO.setNombre(subcategoria.getNombre());
-
-                listaSubCategoriaDTO.add(subcategoriaDTO);
-            }
-
-            categoriaDTO.setSubCategorias(listaSubCategoriaDTO);
-            listaCategoriasDTO.add(categoriaDTO);
         }
 
         return listaCategoriasDTO;
+    }
+
+    private CategoriaDTO convertirACategoriaDTO(Categoria categoria) {
+        CategoriaDTO categoriaDTO = new CategoriaDTO();
+        categoriaDTO.setIdCategoria(categoria.getIdCategoria());
+        categoriaDTO.setNombre(categoria.getNombre());
+
+        List<CategoriaDTO> subCategoriasDTO = new ArrayList<>();
+
+        if (categoria.getSubcategorias() != null && !categoria.getSubcategorias().isEmpty()) {
+            for (Categoria subcategoria : categoria.getSubcategorias()) {
+                subCategoriasDTO.add(convertirACategoriaDTO(subcategoria));
+            }
+        }
+        categoriaDTO.setSubCategorias(subCategoriasDTO);
+        return categoriaDTO;
     }
 
 }
