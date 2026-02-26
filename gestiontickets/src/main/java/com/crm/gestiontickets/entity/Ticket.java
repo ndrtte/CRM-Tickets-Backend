@@ -46,7 +46,7 @@ public class Ticket {
     @JoinColumn(name = "id_estado_actual")
     private EstadoTicket estado;
 
-    private boolean activo;
+    private Character activo;
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
