@@ -26,4 +26,10 @@ public class ClienteController {
         return clienteService.obtenerCliente(valorBusqueda);
     }
 
+    @GetMapping("/obtener-cliente-por-id")
+    public ClienteDTO obtenerCliente(@RequestParam Long idCliente) {
+        return clienteService.obtenerCliente(idCliente);
+    }
+    
+
 }
