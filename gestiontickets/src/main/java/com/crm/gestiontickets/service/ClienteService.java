@@ -17,7 +17,7 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public List<ClienteDTO> obtenerCliente(String valorBusqueda) {
+    public List<ClienteDTO> obtenerClientes(String valorBusqueda) {
 
         List<Cliente> listaClientes = clienteRepository.buscarPorCualquierCampo(valorBusqueda);
         

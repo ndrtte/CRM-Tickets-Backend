@@ -22,8 +22,8 @@ public class ClienteController {
     private ClienteService clienteService;
     
     @GetMapping("/obtener-cliente")
-    public List<ClienteDTO> obtenerCliente(@RequestParam String valorBusqueda) {
-        return clienteService.obtenerCliente(valorBusqueda);
+    public List<ClienteDTO> obtenerClientes(@RequestParam String valorBusqueda) {
+        return clienteService.obtenerClientes(valorBusqueda);
     }
 
     @GetMapping("/obtener-cliente-por-id")
