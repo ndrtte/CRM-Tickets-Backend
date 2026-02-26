@@ -19,7 +19,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_estados_ticket")
-public class EstadosTicket {
+public class EstadoTicket {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

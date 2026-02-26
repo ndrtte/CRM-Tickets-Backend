@@ -21,30 +21,30 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "tbl_tickets")
-public class Tickets {
+public class Ticket {
     @Id
     @Column(name = "id_ticket")
     private String idTicket;
 
     @ManyToOne()
     @JoinColumn(name = "id_cliente")
-    private Clientes cliente;
+    private Cliente cliente;
 
     @ManyToOne()
     @JoinColumn(name = "id_categoria")
-    private Categorias categoria;
+    private Categoria categoria;
 
     @ManyToOne()
     @JoinColumn(name = "id_paso_actual_flujo")
-    private PasosFlujo pasoActual;
+    private PasoFlujo pasoActual;
 
     @ManyToOne()
     @JoinColumn(name = "id_agente_asignado")
-    private Agentes agenteAsignado;
+    private Agente agenteAsignado;
 
     @ManyToOne()
     @JoinColumn(name = "id_estado_actual")
-    private EstadosTicket estado;
+    private EstadoTicket estado;
 
     private boolean activo;
 

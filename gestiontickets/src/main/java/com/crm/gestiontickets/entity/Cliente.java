@@ -10,19 +10,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "tbl_clientes")
-public class Clientes {
+public class Cliente {
     
     @Id
     @Column(name = "id_cliente")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idCliente;
+    private Long idCliente;
 
     private String nombre;
 
