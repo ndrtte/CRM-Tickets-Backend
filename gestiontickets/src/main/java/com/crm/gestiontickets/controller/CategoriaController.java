@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crm.gestiontickets.dto.CategoriaDTO;
 import com.crm.gestiontickets.service.CategoriaService;
 
+@CrossOrigin("*")
 @RestController
 @RequestMapping("api/categorias")
 public class CategoriaController {
