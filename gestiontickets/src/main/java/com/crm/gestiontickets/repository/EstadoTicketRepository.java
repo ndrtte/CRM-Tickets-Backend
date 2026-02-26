@@ -6,4 +6,6 @@ import com.crm.gestiontickets.entity.EstadoTicket;
 
 public interface EstadoTicketRepository extends JpaRepository<EstadoTicket, Integer>{
     
+    public EstadoTicket findByEstadoTicket(String estadoTicket);
+
 }
