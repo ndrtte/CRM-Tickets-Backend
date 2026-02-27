@@ -60,10 +60,11 @@ public class TicketService {
         Agente agente = agenteRepository.findById(ticketAperturaDTO.getIdAgenteAsignado()).get();
         EstadoTicket estadosTicket = estadoTicketRepository.findByEstadoTicket("Nuevo");
         LocalDateTime fechaActualizacion = LocalDateTime.now();
-
+        Cliente cliente = clienteRepository.findById(ticketAperturaDTO.getIdCliente()).get();
 
         ticketArpetura.setIdTicket(idTicket);
         ticketArpetura.setAgenteAsignado(agente);
+        ticketArpetura.setCliente(cliente);
         ticketArpetura.setEstado(estadosTicket);
         ticketArpetura.setActivo('S');
         ticketArpetura.setFechaActualizacion(fechaActualizacion);

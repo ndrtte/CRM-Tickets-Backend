@@ -14,5 +14,6 @@ public class TicketAperturaDTO {
     //Posiblemente la ocupare para otros atributos
     //Para que sea mas escalable
     private Integer idAgenteAsignado;
+    private Long idCliente;
 
 }
