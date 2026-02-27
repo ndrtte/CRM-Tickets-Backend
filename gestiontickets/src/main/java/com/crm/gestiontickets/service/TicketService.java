@@ -11,12 +11,14 @@ import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.entity.EstadoTicket;
+import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.repository.AgenteRepository;
 import com.crm.gestiontickets.repository.CategoriaRepository;
 import com.crm.gestiontickets.repository.ClienteRepository;
 import com.crm.gestiontickets.repository.EstadoTicketRepository;
+import com.crm.gestiontickets.repository.FlujoRepository;
 import com.crm.gestiontickets.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.repository.SecuencialTicketRepository;
 import com.crm.gestiontickets.repository.TicketRepository;
@@ -44,6 +46,9 @@ public class TicketService {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    @Autowired
+    private FlujoRepository flujoRepository;
     
     public String aperturaTicket(TicketAperturaDTO ticketAperturaDTO){
 
@@ -75,12 +80,15 @@ public class TicketService {
 
         Categoria categoria = categoriaRepository.findById(ticketDetalleDTO.getIdCategoria()).get();
 
-        PasoFlujo pasoActual = pasoFlujoRepository.findById(ticketDetalleDTO.getIdPasoActual()).get();
+        Flujo flujo = flujoRepository.findByCategoria(categoria);
+
+        PasoFlujo pasoActual = pasoFlujoRepository.findByIdFlujoAndOrden(flujo, 1);
 
         Agente agenteAsignado = agenteRepository.findById(ticketDetalleDTO.getIdAgenteAsignado()).get();
 
         EstadoTicket estado = estadoTicketRepository.findByEstadoTicket("En Proceso");
 
+        
         ticket.setCliente(cliente);
         ticket.setCategoria(categoria);
         ticket.setPasoActual(pasoActual);

@@ -17,8 +17,6 @@ public class TicketDetalleDTO {
 
     private Integer idCategoria;
 
-    private Integer idPasoActual;
-
     private Integer idAgenteAsignado;
 
     private Character activa;
