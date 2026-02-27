@@ -13,6 +13,8 @@ public class TicketDetalleDTO {
     
     private String idTicket;
 
+    private Integer idEmpleado;
+
     private Integer idCategoria;
 
 }
