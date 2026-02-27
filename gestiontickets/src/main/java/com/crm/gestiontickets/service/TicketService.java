@@ -98,7 +98,7 @@ public class TicketService {
     
         ticketRepository.save(ticket);
 
-        return "Funciono, no soy una inutil";
+        return ticketDetalleDTO.getIdTicket();
     }
 
 }
