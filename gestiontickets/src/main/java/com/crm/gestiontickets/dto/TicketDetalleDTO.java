@@ -13,12 +13,6 @@ public class TicketDetalleDTO {
     
     private String idTicket;
 
-    private Long idCliente;
-
     private Integer idCategoria;
-
-    private Integer idAgenteAsignado;
-
-    private Character activa;
 
 }
