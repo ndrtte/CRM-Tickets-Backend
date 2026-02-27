@@ -81,6 +81,7 @@ public class TicketService {
         Ticket ticket = ticketRepository.findById(idTicket).get();
         LocalDateTime fechaActualizacion = LocalDateTime.now();
 
+        Agente agenteAsignado = agenteRepository.findById(ticketDetalleDTO.getIdEmpleado()).get();
 
         Categoria categoria = categoriaRepository.findById(ticketDetalleDTO.getIdCategoria()).get();
 
@@ -90,6 +91,7 @@ public class TicketService {
 
         EstadoTicket estado = estadoTicketRepository.findByEstadoTicket("En Proceso");
         
+        ticket.setAgenteAsignado(agenteAsignado);
         ticket.setCategoria(categoria);
         ticket.setPasoActual(pasoActual);
         ticket.setEstado(estado);    
