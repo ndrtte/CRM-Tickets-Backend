@@ -8,7 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.dto.TicketAperturaDTO;
 import com.crm.gestiontickets.service.TicketService;
+
 import org.springframework.web.bind.annotation.PostMapping;
+
+import com.crm.gestiontickets.dto.TicketDetalleDTO;
+import org.springframework.web.bind.annotation.PutMapping;
 
 
 
@@ -23,6 +27,11 @@ public class TicketController {
     @PostMapping("/apertura")
     public String aperturaTicket(@RequestBody TicketAperturaDTO ticketAperturaDTO){
         return ticketService.aperturaTicket(ticketAperturaDTO);
+    }
+
+    @PutMapping("/crear-ticket")
+    public String creacionTicket(@RequestBody TicketDetalleDTO ticketDetalleDTO){
+        return ticketService.crearTicket(ticketDetalleDTO);
     }
 
 }
