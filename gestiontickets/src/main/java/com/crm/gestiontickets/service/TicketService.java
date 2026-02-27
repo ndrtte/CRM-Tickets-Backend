@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.crm.gestiontickets.dto.IdTicketDTO;
 import com.crm.gestiontickets.dto.TicketAperturaDTO;
 import com.crm.gestiontickets.dto.TicketDetalleDTO;
 import com.crm.gestiontickets.entity.Agente;
@@ -50,7 +51,7 @@ public class TicketService {
     @Autowired
     private FlujoRepository flujoRepository;
     
-    public String aperturaTicket(TicketAperturaDTO ticketAperturaDTO){
+    public IdTicketDTO aperturaTicket(TicketAperturaDTO ticketAperturaDTO){
 
         Ticket ticketArpetura = new Ticket();
 
@@ -69,12 +70,15 @@ public class TicketService {
         ticketArpetura.setFechaAsignacion(fechaActualizacion);
 
         ticketRepository.save(ticketArpetura);
+
+        IdTicketDTO idTicketDTO = new IdTicketDTO(idTicket);
         
-        return ticketArpetura.getIdTicket();
+        return idTicketDTO;
     }
 
-    public String crearTicket(TicketDetalleDTO ticketDetalleDTO){
-        Ticket ticket = ticketRepository.findById(ticketDetalleDTO.getIdTicket()).get();
+    public IdTicketDTO crearTicket(TicketDetalleDTO ticketDetalleDTO){
+        String idTicket = ticketDetalleDTO.getIdTicket();
+        Ticket ticket = ticketRepository.findById(idTicket).get();
 
         Cliente cliente = clienteRepository.findById(ticketDetalleDTO.getIdCliente()).get();
 
@@ -98,7 +102,9 @@ public class TicketService {
     
         ticketRepository.save(ticket);
 
-        return ticketDetalleDTO.getIdTicket();
+        IdTicketDTO idTicketDTO = new IdTicketDTO(idTicket);
+
+        return idTicketDTO;
     }
 
 }
