@@ -59,7 +59,7 @@ public class TicketService {
 
         Agente agente = agenteRepository.findById(ticketAperturaDTO.getIdAgenteAsignado()).get();
         EstadoTicket estadosTicket = estadoTicketRepository.findByEstadoTicket("Nuevo");
-        LocalDateTime fechaActualizacion = LocalDateTime.now();
+        LocalDateTime fechaAsignacion = LocalDateTime.now();
         Cliente cliente = clienteRepository.findById(ticketAperturaDTO.getIdCliente()).get();
 
         ticketArpetura.setIdTicket(idTicket);
@@ -67,8 +67,7 @@ public class TicketService {
         ticketArpetura.setCliente(cliente);
         ticketArpetura.setEstado(estadosTicket);
         ticketArpetura.setActivo('S');
-        ticketArpetura.setFechaActualizacion(fechaActualizacion);
-        ticketArpetura.setFechaAsignacion(fechaActualizacion);
+        ticketArpetura.setFechaAsignacion(fechaAsignacion);
 
         ticketRepository.save(ticketArpetura);
 
@@ -80,8 +79,8 @@ public class TicketService {
     public IdTicketDTO crearTicket(TicketDetalleDTO ticketDetalleDTO){
         String idTicket = ticketDetalleDTO.getIdTicket();
         Ticket ticket = ticketRepository.findById(idTicket).get();
+        LocalDateTime fechaActualizacion = LocalDateTime.now();
 
-        Cliente cliente = clienteRepository.findById(ticketDetalleDTO.getIdCliente()).get();
 
         Categoria categoria = categoriaRepository.findById(ticketDetalleDTO.getIdCategoria()).get();
 
@@ -89,18 +88,12 @@ public class TicketService {
 
         PasoFlujo pasoActual = pasoFlujoRepository.findByIdFlujoAndOrden(flujo, 1);
 
-        Agente agenteAsignado = agenteRepository.findById(ticketDetalleDTO.getIdAgenteAsignado()).get();
-
         EstadoTicket estado = estadoTicketRepository.findByEstadoTicket("En Proceso");
-
         
-        ticket.setCliente(cliente);
         ticket.setCategoria(categoria);
         ticket.setPasoActual(pasoActual);
-        ticket.setAgenteAsignado(agenteAsignado);
-        ticket.setEstado(estado);
-        ticket.setActivo('S');
-    
+        ticket.setEstado(estado);    
+        ticket.setFechaActualizacion(fechaActualizacion);
         ticketRepository.save(ticket);
 
         IdTicketDTO idTicketDTO = new IdTicketDTO(idTicket);
