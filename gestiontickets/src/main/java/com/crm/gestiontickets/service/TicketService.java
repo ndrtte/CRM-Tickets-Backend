@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.dto.IdTicketDTO;
 import com.crm.gestiontickets.dto.TicketAperturaDTO;
-import com.crm.gestiontickets.dto.TicketDetalleDTO;
+import com.crm.gestiontickets.dto.TicketCreacionDTO;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
+import com.crm.gestiontickets.entity.HistoricoTicket;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.repository.AgenteRepository;
@@ -20,6 +21,7 @@ import com.crm.gestiontickets.repository.CategoriaRepository;
 import com.crm.gestiontickets.repository.ClienteRepository;
 import com.crm.gestiontickets.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.repository.FlujoRepository;
+import com.crm.gestiontickets.repository.HistoricoTicketRepository;
 import com.crm.gestiontickets.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.repository.SecuencialTicketRepository;
 import com.crm.gestiontickets.repository.TicketRepository;
@@ -50,6 +52,9 @@ public class TicketService {
 
     @Autowired
     private FlujoRepository flujoRepository;
+
+    @Autowired
+    private HistoricoTicketRepository historicoTicketRepository;
     
     public IdTicketDTO aperturaTicket(TicketAperturaDTO ticketAperturaDTO){
 
@@ -76,31 +81,48 @@ public class TicketService {
         return idTicketDTO;
     }
 
-    public IdTicketDTO crearTicket(TicketDetalleDTO ticketDetalleDTO){
+    public IdTicketDTO crearTicket(TicketCreacionDTO ticketDetalleDTO){
+
         String idTicket = ticketDetalleDTO.getIdTicket();
         Ticket ticket = ticketRepository.findById(idTicket).get();
-        LocalDateTime fechaActualizacion = LocalDateTime.now();
 
-        Agente agenteAsignado = agenteRepository.findById(ticketDetalleDTO.getIdEmpleado()).get();
+        Agente agenteOrigen = ticket.getAgenteAsignado();
+        Agente agenteDestino = agenteRepository.findById(ticketDetalleDTO.getIdAgente()).get();
+        aplicarDatosDetalle(ticket, ticketDetalleDTO);
 
+        ticket.setEstado(estadoTicketRepository.findByEstadoTicket("En Proceso"));
+
+        ticket.setFechaActualizacion(LocalDateTime.now());
+        ticketRepository.save(ticket);
+
+        registrarHistorico(ticket, agenteOrigen, agenteDestino,null, ticket.getPasoActual());
+
+        IdTicketDTO idTicketDTO = new IdTicketDTO(ticket.getIdTicket());
+
+        return idTicketDTO;
+    }
+
+    private void aplicarDatosDetalle(Ticket ticket, TicketCreacionDTO ticketDetalleDTO) {
+        Agente agenteAsignado = agenteRepository.findById(ticketDetalleDTO.getIdAgente()).get();
         Categoria categoria = categoriaRepository.findById(ticketDetalleDTO.getIdCategoria()).get();
 
         Flujo flujo = flujoRepository.findByCategoria(categoria);
-
         PasoFlujo pasoActual = pasoFlujoRepository.findByIdFlujoAndOrden(flujo, 1);
 
-        EstadoTicket estado = estadoTicketRepository.findByEstadoTicket("En Proceso");
-        
         ticket.setAgenteAsignado(agenteAsignado);
         ticket.setCategoria(categoria);
         ticket.setPasoActual(pasoActual);
-        ticket.setEstado(estado);    
-        ticket.setFechaActualizacion(fechaActualizacion);
-        ticketRepository.save(ticket);
+    }
 
-        IdTicketDTO idTicketDTO = new IdTicketDTO(idTicket);
+    private void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino,PasoFlujo pasoOrigen, PasoFlujo pasoDestino) {
+        HistoricoTicket historico = new HistoricoTicket();
+        historico.setTicket(ticket);
+        historico.setAgenteOrigen(agenteOrigen);
+        historico.setAgenteDestino(agenteDestino);
+        historico.setPasoOrigen(pasoOrigen);
+        historico.setPasoDestino(pasoDestino);
 
-        return idTicketDTO;
+        historicoTicketRepository.save(historico);
     }
 
 }
