@@ -9,11 +9,11 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TicketDetalleDTO {
+public class TicketCreacionDTO {
     
     private String idTicket;
 
-    private Integer idEmpleado;
+    private Integer idAgente;
 
     private Integer idCategoria;
 

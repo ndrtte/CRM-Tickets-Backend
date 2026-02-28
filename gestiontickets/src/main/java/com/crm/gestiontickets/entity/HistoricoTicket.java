@@ -28,7 +28,7 @@ public class HistoricoTicket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_historico_tickets")
+    @Column(name = "id_historico_ticket")
     private Integer idHistoricoTickets;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,11 +53,5 @@ public class HistoricoTicket {
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
-
-    @Column(name = "fecha_actualizacion")
-    private LocalDateTime fechaActualizacion;
-
-    @Column(name = "fecha_asignacion")
-    private LocalDateTime fechaAsignacion;
 
 }

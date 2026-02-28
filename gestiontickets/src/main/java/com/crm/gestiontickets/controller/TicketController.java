@@ -11,7 +11,7 @@ import com.crm.gestiontickets.service.TicketService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.crm.gestiontickets.dto.TicketDetalleDTO;
+import com.crm.gestiontickets.dto.TicketCreacionDTO;
 
 import org.springframework.web.bind.annotation.PutMapping;
 
@@ -33,7 +33,7 @@ public class TicketController {
     }
 
     @PutMapping("/crear-ticket")
-    public IdTicketDTO creacionTicket(@RequestBody TicketDetalleDTO ticketDetalleDTO){
+    public IdTicketDTO creacionTicket(@RequestBody TicketCreacionDTO ticketDetalleDTO){
         return ticketService.crearTicket(ticketDetalleDTO);
     }
 
