@@ -81,40 +81,32 @@ public class TicketService {
         return idTicketDTO;
     }
 
-    public IdTicketDTO crearTicket(TicketCreacionDTO ticketDetalleDTO){
+    public IdTicketDTO crearTicket(TicketCreacionDTO ticketDetalleDTO) {
 
         String idTicket = ticketDetalleDTO.getIdTicket();
         Ticket ticket = ticketRepository.findById(idTicket).get();
 
         Agente agenteOrigen = ticket.getAgenteAsignado();
         Agente agenteDestino = agenteRepository.findById(ticketDetalleDTO.getIdAgente()).get();
-        aplicarDatosDetalle(ticket, ticketDetalleDTO);
 
-        ticket.setEstado(estadoTicketRepository.findByEstadoTicket("En Proceso"));
-
-        ticket.setFechaActualizacion(LocalDateTime.now());
-        ticketRepository.save(ticket);
-
-        registrarHistorico(ticket, agenteOrigen, agenteDestino,null, ticket.getPasoActual());
-
-        IdTicketDTO idTicketDTO = new IdTicketDTO(ticket.getIdTicket());
-
-        return idTicketDTO;
-    }
-
-    private void aplicarDatosDetalle(Ticket ticket, TicketCreacionDTO ticketDetalleDTO) {
-        Agente agenteAsignado = agenteRepository.findById(ticketDetalleDTO.getIdAgente()).get();
         Categoria categoria = categoriaRepository.findById(ticketDetalleDTO.getIdCategoria()).get();
-
         Flujo flujo = flujoRepository.findByCategoria(categoria);
         PasoFlujo pasoActual = pasoFlujoRepository.findByIdFlujoAndOrden(flujo, 1);
 
-        ticket.setAgenteAsignado(agenteAsignado);
+        ticket.setAgenteAsignado(agenteDestino);
         ticket.setCategoria(categoria);
         ticket.setPasoActual(pasoActual);
+        ticket.setEstado(estadoTicketRepository.findByEstadoTicket("En Proceso"));
+        ticket.setFechaActualizacion(LocalDateTime.now());
+
+        ticketRepository.save(ticket);
+
+        registrarHistorico(ticket, agenteOrigen, agenteDestino, null, pasoActual);
+
+        return new IdTicketDTO(ticket.getIdTicket());
     }
 
-    private void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino,PasoFlujo pasoOrigen, PasoFlujo pasoDestino) {
+    private void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen, PasoFlujo pasoDestino) {
         HistoricoTicket historico = new HistoricoTicket();
         historico.setTicket(ticket);
         historico.setAgenteOrigen(agenteOrigen);
