@@ -138,6 +138,7 @@ public class TicketService {
         ticketDetalle.setPasoActual(pasoActual.getDescripcion());
         ticketDetalle.setIdAgente(agente.getIdAgente());
         ticketDetalle.setNombreAgente(agente.getNombre()+" "+agente.getApellido());
+        ticketDetalle.setIdEstado(estado.getIdEstadoTicket());
         ticketDetalle.setEstado(estado.getEstadoTicket());
         ticketDetalle.setFechaCreacion(ticket.getFechaCreacion());
 

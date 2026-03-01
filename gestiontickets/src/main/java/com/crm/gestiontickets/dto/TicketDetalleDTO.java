@@ -21,6 +21,7 @@ public class TicketDetalleDTO {
     private String PasoActual;
     private Integer idAgente;
     private String nombreAgente;
+    private Integer idEstado;
     private String estado;
     private LocalDateTime fechaCreacion;
 }
