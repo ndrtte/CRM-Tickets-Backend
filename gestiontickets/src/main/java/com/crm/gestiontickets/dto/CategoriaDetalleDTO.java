@@ -11,10 +11,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class CategoriaDTO {
+public class CategoriaDetalleDTO {
 
     private Integer idCategoria;
     private String nombre;
 
-    private List<CategoriaDTO> subCategorias;
+    private List<CategoriaDetalleDTO> subCategorias;
 }

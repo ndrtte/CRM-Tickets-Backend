@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crm.gestiontickets.dto.CategoriaDTO;
+import com.crm.gestiontickets.dto.CategoriaDetalleDTO;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.repository.CategoriaRepository;
 
@@ -16,8 +16,8 @@ public class CategoriaService {
     @Autowired
     private CategoriaRepository categoriaRepository;
 
-    public List<CategoriaDTO> obtenerCategorias() {
-        List<CategoriaDTO> listaCategoriasDTO = new ArrayList<>();
+    public List<CategoriaDetalleDTO> obtenerCategorias() {
+        List<CategoriaDetalleDTO> listaCategoriasDTO = new ArrayList<>();
         List<Categoria> listaCategorias = categoriaRepository.findAll();
 
         for (Categoria categoria : listaCategorias) {
@@ -29,12 +29,12 @@ public class CategoriaService {
         return listaCategoriasDTO;
     }
 
-    private CategoriaDTO convertirACategoriaDTO(Categoria categoria) {
-        CategoriaDTO categoriaDTO = new CategoriaDTO();
+    private CategoriaDetalleDTO convertirACategoriaDTO(Categoria categoria) {
+        CategoriaDetalleDTO categoriaDTO = new CategoriaDetalleDTO();
         categoriaDTO.setIdCategoria(categoria.getIdCategoria());
         categoriaDTO.setNombre(categoria.getNombre());
 
-        List<CategoriaDTO> subCategoriasDTO = new ArrayList<>();
+        List<CategoriaDetalleDTO> subCategoriasDTO = new ArrayList<>();
 
         if (categoria.getSubcategorias() != null && !categoria.getSubcategorias().isEmpty()) {
             for (Categoria subcategoria : categoria.getSubcategorias()) {

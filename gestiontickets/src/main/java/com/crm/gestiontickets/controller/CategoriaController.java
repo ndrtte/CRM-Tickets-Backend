@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crm.gestiontickets.dto.CategoriaDTO;
+import com.crm.gestiontickets.dto.CategoriaDetalleDTO;
 import com.crm.gestiontickets.service.CategoriaService;
 
 @CrossOrigin("*")
@@ -20,7 +20,7 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping("/obtener-categorias")
-    public List<CategoriaDTO> obtenerCategorias (){
+    public List<CategoriaDetalleDTO> obtenerCategorias (){
         return categoriaService.obtenerCategorias();
     }
     
