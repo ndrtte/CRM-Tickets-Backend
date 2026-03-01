@@ -119,7 +119,30 @@ public class TicketService {
     }
 
     public TicketDetalleDTO obtenerTicketDTO (String idTicket){
-        return new TicketDetalleDTO();
+        Ticket ticket = ticketRepository.findById(idTicket).get();
+
+        Cliente cliente = ticket.getCliente();
+        Categoria categoria = ticket.getCategoria();
+        PasoFlujo pasoActual = ticket.getPasoActual();
+        Agente agente  = ticket.getAgenteAsignado();
+        EstadoTicket estado = ticket.getEstado();
+        
+        TicketDetalleDTO ticketDetalle = new TicketDetalleDTO();
+
+        ticketDetalle.setIdTicket(idTicket);
+        ticketDetalle.setIdCliente(cliente.getIdCliente());
+        ticketDetalle.setNombreCliente(cliente.getNombre()+" "+cliente.getApellido());
+        ticketDetalle.setIdCategoria(categoria.getIdCategoria());
+        ticketDetalle.setCategoria(categoria.getNombre());
+        ticketDetalle.setIdPasoActual(pasoActual.getIdPasosFlujo());
+        ticketDetalle.setPasoActual(pasoActual.getDescripcion());
+        ticketDetalle.setIdAgente(agente.getIdAgente());
+        ticketDetalle.setNombreAgente(agente.getNombre()+" "+agente.getApellido());
+        ticketDetalle.setEstado(estado.getEstadoTicket());
+        ticketDetalle.setFechaCreacion(ticket.getFechaCreacion());
+
+
+        return ticketDetalle;
     }
 
 }

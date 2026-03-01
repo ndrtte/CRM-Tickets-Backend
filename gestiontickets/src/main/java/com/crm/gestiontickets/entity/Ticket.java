@@ -48,6 +48,9 @@ public class Ticket {
 
     private Character activo;
 
+    @Column(name = "fecha_creacion", insertable = false)
+    private LocalDateTime fechaCreacion;
+
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
 
