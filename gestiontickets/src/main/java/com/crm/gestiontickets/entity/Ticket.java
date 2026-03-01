@@ -23,7 +23,7 @@ import lombok.Setter;
 @Table(name = "tbl_tickets")
 public class Ticket {
     @Id
-    @Column(name = "id_ticket")
+    @Column(name = "id_ticket", length=255)
     private String idTicket;
 
     @ManyToOne()
