@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.crm.gestiontickets.dto.IdTicketDTO;
 import com.crm.gestiontickets.dto.TicketAperturaDTO;
 import com.crm.gestiontickets.dto.TicketCreacionDTO;
+import com.crm.gestiontickets.dto.TicketDetalleDTO;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
@@ -115,6 +116,10 @@ public class TicketService {
         historico.setPasoDestino(pasoDestino);
 
         historicoTicketRepository.save(historico);
+    }
+
+    public TicketDetalleDTO obtenerTicketDTO (String idTicket){
+        return new TicketDetalleDTO();
     }
 
 }
