@@ -13,8 +13,6 @@ public class TicketCreacionDTO {
     
     private String idTicket;
 
-    private Integer idAgente;
-
     private Integer idCategoria;
 
 }
