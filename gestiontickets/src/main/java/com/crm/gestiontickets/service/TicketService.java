@@ -12,6 +12,7 @@ import com.crm.gestiontickets.dto.TicketDetalleDTO;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
+import com.crm.gestiontickets.entity.Departamento;
 import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.HistoricoTicket;
@@ -126,6 +127,7 @@ public class TicketService {
         PasoFlujo pasoActual = ticket.getPasoActual();
         Agente agente  = ticket.getAgenteAsignado();
         EstadoTicket estado = ticket.getEstado();
+        Departamento departamento = ticket.getPasoActual().getIdDepartamento();
         
         TicketDetalleDTO ticketDetalle = new TicketDetalleDTO();
 
@@ -141,6 +143,8 @@ public class TicketService {
         ticketDetalle.setIdEstado(estado.getIdEstadoTicket());
         ticketDetalle.setEstado(estado.getEstadoTicket());
         ticketDetalle.setFechaCreacion(ticket.getFechaCreacion());
+        ticketDetalle.setIdDepartamento(departamento.getIdDepartamento());
+        ticketDetalle.setDepartamento(departamento.getNombreDepartamento());
 
 
         return ticketDetalle;

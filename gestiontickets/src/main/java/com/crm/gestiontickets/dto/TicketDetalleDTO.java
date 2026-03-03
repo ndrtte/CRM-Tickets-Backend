@@ -24,4 +24,6 @@ public class TicketDetalleDTO {
     private Integer idEstado;
     private String estado;
     private LocalDateTime fechaCreacion;
+    private Integer idDepartamento;
+    private String departamento;
 }

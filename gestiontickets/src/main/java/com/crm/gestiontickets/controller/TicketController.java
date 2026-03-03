@@ -16,10 +16,6 @@ import com.crm.gestiontickets.dto.TicketCreacionDTO;
 import com.crm.gestiontickets.dto.TicketDetalleDTO;
 import com.crm.gestiontickets.service.TicketService;
 
-
-
-
-
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/ticket")
