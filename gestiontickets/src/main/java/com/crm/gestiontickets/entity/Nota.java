@@ -33,8 +33,8 @@ public class Nota {
     private Integer id;
 
     @ManyToOne()
-    @JoinColumn(name = "id_ticket")
-    private Ticket ticket;
+    @JoinColumn(name = "id_historico_ticket")
+    private HistoricoTicket historicoTicket;
 
     @Lob
     private String descripcion;
