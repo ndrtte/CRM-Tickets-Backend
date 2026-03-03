@@ -88,8 +88,7 @@ public class TicketService {
         String idTicket = ticketDetalleDTO.getIdTicket();
         Ticket ticket = ticketRepository.findById(idTicket).get();
 
-        Agente agenteOrigen = ticket.getAgenteAsignado();
-        Agente agenteDestino = agenteRepository.findById(ticketDetalleDTO.getIdAgente()).get();
+        Agente agenteDestino = ticket.getAgenteAsignado();
 
         Categoria categoria = categoriaRepository.findById(ticketDetalleDTO.getIdCategoria()).get();
         Flujo flujo = flujoRepository.findByCategoria(categoria);
@@ -103,7 +102,7 @@ public class TicketService {
 
         ticketRepository.save(ticket);
 
-        registrarHistorico(ticket, agenteOrigen, agenteDestino, null, pasoActual);
+        registrarHistorico(ticket, null, agenteDestino, null, pasoActual);
 
         return new IdTicketDTO(ticket.getIdTicket());
     }
