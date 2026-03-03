@@ -15,7 +15,7 @@ import com.crm.gestiontickets.service.ClienteService;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("api/clientes")
+@RequestMapping("/api/clientes")
 public class ClienteController {
 
     @Autowired

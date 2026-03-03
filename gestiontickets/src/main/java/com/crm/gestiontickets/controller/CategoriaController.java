@@ -13,7 +13,7 @@ import com.crm.gestiontickets.service.CategoriaService;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("api/categorias")
+@RequestMapping("/api/categorias")
 public class CategoriaController {
     
     @Autowired
