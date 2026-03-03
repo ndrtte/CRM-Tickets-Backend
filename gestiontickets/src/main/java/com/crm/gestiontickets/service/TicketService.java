@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 import com.crm.gestiontickets.dto.IdTicketDTO;
 import com.crm.gestiontickets.dto.TicketAperturaDTO;
 import com.crm.gestiontickets.dto.TicketCreacionDTO;
+import com.crm.gestiontickets.dto.TicketDetalleDTO;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
+import com.crm.gestiontickets.entity.Departamento;
 import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.HistoricoTicket;
@@ -113,6 +115,37 @@ public class TicketService {
         historico.setPasoDestino(pasoDestino);
 
         historicoTicketRepository.save(historico);
+    }
+
+    public TicketDetalleDTO obtenerTicketDTO (String idTicket){
+        Ticket ticket = ticketRepository.findById(idTicket).get();
+
+        Cliente cliente = ticket.getCliente();
+        Categoria categoria = ticket.getCategoria();
+        PasoFlujo pasoActual = ticket.getPasoActual();
+        Agente agente  = ticket.getAgenteAsignado();
+        EstadoTicket estado = ticket.getEstado();
+        Departamento departamento = ticket.getPasoActual().getIdDepartamento();
+        
+        TicketDetalleDTO ticketDetalle = new TicketDetalleDTO();
+
+        ticketDetalle.setIdTicket(idTicket);
+        ticketDetalle.setIdCliente(cliente.getIdCliente());
+        ticketDetalle.setNombreCliente(cliente.getNombre()+" "+cliente.getApellido());
+        ticketDetalle.setIdCategoria(categoria.getIdCategoria());
+        ticketDetalle.setCategoria(categoria.getNombre());
+        ticketDetalle.setIdPasoActual(pasoActual.getIdPasosFlujo());
+        ticketDetalle.setPasoActual(pasoActual.getDescripcion());
+        ticketDetalle.setIdAgente(agente.getIdAgente());
+        ticketDetalle.setNombreAgente(agente.getNombre()+" "+agente.getApellido());
+        ticketDetalle.setIdEstado(estado.getIdEstadoTicket());
+        ticketDetalle.setEstado(estado.getEstadoTicket());
+        ticketDetalle.setFechaCreacion(ticket.getFechaCreacion());
+        ticketDetalle.setIdDepartamento(departamento.getIdDepartamento());
+        ticketDetalle.setDepartamento(departamento.getNombreDepartamento());
+
+
+        return ticketDetalle;
     }
 
 }
