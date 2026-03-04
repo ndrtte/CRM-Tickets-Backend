@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.dto.ResumenAgente;
 import com.crm.gestiontickets.dto.SolicitudLogin;
-import com.crm.gestiontickets.service.AgenteService;
+import com.crm.gestiontickets.service.AuthService;
 
 @CrossOrigin("*")
 @RestController
@@ -17,7 +17,7 @@ import com.crm.gestiontickets.service.AgenteService;
 public class AuthController {
     
     @Autowired
-    private AgenteService agenteService;
+    private AuthService agenteService;
     
     @PostMapping("/inicio-sesion")
     public ResumenAgente inicioSesion (@RequestBody SolicitudLogin credenciales){
