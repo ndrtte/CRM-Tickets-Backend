@@ -13,7 +13,7 @@ import com.crm.gestiontickets.service.AgenteService;
 
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/auth")
 public class AuthController {
     
     @Autowired

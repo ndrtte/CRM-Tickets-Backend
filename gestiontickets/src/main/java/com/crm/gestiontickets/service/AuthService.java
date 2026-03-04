@@ -9,8 +9,8 @@ import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.repository.AgenteRepository;
 
 @Service
-public class AgenteService {
-
+public class AuthService {
+    
     @Autowired
     private AgenteRepository agenteRepository;
     
