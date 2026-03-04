@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
-public class IdTicketDTO {
+public class IdTicket {
     
     private String idTicket;
 

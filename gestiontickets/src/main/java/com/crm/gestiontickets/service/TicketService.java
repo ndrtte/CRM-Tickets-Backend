@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crm.gestiontickets.dto.IdTicketDTO;
-import com.crm.gestiontickets.dto.TicketAperturaDTO;
-import com.crm.gestiontickets.dto.TicketCreacionDTO;
-import com.crm.gestiontickets.dto.TicketDetalleDTO;
+import com.crm.gestiontickets.dto.IdTicket;
+import com.crm.gestiontickets.dto.TicketApertura;
+import com.crm.gestiontickets.dto.TicketCreacion;
+import com.crm.gestiontickets.dto.TicketDetalle;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
@@ -58,7 +58,7 @@ public class TicketService {
     @Autowired
     private HistoricoTicketRepository historicoTicketRepository;
     
-    public IdTicketDTO aperturaTicket(TicketAperturaDTO ticketAperturaDTO){
+    public IdTicket aperturaTicket(TicketApertura ticketAperturaDTO){
 
         Ticket ticketArpetura = new Ticket();
 
@@ -78,12 +78,12 @@ public class TicketService {
 
         ticketRepository.save(ticketArpetura);
 
-        IdTicketDTO idTicketDTO = new IdTicketDTO(idTicket);
+        IdTicket idTicketDTO = new IdTicket(idTicket);
         
         return idTicketDTO;
     }
 
-    public IdTicketDTO crearTicket(TicketCreacionDTO ticketDetalleDTO) {
+    public IdTicket crearTicket(TicketCreacion ticketDetalleDTO) {
 
         String idTicket = ticketDetalleDTO.getIdTicket();
         Ticket ticket = ticketRepository.findById(idTicket).get();
@@ -103,7 +103,7 @@ public class TicketService {
 
         registrarHistorico(ticket, null, agenteDestino , null, pasoActual);
 
-        return new IdTicketDTO(ticket.getIdTicket());
+        return new IdTicket(ticket.getIdTicket());
     }
 
     private void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen, PasoFlujo pasoDestino) {
@@ -117,7 +117,7 @@ public class TicketService {
         historicoTicketRepository.save(historico);
     }
 
-    public TicketDetalleDTO obtenerTicketDTO (String idTicket){
+    public TicketDetalle obtenerTicketDTO (String idTicket){
         Ticket ticket = ticketRepository.findById(idTicket).get();
 
         Cliente cliente = ticket.getCliente();
@@ -127,7 +127,7 @@ public class TicketService {
         EstadoTicket estado = ticket.getEstado();
         Departamento departamento = ticket.getPasoActual().getIdDepartamento();
         
-        TicketDetalleDTO ticketDetalle = new TicketDetalleDTO();
+        TicketDetalle ticketDetalle = new TicketDetalle();
 
         ticketDetalle.setIdTicket(idTicket);
         ticketDetalle.setIdCliente(cliente.getIdCliente());
