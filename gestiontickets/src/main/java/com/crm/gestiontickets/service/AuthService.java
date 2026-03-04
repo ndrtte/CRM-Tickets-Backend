@@ -3,6 +3,7 @@ package com.crm.gestiontickets.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.crm.gestiontickets.dto.Respuesta;
 import com.crm.gestiontickets.dto.ResumenAgente;
 import com.crm.gestiontickets.dto.SolicitudLogin;
 import com.crm.gestiontickets.entity.Agente;
@@ -10,39 +11,27 @@ import com.crm.gestiontickets.repository.AgenteRepository;
 
 @Service
 public class AuthService {
-    
+
     @Autowired
     private AgenteRepository agenteRepository;
-    
-    public ResumenAgente inicioSesion (SolicitudLogin credenciales){
+
+    public Respuesta<ResumenAgente> inicioSesion(SolicitudLogin credenciales) {
         Agente agente = agenteRepository.findByUsuario(credenciales.getUsuario());
 
-        if(agente == null){
-            return new ResumenAgente();
+        if (agente == null || !credenciales.getContrasenia().equals(agente.getContrasenia())) {
+            return new Respuesta<>(false, "Usuario o contraseña inválidos", null);
         }
 
-        String contrasenia = credenciales.getContrasenia();
-        
-        if(!contrasenia.equals(agente.getContrasenia())){
-            return new ResumenAgente();
-        }
-
-        String nombre = agente.getNombre()+" "+agente.getApellido();
-        Integer idDepartamento = agente.getDepartamento().getIdDepartamento();
-        String departamento = agente.getDepartamento().getNombreDepartamento();
-        Integer idRol = agente.getRol().getIdRol();
-        String rol = agente.getRol().getNombre();
-
+        String nombre = agente.getNombre() + " " + agente.getApellido();
         ResumenAgente agenteDTO = new ResumenAgente();
         agenteDTO.setIdAgente(agente.getIdAgente());
         agenteDTO.setNombre(nombre);
-        agenteDTO.setIdDepartamento(idDepartamento);
-        agenteDTO.setDepartamento(departamento);
         agenteDTO.setUsuario(agente.getUsuario());
-        agenteDTO.setIdRol(idRol);
-        agenteDTO.setRol(rol);
+        agenteDTO.setIdRol(agente.getRol().getIdRol());
+        agenteDTO.setRol(agente.getRol().getNombre());
+        agenteDTO.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
+        agenteDTO.setDepartamento(agente.getDepartamento().getNombreDepartamento());
 
-        return agenteDTO;
+        return new Respuesta<>(true, "Inicio de sesión exitoso", agenteDTO);
     }
-
 }
