@@ -1,5 +1,7 @@
 package com.crm.gestiontickets.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,5 +41,9 @@ public class TicketController {
         return ticketService.obtenerTicketDTO(idTicket);
     }
     
-    
+    @GetMapping("/obtener-tickets-cliente")
+    public List<TicketDetalleDTO> obtenerTicketsCliente(@RequestParam Long idCliente){
+        return ticketService.obtenerTicketsCliente(idCliente);
+    }
+
 }

@@ -1,6 +1,8 @@
 package com.crm.gestiontickets.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -146,6 +148,21 @@ public class TicketService {
 
 
         return ticketDetalle;
+    }
+
+    public List<TicketDetalleDTO> obtenerTicketsCliente(Long idCliente){
+        List<TicketDetalleDTO> listaTicketsDTO = new ArrayList<>();
+
+        Cliente cliente = clienteRepository.findById(idCliente).get();
+
+        List<Ticket> listaTicket = ticketRepository.findByCliente(cliente);
+
+        for (Ticket ticket : listaTicket) {
+            TicketDetalleDTO ticketDetalle = obtenerTicketDTO(ticket.getIdTicket());
+            listaTicketsDTO.add(ticketDetalle);
+        }
+
+        return listaTicketsDTO;
     }
 
 }
