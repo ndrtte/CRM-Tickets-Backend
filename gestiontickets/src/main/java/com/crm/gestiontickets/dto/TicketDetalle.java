@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketDetalleDTO {
+public class TicketDetalle {
     private String idTicket;
     private Long idCliente;
     private String nombreCliente;

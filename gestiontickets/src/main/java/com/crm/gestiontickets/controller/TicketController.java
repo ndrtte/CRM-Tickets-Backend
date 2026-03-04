@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crm.gestiontickets.dto.IdTicketDTO;
-import com.crm.gestiontickets.dto.TicketAperturaDTO;
-import com.crm.gestiontickets.dto.TicketCreacionDTO;
-import com.crm.gestiontickets.dto.TicketDetalleDTO;
+import com.crm.gestiontickets.dto.IdTicket;
+import com.crm.gestiontickets.dto.TicketApertura;
+import com.crm.gestiontickets.dto.TicketCreacion;
+import com.crm.gestiontickets.dto.TicketDetalle;
 import com.crm.gestiontickets.service.TicketService;
 
 @CrossOrigin("*")
@@ -27,22 +27,22 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping("/apertura")
-    public IdTicketDTO aperturaTicket(@RequestBody TicketAperturaDTO ticketAperturaDTO){
+    public IdTicket aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
         return ticketService.aperturaTicket(ticketAperturaDTO);
     }
 
     @PutMapping("/crear-ticket")
-    public IdTicketDTO creacionTicket(@RequestBody TicketCreacionDTO ticketDetalleDTO){
+    public IdTicket creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO){
         return ticketService.crearTicket(ticketDetalleDTO);
     }
 
     @GetMapping("/obtener-ticket")
-    public TicketDetalleDTO obtenerTicket(@RequestParam String idTicket) {
+    public TicketDetalle obtenerTicket(@RequestParam String idTicket) {
         return ticketService.obtenerTicketDTO(idTicket);
     }
     
     @GetMapping("/obtener-tickets-cliente")
-    public List<TicketDetalleDTO> obtenerTicketsCliente(@RequestParam Long idCliente){
+    public List<TicketDetalle> obtenerTicketsCliente(@RequestParam Long idCliente){
         return ticketService.obtenerTicketsCliente(idCliente);
     }
 
