@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crm.gestiontickets.dto.ClienteDetalleDTO;
+import com.crm.gestiontickets.dto.ClienteDetalle;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.exception.ClienteNotFoundException;
 import com.crm.gestiontickets.repository.ClienteRepository;
@@ -17,14 +17,14 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public List<ClienteDetalleDTO> obtenerClientes(String valorBusqueda) {
+    public List<ClienteDetalle> obtenerClientes(String valorBusqueda) {
 
         List<Cliente> listaClientes = clienteRepository.buscarPorCualquierCampo(valorBusqueda);
         
-        List<ClienteDetalleDTO> listaClientesDTO = new ArrayList<>();
+        List<ClienteDetalle> listaClientesDTO = new ArrayList<>();
 
         for (Cliente cliente : listaClientes) {
-            ClienteDetalleDTO clienteDTO = new ClienteDetalleDTO();
+            ClienteDetalle clienteDTO = new ClienteDetalle();
             clienteDTO.setIdCliente(cliente.getIdCliente());
             clienteDTO.setNombre(cliente.getNombre());
             clienteDTO.setApellido(cliente.getApellido());
@@ -38,11 +38,11 @@ public class ClienteService {
         return listaClientesDTO;
     }
 
-    public ClienteDetalleDTO obtenerCliente(Long idCliente){
+    public ClienteDetalle obtenerCliente(Long idCliente){
 
         Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNotFoundException(idCliente));
 
-        ClienteDetalleDTO clienteDTO = new ClienteDetalleDTO();
+        ClienteDetalle clienteDTO = new ClienteDetalle();
         clienteDTO.setIdCliente(cliente.getIdCliente());
         clienteDTO.setNombre(cliente.getNombre());
         clienteDTO.setApellido(cliente.getApellido());

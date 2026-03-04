@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crm.gestiontickets.dto.ClienteDetalleDTO;
+import com.crm.gestiontickets.dto.ClienteDetalle;
 import com.crm.gestiontickets.service.ClienteService;
 
 
@@ -22,12 +22,12 @@ public class ClienteController {
     private ClienteService clienteService;
     
     @GetMapping("/obtener-cliente")
-    public List<ClienteDetalleDTO> obtenerClientes(@RequestParam String valorBusqueda) {
+    public List<ClienteDetalle> obtenerClientes(@RequestParam String valorBusqueda) {
         return clienteService.obtenerClientes(valorBusqueda);
     }
 
     @GetMapping("/obtener-cliente-por-id")
-    public ClienteDetalleDTO obtenerCliente(@RequestParam Long idCliente) {
+    public ClienteDetalle obtenerCliente(@RequestParam Long idCliente) {
         return clienteService.obtenerCliente(idCliente);
     }
     

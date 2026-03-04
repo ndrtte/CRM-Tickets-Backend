@@ -1,20 +1,26 @@
 package com.crm.gestiontickets.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class CategoriaDetalleDTO {
+@Setter
+public class ClienteDetalle {
 
-    private Integer idCategoria;
+    private Long idCliente;
+    
     private String nombre;
 
-    private List<CategoriaDetalleDTO> subCategorias;
+    private String apellido;
+    
+    private String celular;
+
+    private String correo;
+
+    private String numeroIdentidad;
+
 }

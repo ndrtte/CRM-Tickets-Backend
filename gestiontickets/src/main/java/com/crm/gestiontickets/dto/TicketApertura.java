@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TicketAperturaDTO {
+public class TicketApertura {
     //Este dto ahora mismos sera solo asi
     //Posiblemente la ocupare para otros atributos
     //Para que sea mas escalable
