@@ -6,4 +6,5 @@ import com.crm.gestiontickets.entity.Agente;
 
 public interface AgenteRepository extends JpaRepository<Agente, Integer>{
     
+    public Agente findByUsuario(String usuario);
 }

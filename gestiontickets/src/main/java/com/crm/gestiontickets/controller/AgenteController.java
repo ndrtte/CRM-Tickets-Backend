@@ -20,6 +20,7 @@ public class AgenteController {
     
     @PostMapping("/inicio-sesion")
     public String inicioSesion (@RequestBody SolicitudLogin credenciales){
+
         return agenteService.inicioSesion(credenciales);
     }
 
