@@ -1,5 +1,6 @@
 package com.crm.gestiontickets.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.dto.ClienteDetalle;
+import com.crm.gestiontickets.dto.IdCliente;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.exception.ClienteNotFoundException;
 import com.crm.gestiontickets.repository.ClienteRepository;
@@ -51,6 +53,24 @@ public class ClienteService {
         clienteDTO.setNumeroIdentidad(cliente.getNumeroIdentidad());
 
         return clienteDTO;
+    }
+
+    public IdCliente editarCliente(ClienteDetalle clienteActualizado){
+
+        Cliente cliente = clienteRepository.findById(clienteActualizado.getIdCliente()).get();
+
+        cliente.setNombre(clienteActualizado.getNombre());
+        cliente.setApellido(clienteActualizado.getApellido());
+        cliente.setCelular(clienteActualizado.getCelular());
+        cliente.setCorreo(clienteActualizado.getCorreo());
+        cliente.setNumeroIdentidad(clienteActualizado.getNumeroIdentidad());
+        cliente.setFechaActualizacion(LocalDateTime.now());
+
+        clienteRepository.save(cliente);
+
+        IdCliente idCliente = new IdCliente(cliente.getIdCliente());
+
+        return idCliente;
     }
 
 }

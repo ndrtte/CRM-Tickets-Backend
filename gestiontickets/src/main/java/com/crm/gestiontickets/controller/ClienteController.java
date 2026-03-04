@@ -5,11 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.dto.ClienteDetalle;
+import com.crm.gestiontickets.dto.IdCliente;
 import com.crm.gestiontickets.service.ClienteService;
 
 
@@ -31,5 +34,9 @@ public class ClienteController {
         return clienteService.obtenerCliente(idCliente);
     }
     
+    @PutMapping("/editar-cliente")
+    public IdCliente editarCliente(@RequestBody ClienteDetalle clienteActualizado){
+        return clienteService.editarCliente(clienteActualizado);
+    }
 
 }
