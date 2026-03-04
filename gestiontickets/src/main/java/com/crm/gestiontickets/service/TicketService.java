@@ -17,6 +17,7 @@ import com.crm.gestiontickets.entity.Departamento;
 import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.HistoricoTicket;
+import com.crm.gestiontickets.entity.Nota;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.repository.AgenteRepository;
@@ -25,6 +26,7 @@ import com.crm.gestiontickets.repository.ClienteRepository;
 import com.crm.gestiontickets.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.repository.FlujoRepository;
 import com.crm.gestiontickets.repository.HistoricoTicketRepository;
+import com.crm.gestiontickets.repository.NotaRepository;
 import com.crm.gestiontickets.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.repository.SecuencialTicketRepository;
 import com.crm.gestiontickets.repository.TicketRepository;
@@ -59,6 +61,9 @@ public class TicketService {
     @Autowired
     private HistoricoTicketRepository historicoTicketRepository;
 
+    @Autowired
+    private NotaRepository notaRepository;
+
     public IdTicket aperturaTicket(TicketApertura ticketAperturaDTO) {
 
         Ticket ticketArpetura = new Ticket();
@@ -90,6 +95,7 @@ public class TicketService {
 
         Agente agenteDestino = ticket.getAgenteAsignado();
 
+
         Categoria categoria = categoriaRepository.findById(nvoTicket.getIdCategoria()).get();
         ticket.setCategoria(categoria);
 
@@ -102,7 +108,9 @@ public class TicketService {
 
         ticket.setFechaActualizacion(LocalDateTime.now());
 
-        registrarHistorico(ticket, null, agenteDestino, null, primerPaso);
+        HistoricoTicket historico = registrarHistorico(ticket, null, agenteDestino, null, primerPaso);
+
+        registrarNota(nvoTicket.getNota(), agenteDestino, historico);
 
         ticketRepository.save(ticket);
 
@@ -123,7 +131,7 @@ public class TicketService {
         return historicoTicketRepository.existsByTicketAndPasoDestino(ticket, paso);
     }
 
-    private void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen, PasoFlujo pasoDestino) {
+    private HistoricoTicket registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen, PasoFlujo pasoDestino) {
         HistoricoTicket historico = new HistoricoTicket();
         historico.setTicket(ticket);
         historico.setAgenteOrigen(agenteOrigen);
@@ -132,6 +140,16 @@ public class TicketService {
         historico.setPasoDestino(pasoDestino);
 
         historicoTicketRepository.save(historico);
+
+        return historico;
+    }
+
+    private void registrarNota(String nvoNota, Agente agente , HistoricoTicket historico){
+        Nota nota = new Nota ();
+        nota.setHistoricoTicket(historico);
+        nota.setDescripcion(nvoNota);
+        nota.setAgente(agente);
+        notaRepository.save(nota);
     }
 
     public TicketDetalle obtenerTicketDTO(String idTicket) {

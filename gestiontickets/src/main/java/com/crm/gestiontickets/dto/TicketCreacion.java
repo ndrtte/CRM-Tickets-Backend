@@ -15,4 +15,6 @@ public class TicketCreacion {
 
     private Integer idCategoria;
 
+    private String nota;
+
 }

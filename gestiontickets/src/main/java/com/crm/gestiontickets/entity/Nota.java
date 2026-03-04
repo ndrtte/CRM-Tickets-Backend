@@ -39,6 +39,10 @@ public class Nota {
     @Lob
     private String descripcion;
 
+    @ManyToOne()
+    @JoinColumn(name = "id_agente")
+    private Agente agente;
+
     @OneToMany(mappedBy = "nota", cascade = CascadeType.ALL)
     private List<Documento> documentos;
 }
