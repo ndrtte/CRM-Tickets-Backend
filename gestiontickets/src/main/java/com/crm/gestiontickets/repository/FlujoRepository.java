@@ -9,4 +9,5 @@ public interface FlujoRepository extends JpaRepository<Flujo, Integer> {
     
     public Flujo findByCategoria(Categoria categoria);
 
+    public Flujo findByDescripcion(String descripcion);
 }

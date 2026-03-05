@@ -17,4 +17,6 @@ public class TicketCreacion {
 
     private String nota;
 
+    private Integer agenteEjecutor;
+
 }

@@ -1,5 +1,7 @@
 package com.crm.gestiontickets.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,5 +50,8 @@ public class HistoricoTicket {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_paso_destino")
     private PasoFlujo pasoDestino;
+
+    @Column(name = "fecha_historico")
+    private LocalDateTime fechaHistorico;
 
 }
