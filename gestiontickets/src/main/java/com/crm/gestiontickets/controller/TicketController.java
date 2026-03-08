@@ -46,4 +46,10 @@ public class TicketController {
         return ticketService.obtenerTicketsCliente(idCliente);
     }
 
+    @GetMapping("/otener-tickets-departamento")
+    public List<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento) {
+        return ticketService.obtenerTicketsDepartamento(idDepartamento);
+    }
+    
+
 }

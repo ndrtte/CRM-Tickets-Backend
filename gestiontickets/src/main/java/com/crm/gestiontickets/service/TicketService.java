@@ -23,6 +23,7 @@ import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.repository.AgenteRepository;
 import com.crm.gestiontickets.repository.CategoriaRepository;
 import com.crm.gestiontickets.repository.ClienteRepository;
+import com.crm.gestiontickets.repository.DepartamentoRepository;
 import com.crm.gestiontickets.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.repository.FlujoRepository;
 import com.crm.gestiontickets.repository.HistoricoTicketRepository;
@@ -59,6 +60,9 @@ public class TicketService {
 
     @Autowired
     private HistoricoTicketRepository historicoTicketRepository;
+
+    @Autowired
+    private DepartamentoRepository departamentoRepository;
 
     public IdTicket aperturaTicket(TicketApertura ticketAperturaDTO) {
 
@@ -117,7 +121,7 @@ public class TicketService {
                 return paso;
             }
         }
-        return pasos.get(0); 
+        return pasos.get(0);
     }
 
     private boolean pasoCompletado(Ticket ticket, PasoFlujo paso) {
@@ -164,12 +168,26 @@ public class TicketService {
         return ticketDetalle;
     }
 
-    public List<TicketDetalle> obtenerTicketsCliente(Long idCliente){
+    public List<TicketDetalle> obtenerTicketsCliente(Long idCliente) {
         List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
 
         Cliente cliente = clienteRepository.findById(idCliente).get();
 
         List<Ticket> listaTicket = ticketRepository.findByCliente(cliente);
+
+        for (Ticket ticket : listaTicket) {
+            TicketDetalle ticketDetalle = obtenerTicketDTO(ticket.getIdTicket());
+            listaTicketsDTO.add(ticketDetalle);
+        }
+
+        return listaTicketsDTO;
+    }
+
+    public List<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento) {
+
+        List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
+
+        List<Ticket> listaTicket = ticketRepository.findTicketsByDepartamento(idDepartamento);
 
         for (Ticket ticket : listaTicket) {
             TicketDetalle ticketDetalle = obtenerTicketDTO(ticket.getIdTicket());
