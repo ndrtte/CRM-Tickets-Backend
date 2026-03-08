@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.dto.DepartamentoDetalle;
 import com.crm.gestiontickets.entity.Departamento;
+import com.crm.gestiontickets.exception.DepartamentoNotFoundException;
 import com.crm.gestiontickets.repository.DepartamentoRepository;
 
 @Service
@@ -34,4 +35,27 @@ public class DepartamentoService {
         return nuevoDepartamento;
     }
 
+     // Actualizar un departamento
+      public DepartamentoDetalle actualizarDepartamento(DepartamentoDetalle departamentoDTO) {
+
+        // Usamos la excepción personalizada
+        Departamento departamento = departamentoRepository.findById(departamentoDTO.getIdDepartamento())
+                .orElseThrow(() -> new DepartamentoNotFoundException(departamentoDTO.getIdDepartamento()));
+
+        departamento.setNombreDepartamento(departamentoDTO.getNombreDepartamento());
+        departamento.setDescripcion(departamentoDTO.getDescripcion());
+        departamento.setFechaActualizacion(LocalDateTime.now());
+
+        departamentoRepository.save(departamento);
+
+        DepartamentoDetalle dto = new DepartamentoDetalle();
+        dto.setIdDepartamento(departamento.getIdDepartamento());
+        dto.setNombreDepartamento(departamento.getNombreDepartamento());
+        dto.setDescripcion(departamento.getDescripcion());
+        dto.setFechaCreacion(departamento.getFechaCreacion());
+        dto.setFechaActualizacion(departamento.getFechaActualizacion());
+
+        return dto;
+    }
 }
+

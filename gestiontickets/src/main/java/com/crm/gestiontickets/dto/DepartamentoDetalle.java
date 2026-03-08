@@ -1,5 +1,7 @@
 package com.crm.gestiontickets.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,5 +18,9 @@ public class DepartamentoDetalle {
     private String nombreDepartamento;
 
     private String descripcion;
+
+    private LocalDateTime fechaCreacion;       
+    
+    private LocalDateTime fechaActualizacion;  
 
 }

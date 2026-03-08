@@ -19,4 +19,10 @@ public class DepartamentoController {
         return departamentoService.crearDepartamento(departamento);
     }
 
+    //Endpoint para actualizar departamento
+    @PutMapping("/actualizar-departamento")
+    public DepartamentoDetalle actualizarDepartamento(@RequestBody DepartamentoDetalle departamento) {
+        return departamentoService.actualizarDepartamento(departamento);
+    }
+
 }
