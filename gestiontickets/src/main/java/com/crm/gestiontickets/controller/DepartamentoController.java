@@ -25,4 +25,11 @@ public class DepartamentoController {
         return departamentoService.actualizarDepartamento(departamento);
     }
 
+    //enpoint para eliminar departamento
+    @DeleteMapping("/eliminar-departamento/{id}")
+    public String eliminarDepartamento(@PathVariable Integer id) {
+        departamentoService.eliminarDepartamento(id);
+        return "Departamento con ID " + id + " eliminado exitosamente.";
+    }
+
 }

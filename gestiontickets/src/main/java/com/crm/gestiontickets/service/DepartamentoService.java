@@ -38,7 +38,6 @@ public class DepartamentoService {
      // Actualizar un departamento
       public DepartamentoDetalle actualizarDepartamento(DepartamentoDetalle departamentoDTO) {
 
-        // Usamos la excepción personalizada
         Departamento departamento = departamentoRepository.findById(departamentoDTO.getIdDepartamento())
                 .orElseThrow(() -> new DepartamentoNotFoundException(departamentoDTO.getIdDepartamento()));
 
@@ -56,6 +55,14 @@ public class DepartamentoService {
         dto.setFechaActualizacion(departamento.getFechaActualizacion());
 
         return dto;
+    }
+
+    //eliminar un departamento
+    public void eliminarDepartamento(Integer idDepartamento) {
+        Departamento departamento = departamentoRepository.findById(idDepartamento)
+                .orElseThrow(() -> new DepartamentoNotFoundException(idDepartamento));
+
+        departamentoRepository.delete(departamento);
     }
 }
 
