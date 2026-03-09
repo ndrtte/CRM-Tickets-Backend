@@ -11,6 +11,7 @@ import com.crm.gestiontickets.dto.IdTicket;
 import com.crm.gestiontickets.dto.TicketApertura;
 import com.crm.gestiontickets.dto.TicketCreacion;
 import com.crm.gestiontickets.dto.TicketDetalle;
+import com.crm.gestiontickets.dto.TicketEtapaDetalle;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
@@ -18,17 +19,11 @@ import com.crm.gestiontickets.entity.Departamento;
 import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.HistoricoTicket;
+import com.crm.gestiontickets.entity.Nota;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
-import com.crm.gestiontickets.repository.AgenteRepository;
-import com.crm.gestiontickets.repository.CategoriaRepository;
-import com.crm.gestiontickets.repository.ClienteRepository;
-import com.crm.gestiontickets.repository.EstadoTicketRepository;
-import com.crm.gestiontickets.repository.FlujoRepository;
-import com.crm.gestiontickets.repository.HistoricoTicketRepository;
-import com.crm.gestiontickets.repository.PasoFlujoRepository;
-import com.crm.gestiontickets.repository.SecuencialTicketRepository;
-import com.crm.gestiontickets.repository.TicketRepository;
+import com.crm.gestiontickets.enums.EstadoEtapaTicket;
+import com.crm.gestiontickets.repository.*;
 
 @Service
 public class TicketService {
@@ -59,6 +54,9 @@ public class TicketService {
 
     @Autowired
     private HistoricoTicketRepository historicoTicketRepository;
+
+    @Autowired
+    private NotaRepository notaRepository;
 
     public IdTicket aperturaTicket(TicketApertura ticketAperturaDTO) {
 
@@ -117,14 +115,15 @@ public class TicketService {
                 return paso;
             }
         }
-        return pasos.get(0); 
+        return pasos.get(0);
     }
 
     private boolean pasoCompletado(Ticket ticket, PasoFlujo paso) {
         return historicoTicketRepository.existsByTicketAndPasoDestino(ticket, paso);
     }
 
-    private void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen, PasoFlujo pasoDestino) {
+    private void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen,
+            PasoFlujo pasoDestino) {
         HistoricoTicket historico = new HistoricoTicket();
         historico.setTicket(ticket);
         historico.setAgenteOrigen(agenteOrigen);
@@ -164,7 +163,7 @@ public class TicketService {
         return ticketDetalle;
     }
 
-    public List<TicketDetalle> obtenerTicketsCliente(Long idCliente){
+    public List<TicketDetalle> obtenerTicketsCliente(Long idCliente) {
         List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
 
         Cliente cliente = clienteRepository.findById(idCliente).get();
@@ -177,6 +176,62 @@ public class TicketService {
         }
 
         return listaTicketsDTO;
+    }
+
+    public TicketEtapaDetalle obtenerEstadoTicketEtapa(String idTicket, Integer idPaso) {
+        Ticket ticket = ticketRepository.findById(idTicket).get();
+
+        TicketEtapaDetalle detalle = new TicketEtapaDetalle();
+        detalle.setIdTicket(ticket.getIdTicket());
+        detalle.setNombreCliente(ticket.getCliente().getNombre() + " " + ticket.getCliente().getApellido());
+        detalle.setCategoria(ticket.getCategoria().getNombre());
+
+        PasoFlujo pasoConsulta;
+        Departamento departamento;
+        String nota;
+        String agenteNombre;
+        EstadoEtapaTicket estado;
+
+        if (ticket.getPasoActual().getIdPasosFlujo().equals(idPaso)) {
+            estado = EstadoEtapaTicket.EN_PROCESO;
+            pasoConsulta = ticket.getPasoActual();
+            departamento = pasoConsulta.getIdDepartamento();
+            nota = "";
+            agenteNombre = ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getNombre() + " " + ticket.getAgenteAsignado().getApellido(): "Sin asignar";
+        } else {
+            List<HistoricoTicket> historicos = historicoTicketRepository
+                    .findHistoricoTicketByTicketYEtapa(ticket.getIdTicket(), idPaso);
+
+            if (!historicos.isEmpty()) {
+                HistoricoTicket historico = historicos.get(0);
+                estado = EstadoEtapaTicket.FINALIZADO;
+
+                pasoConsulta = historico.getPasoDestino() != null ? historico.getPasoDestino() : historico.getPasoOrigen();
+                departamento = pasoConsulta.getIdDepartamento();
+
+                agenteNombre = historico.getAgenteDestino() != null ? historico.getAgenteDestino().getNombre() + " " + historico.getAgenteDestino().getApellido(): "Sin asignar";
+
+                List<Nota> notas = notaRepository.findNotasByHistoricoTicket(historico);
+                nota = notas.isEmpty() ? "" : notas.get(0).getDescripcion();
+
+            } else {
+                estado = EstadoEtapaTicket.NO_INICIADO;
+                pasoConsulta = new PasoFlujo();
+                pasoConsulta.setDescripcion("Etapa no iniciada");
+                departamento = new Departamento();
+                departamento.setNombreDepartamento("Sin asignar");
+                nota = "";
+                agenteNombre = "Sin asignar";
+            }
+        }
+
+        detalle.setPasoActual(pasoConsulta.getDescripcion());
+        detalle.setDepartamento(departamento.getNombreDepartamento());
+        detalle.setAgente(agenteNombre);
+        detalle.setNota(nota);
+        detalle.setEstadoTicket(estado);
+
+        return detalle;
     }
 
 }

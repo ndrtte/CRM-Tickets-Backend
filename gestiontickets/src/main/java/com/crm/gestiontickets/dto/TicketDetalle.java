@@ -18,7 +18,7 @@ public class TicketDetalle {
     private Integer idCategoria;
     private String categoria;
     private Integer idPasoActual;
-    private String PasoActual;
+    private String pasoActual;
     private Integer idAgente;
     private String nombreAgente;
     private Integer idEstado;

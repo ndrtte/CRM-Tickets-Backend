@@ -16,6 +16,7 @@ import com.crm.gestiontickets.dto.IdTicket;
 import com.crm.gestiontickets.dto.TicketApertura;
 import com.crm.gestiontickets.dto.TicketCreacion;
 import com.crm.gestiontickets.dto.TicketDetalle;
+import com.crm.gestiontickets.dto.TicketEtapaDetalle;
 import com.crm.gestiontickets.service.TicketService;
 
 @CrossOrigin("*")
@@ -45,5 +46,11 @@ public class TicketController {
     public List<TicketDetalle> obtenerTicketsCliente(@RequestParam Long idCliente){
         return ticketService.obtenerTicketsCliente(idCliente);
     }
+
+    @GetMapping("/filtrar-ticket-etapa")
+    public TicketEtapaDetalle obtenerEtapaTicket(@RequestParam String idTicket, @RequestParam Integer idPaso) {
+        return ticketService.obtenerEstadoTicketEtapa(idTicket, idPaso);
+    }
+    
 
 }
