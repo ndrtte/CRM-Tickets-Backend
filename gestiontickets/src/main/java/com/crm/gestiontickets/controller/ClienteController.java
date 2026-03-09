@@ -15,6 +15,11 @@ import com.crm.gestiontickets.dto.ClienteDetalle;
 import com.crm.gestiontickets.dto.IdCliente;
 import com.crm.gestiontickets.service.ClienteService;
 
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.crm.gestiontickets.dto.NuevoCliente;
+
+
 
 @CrossOrigin("*")
 @RestController
@@ -38,5 +43,11 @@ public class ClienteController {
     public IdCliente editarCliente(@RequestBody ClienteDetalle clienteActualizado){
         return clienteService.editarCliente(clienteActualizado);
     }
+
+    @PostMapping("/crear-cliente")
+    public IdCliente crearCliente(@RequestBody NuevoCliente nvoClienteDTO) {
+        return clienteService.crearCliente(nvoClienteDTO);
+    }
+    
 
 }

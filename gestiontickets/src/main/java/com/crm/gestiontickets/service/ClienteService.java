@@ -9,20 +9,21 @@ import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.dto.ClienteDetalle;
 import com.crm.gestiontickets.dto.IdCliente;
+import com.crm.gestiontickets.dto.NuevoCliente;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.exception.ClienteNotFoundException;
 import com.crm.gestiontickets.repository.ClienteRepository;
 
 @Service
 public class ClienteService {
-    
+
     @Autowired
     private ClienteRepository clienteRepository;
 
     public List<ClienteDetalle> obtenerClientes(String valorBusqueda) {
 
         List<Cliente> listaClientes = clienteRepository.buscarPorCualquierCampo(valorBusqueda);
-        
+
         List<ClienteDetalle> listaClientesDTO = new ArrayList<>();
 
         for (Cliente cliente : listaClientes) {
@@ -40,7 +41,7 @@ public class ClienteService {
         return listaClientesDTO;
     }
 
-    public ClienteDetalle obtenerCliente(Long idCliente){
+    public ClienteDetalle obtenerCliente(Long idCliente) {
 
         Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNotFoundException(idCliente));
 
@@ -55,7 +56,7 @@ public class ClienteService {
         return clienteDTO;
     }
 
-    public IdCliente editarCliente(ClienteDetalle clienteActualizado){
+    public IdCliente editarCliente(ClienteDetalle clienteActualizado) {
 
         Cliente cliente = clienteRepository.findById(clienteActualizado.getIdCliente()).get();
 
@@ -69,6 +70,22 @@ public class ClienteService {
         clienteRepository.save(cliente);
 
         IdCliente idCliente = new IdCliente(cliente.getIdCliente());
+
+        return idCliente;
+    }
+
+    public IdCliente crearCliente(NuevoCliente nvoClienteDTO) {
+        Cliente nvoCliente = new Cliente();
+        nvoCliente.setNombre(nvoClienteDTO.getNombre());
+        nvoCliente.setApellido(nvoClienteDTO.getApellido());
+        nvoCliente.setCelular(nvoClienteDTO.getCelular());
+        nvoCliente.setCorreo(nvoClienteDTO.getCorreo());
+        nvoCliente.setNumeroIdentidad(nvoClienteDTO.getNumeroIdentidad());
+        nvoCliente.setActivo('S');
+
+        clienteRepository.save(nvoCliente);
+
+        IdCliente idCliente = new IdCliente(nvoCliente.getIdCliente());
 
         return idCliente;
     }
