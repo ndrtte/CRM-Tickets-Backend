@@ -23,7 +23,16 @@ import com.crm.gestiontickets.entity.Nota;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.enums.EstadoEtapaTicket;
-import com.crm.gestiontickets.repository.*;
+import com.crm.gestiontickets.repository.AgenteRepository;
+import com.crm.gestiontickets.repository.CategoriaRepository;
+import com.crm.gestiontickets.repository.ClienteRepository;
+import com.crm.gestiontickets.repository.EstadoTicketRepository;
+import com.crm.gestiontickets.repository.FlujoRepository;
+import com.crm.gestiontickets.repository.HistoricoTicketRepository;
+import com.crm.gestiontickets.repository.NotaRepository;
+import com.crm.gestiontickets.repository.PasoFlujoRepository;
+import com.crm.gestiontickets.repository.SecuencialTicketRepository;
+import com.crm.gestiontickets.repository.TicketRepository;
 
 @Service
 public class TicketService {
@@ -183,21 +192,29 @@ public class TicketService {
 
         TicketEtapaDetalle detalle = new TicketEtapaDetalle();
         detalle.setIdTicket(ticket.getIdTicket());
-        detalle.setNombreCliente(ticket.getCliente().getNombre() + " " + ticket.getCliente().getApellido());
-        detalle.setCategoria(ticket.getCategoria().getNombre());
+
+        Cliente cliente = ticket.getCliente();
+        if (cliente != null) {
+            detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
+        } else {
+            detalle.setNombreCliente("Cliente no asignado");
+        }
+
+        detalle.setCategoria(ticket.getCategoria() != null ? ticket.getCategoria().getNombre() : "");
 
         PasoFlujo pasoConsulta;
         Departamento departamento;
-        String nota;
-        String agenteNombre;
+        String nota = "";
+        String agenteNombre = "Sin asignar";
         EstadoEtapaTicket estado;
 
-        if (ticket.getPasoActual().getIdPasosFlujo().equals(idPaso)) {
+        if (ticket.getPasoActual() != null && ticket.getPasoActual().getIdPasosFlujo().equals(idPaso)) {
             estado = EstadoEtapaTicket.EN_PROCESO;
             pasoConsulta = ticket.getPasoActual();
             departamento = pasoConsulta.getIdDepartamento();
-            nota = "";
-            agenteNombre = ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getNombre() + " " + ticket.getAgenteAsignado().getApellido(): "Sin asignar";
+            if (ticket.getAgenteAsignado() != null) {
+                agenteNombre = ticket.getAgenteAsignado().getNombre() + " " + ticket.getAgenteAsignado().getApellido();
+            }
         } else {
             List<HistoricoTicket> historicos = historicoTicketRepository
                     .findHistoricoTicketByTicketYEtapa(ticket.getIdTicket(), idPaso);
@@ -207,31 +224,32 @@ public class TicketService {
                 estado = EstadoEtapaTicket.FINALIZADO;
 
                 pasoConsulta = historico.getPasoDestino() != null ? historico.getPasoDestino() : historico.getPasoOrigen();
-                departamento = pasoConsulta.getIdDepartamento();
+                departamento = pasoConsulta != null ? pasoConsulta.getIdDepartamento() : new Departamento();
 
-                agenteNombre = historico.getAgenteDestino() != null ? historico.getAgenteDestino().getNombre() + " " + historico.getAgenteDestino().getApellido(): "Sin asignar";
+                if (historico.getAgenteDestino() != null) {
+                    agenteNombre = historico.getAgenteDestino().getNombre() + " " + historico.getAgenteDestino().getApellido();
+                }
 
                 List<Nota> notas = notaRepository.findNotasByHistoricoTicket(historico);
-                nota = notas.isEmpty() ? "" : notas.get(0).getDescripcion();
-
+                if (!notas.isEmpty()) {
+                    nota = notas.get(0).getDescripcion();
+                }
             } else {
                 estado = EstadoEtapaTicket.NO_INICIADO;
                 pasoConsulta = new PasoFlujo();
                 pasoConsulta.setDescripcion("Etapa no iniciada");
+
                 departamento = new Departamento();
                 departamento.setNombreDepartamento("Sin asignar");
-                nota = "";
-                agenteNombre = "Sin asignar";
             }
         }
 
-        detalle.setPasoActual(pasoConsulta.getDescripcion());
-        detalle.setDepartamento(departamento.getNombreDepartamento());
+        detalle.setPasoActual(pasoConsulta != null ? pasoConsulta.getDescripcion() : "Desconocido");
+        detalle.setDepartamento(departamento != null ? departamento.getNombreDepartamento() : "Desconocido");
         detalle.setAgente(agenteNombre);
         detalle.setNota(nota);
         detalle.setEstadoTicket(estado);
 
         return detalle;
     }
-
 }
