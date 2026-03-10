@@ -23,7 +23,6 @@ import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.repository.AgenteRepository;
 import com.crm.gestiontickets.repository.CategoriaRepository;
 import com.crm.gestiontickets.repository.ClienteRepository;
-import com.crm.gestiontickets.repository.DepartamentoRepository;
 import com.crm.gestiontickets.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.repository.FlujoRepository;
 import com.crm.gestiontickets.repository.HistoricoTicketRepository;
@@ -61,8 +60,6 @@ public class TicketService {
     @Autowired
     private HistoricoTicketRepository historicoTicketRepository;
 
-    @Autowired
-    private DepartamentoRepository departamentoRepository;
 
     public IdTicket aperturaTicket(TicketApertura ticketAperturaDTO) {
 
@@ -226,7 +223,7 @@ public class TicketService {
         List<Ticket> listaTicket = ticketRepository.findTicketsByDepartamento(idDepartamento);
 
         for (Ticket ticket : listaTicket) {
-            TicketDetalle ticketDetalle = obtenerTicketDTO(ticket.getIdTicket());
+            TicketDetalle ticketDetalle = mapearTicketADetalle(ticket);
             listaTicketsDTO.add(ticketDetalle);
         }
 
