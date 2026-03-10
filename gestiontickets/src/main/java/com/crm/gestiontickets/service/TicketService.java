@@ -239,8 +239,7 @@ public class TicketService {
         detalle.setIdTicket(idTicket);
 
         Cliente cliente = ticket.getCliente();
-        detalle.setNombreCliente(cliente != null ? cliente.getNombre() + " " + cliente.getApellido()
-                : "Cliente no asignado");
+        detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
 
         detalle.setCategoria(ticket.getCategoria().getNombre());
 
