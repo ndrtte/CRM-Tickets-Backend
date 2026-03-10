@@ -1,6 +1,8 @@
 package com.crm.gestiontickets.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -56,5 +58,36 @@ public class AgenteService {
         nuevoAgente.setIdRol(rol.getIdRol());        
 
         return nuevoAgente;
+    }
+
+     @SuppressWarnings("unchecked")
+    public List<AgenteDetalle> buscarAgentes(String criterio) {
+
+        List<Agente> agentes;
+
+        // Intentar buscar por idAgente si es número
+        try {
+            Integer id = Integer.parseInt(criterio);
+            agentes = agenteRepository.findByIdAgente(id);
+        } catch (NumberFormatException e) {
+            // Si no es número, buscar por nombre o usuario
+            agentes = agenteRepository.findByNombreContainingIgnoreCase(criterio);
+            if (agentes.isEmpty()) {
+                agentes = (List<Agente>) agenteRepository.findByUsuario(criterio);
+            }
+        }
+
+        // Convertir entidades a DTO
+        return agentes.stream().map(agente -> {
+            AgenteDetalle dto = new AgenteDetalle();
+            dto.setIdAgente(agente.getIdAgente());
+            dto.setNombre(agente.getNombre());
+            dto.setApellido(agente.getApellido());
+            dto.setUsuario(agente.getUsuario());
+            dto.setActivo(agente.getActivo());
+            dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
+            // Si quieres incluir rol más adelante, se puede agregar
+            return dto;
+        }).collect(Collectors.toList());
     }
 }
