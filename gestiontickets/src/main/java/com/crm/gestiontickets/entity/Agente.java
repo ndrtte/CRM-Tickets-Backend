@@ -39,7 +39,7 @@ public class Agente {
 
     private String contrasenia;
 
-    private Character activo;
+    //private Character activo;
 
     @ManyToOne(fetch = FetchType.LAZY) //Sujeta a cambios
     @JoinColumn(name = "id_rol", nullable = false)
@@ -54,5 +54,9 @@ public class Agente {
 
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
+
+    @Column(name = "activo")
+    private String activo;
+    
 }
 
