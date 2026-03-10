@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.dto.IdTicket;
+import com.crm.gestiontickets.dto.Respuesta;
 import com.crm.gestiontickets.dto.TicketApertura;
 import com.crm.gestiontickets.dto.TicketCreacion;
 import com.crm.gestiontickets.dto.TicketDetalle;
@@ -48,7 +49,7 @@ public class TicketController {
     }
 
     @GetMapping("/filtrar-ticket-etapa")
-    public TicketEtapaDetalle obtenerEtapaTicket(@RequestParam String idTicket, @RequestParam Integer idPaso) {
+    public Respuesta<TicketEtapaDetalle> obtenerEtapaTicket(@RequestParam String idTicket, @RequestParam Integer idPaso) {
         return ticketService.obtenerEstadoTicketEtapa(idTicket, idPaso);
     }
     

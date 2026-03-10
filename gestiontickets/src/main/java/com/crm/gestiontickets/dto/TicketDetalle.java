@@ -1,6 +1,7 @@
 package com.crm.gestiontickets.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,8 +18,6 @@ public class TicketDetalle {
     private String nombreCliente;
     private Integer idCategoria;
     private String categoria;
-    private Integer idPasoActual;
-    private String pasoActual;
     private Integer idAgente;
     private String nombreAgente;
     private Integer idEstado;
@@ -26,4 +25,5 @@ public class TicketDetalle {
     private LocalDateTime fechaCreacion;
     private Integer idDepartamento;
     private String departamento;
+    private List<EtapaTicket> listaEtapas;
 }

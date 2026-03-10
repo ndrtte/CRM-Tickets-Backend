@@ -1,5 +1,7 @@
 package com.crm.gestiontickets.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +20,5 @@ public class ResumenAgente {
     private String rol;
     private Integer idDepartamento;
     private String departamento;
+    private List<PermisoRol> listaPermisos;
 }
