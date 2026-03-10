@@ -60,6 +60,7 @@ public class TicketService {
     @Autowired
     private HistoricoTicketRepository historicoTicketRepository;
 
+
     public IdTicket aperturaTicket(TicketApertura ticketAperturaDTO) {
 
         Ticket ticketArpetura = new Ticket();
@@ -214,4 +215,19 @@ public class TicketService {
 
         return listaTicketsDTO;
     }
+
+    public List<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento) {
+
+        List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
+
+        List<Ticket> listaTicket = ticketRepository.findTicketsByDepartamento(idDepartamento);
+
+        for (Ticket ticket : listaTicket) {
+            TicketDetalle ticketDetalle = mapearTicketADetalle(ticket);
+            listaTicketsDTO.add(ticketDetalle);
+        }
+
+        return listaTicketsDTO;
+    }
+
 }
