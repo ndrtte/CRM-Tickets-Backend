@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.crm.gestiontickets.dto.EtapaTicket;
 import com.crm.gestiontickets.dto.IdTicket;
 import com.crm.gestiontickets.dto.TicketApertura;
 import com.crm.gestiontickets.dto.TicketCreacion;
@@ -14,7 +15,6 @@ import com.crm.gestiontickets.dto.TicketDetalle;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
-import com.crm.gestiontickets.entity.Departamento;
 import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.HistoricoTicket;
@@ -128,7 +128,8 @@ public class TicketService {
         return historicoTicketRepository.existsByTicketAndPasoDestino(ticket, paso);
     }
 
-    private void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen, PasoFlujo pasoDestino) {
+    private void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen,
+            PasoFlujo pasoDestino) {
         HistoricoTicket historico = new HistoricoTicket();
         historico.setTicket(ticket);
         historico.setAgenteOrigen(agenteOrigen);
@@ -139,45 +140,80 @@ public class TicketService {
         historicoTicketRepository.save(historico);
     }
 
-    public TicketDetalle obtenerTicketDTO(String idTicket) {
-        Ticket ticket = ticketRepository.findById(idTicket).get();
+    public TicketDetalle mapearTicketADetalle(Ticket ticket) {
+        TicketDetalle detalle = new TicketDetalle();
+
+        detalle.setIdTicket(ticket.getIdTicket());
+        detalle.setFechaCreacion(ticket.getFechaCreacion());
 
         Cliente cliente = ticket.getCliente();
+        if (cliente != null) {
+            detalle.setIdCliente(cliente.getIdCliente());
+            detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
+        }
+
         Categoria categoria = ticket.getCategoria();
+        if (categoria != null) {
+            detalle.setIdCategoria(categoria.getIdCategoria());
+            detalle.setCategoria(categoria.getNombre());
+        }
+
         PasoFlujo pasoActual = ticket.getPasoActual();
+        if (pasoActual != null) {
+            detalle.setIdDepartamento(pasoActual.getIdDepartamento() != null
+                    ? pasoActual.getIdDepartamento().getIdDepartamento()
+                    : null);
+            detalle.setDepartamento(pasoActual.getIdDepartamento() != null
+                    ? pasoActual.getIdDepartamento().getNombreDepartamento()
+                    : "Sin asignar");
+        }
+
         Agente agente = ticket.getAgenteAsignado();
+        if (agente != null) {
+            detalle.setIdAgente(agente.getIdAgente());
+            detalle.setNombreAgente(agente.getNombre() + " " + agente.getApellido());
+        }
+
         EstadoTicket estado = ticket.getEstado();
-        Departamento departamento = ticket.getPasoActual().getIdDepartamento();
-        TicketDetalle ticketDetalle = new TicketDetalle();
+        if (estado != null) {
+            detalle.setIdEstado(estado.getIdEstadoTicket());
+            detalle.setEstado(estado.getEstadoTicket());
+        }
 
-        ticketDetalle.setIdTicket(idTicket);
-        ticketDetalle.setIdCliente(cliente.getIdCliente());
-        ticketDetalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
-        ticketDetalle.setIdCategoria(categoria.getIdCategoria());
-        ticketDetalle.setCategoria(categoria.getNombre());
-        ticketDetalle.setIdPasoActual(pasoActual.getIdPasosFlujo());
-        ticketDetalle.setPasoActual(pasoActual.getDescripcion());
-        ticketDetalle.setIdAgente(agente.getIdAgente());
-        ticketDetalle.setNombreAgente(agente.getNombre() + " " + agente.getApellido());
-        ticketDetalle.setIdEstado(estado.getIdEstadoTicket());
-        ticketDetalle.setEstado(estado.getEstadoTicket());
-        ticketDetalle.setFechaCreacion(ticket.getFechaCreacion());
-        ticketDetalle.setIdDepartamento(departamento.getIdDepartamento());
-        ticketDetalle.setDepartamento(departamento.getNombreDepartamento());
+        List<EtapaTicket> listaEtapas = new ArrayList<>();
 
-        return ticketDetalle;
+        detalle.setListaEtapas(listaEtapas);
+        if (categoria != null) {
+            Flujo flujo = flujoRepository.findByCategoria(categoria);
+            if (flujo != null && flujo.getPasos() != null) {
+                for (PasoFlujo paso : flujo.getPasos()) {
+                    EtapaTicket etapa = new EtapaTicket();
+                    etapa.setIdPaso(paso.getIdPasosFlujo());
+                    etapa.setDescripcion(paso.getDescripcion());
+                    etapa.setEsActual(pasoActual != null &&
+                            paso.getIdPasosFlujo().equals(pasoActual.getIdPasosFlujo()));
+                    detalle.getListaEtapas().add(etapa);
+                }
+            }
+        }
+
+        return detalle;
+    }
+
+    public TicketDetalle obtenerTicketDTO(String idTicket) {
+        Ticket ticket = ticketRepository.findById(idTicket).get();
+        return mapearTicketADetalle(ticket);
     }
 
     public List<TicketDetalle> obtenerTicketsCliente(Long idCliente) {
-        List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
-
         Cliente cliente = clienteRepository.findById(idCliente).get();
 
-        List<Ticket> listaTicket = ticketRepository.findByCliente(cliente);
+        List<Ticket> listaTickets = ticketRepository.findByCliente(cliente);
+        List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
 
-        for (Ticket ticket : listaTicket) {
-            TicketDetalle ticketDetalle = obtenerTicketDTO(ticket.getIdTicket());
-            listaTicketsDTO.add(ticketDetalle);
+        for (Ticket ticket : listaTickets) {
+            TicketDetalle detalle = mapearTicketADetalle(ticket);
+            listaTicketsDTO.add(detalle);
         }
 
         return listaTicketsDTO;
