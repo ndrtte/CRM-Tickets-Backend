@@ -227,10 +227,6 @@ public class TicketService {
     public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(String idTicket, Integer idPaso) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
 
-        if (ticket.getCategoria() == null) {
-            return new Respuesta<>(false, "El ticket no tiene categoría asignada", null);
-        }
-
         if (ticket.getPasoActual() == null) {
             return new Respuesta<>(false, "El ticket no tiene etapa asignada", null);
         }
@@ -241,13 +237,15 @@ public class TicketService {
         Cliente cliente = ticket.getCliente();
         detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
 
-        detalle.setCategoria(ticket.getCategoria().getNombre());
-
         PasoFlujo pasoConsulta;
         Departamento departamento;
         String nota = "";
         String agenteNombre = "Sin asignar";
         EstadoEtapaTicket estado;
+        String categoria = "";
+        if (ticket.getCategoria() != null) {
+            categoria = ticket.getCategoria().getNombre();
+        }
 
         if (ticket.getPasoActual().getIdPasosFlujo().equals(idPaso)) {
             estado = EstadoEtapaTicket.EN_PROCESO;
@@ -287,6 +285,7 @@ public class TicketService {
             }
         }
 
+        detalle.setCategoria(categoria);
         detalle.setPasoActual(pasoConsulta != null ? pasoConsulta.getDescripcion() : "Desconocido");
         detalle.setDepartamento(departamento != null ? departamento.getNombreDepartamento() : "Desconocido");
         detalle.setAgente(agenteNombre);
@@ -294,7 +293,7 @@ public class TicketService {
         detalle.setEstadoTicket(estado);
 
         boolean exito = estado != EstadoEtapaTicket.NO_INICIADO;
-        String mensaje = exito ? "OK" : "Etapa no iniciada o no asignada";
+        String mensaje = exito ? "Ok" : "Etapa no iniciada o no asignada";
 
         return new Respuesta<>(exito, mensaje, detalle);
     }
