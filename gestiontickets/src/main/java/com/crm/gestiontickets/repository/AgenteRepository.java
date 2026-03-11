@@ -14,4 +14,7 @@ public interface AgenteRepository extends JpaRepository<Agente, Integer>{
     List<Agente> findByNombreContainingIgnoreCase(String nombre);
     List<Agente> findByUsuarioContainingIgnoreCase(String usuario);
     List<Agente> findByIdAgente(Integer idAgente);
+
+    public List<Agente> findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCaseOrUsuarioContainingIgnoreCase(
+            String criterio, String criterio2, String criterio3);
 }

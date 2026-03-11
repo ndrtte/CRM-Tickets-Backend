@@ -29,12 +29,15 @@ public class AgenteService {
 
     public AgenteDetalle crearAgente(AgenteDetalle agenteDTO){
 
+        // valida que el departamento exista
         Departamento departamento = departamentoRepository.findById(agenteDTO.getIdDepartamento())
                 .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
 
+        // valida que el rol exista
         Rol rol = rolRepository.findById(agenteDTO.getIdRol())
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
+        // Crear  Agente
         Agente agente = new Agente();
         agente.setNombre(agenteDTO.getNombre());
         agente.setApellido(agenteDTO.getApellido());
@@ -45,49 +48,84 @@ public class AgenteService {
         agente.setRol(rol);
         agente.setFechaCreacion(LocalDateTime.now());
 
+        // Guardar en la BD
         agenteRepository.save(agente);
 
-        AgenteDetalle nuevoAgente = new AgenteDetalle();
-        nuevoAgente.setIdAgente(agente.getIdAgente());
-        nuevoAgente.setNombre(agente.getNombre());
-        nuevoAgente.setApellido(agente.getApellido());
-        nuevoAgente.setUsuario(agente.getUsuario());
-        nuevoAgente.setContrasenia(agente.getContrasenia());
-        nuevoAgente.setActivo(agente.getActivo());
-        nuevoAgente.setIdDepartamento(departamento.getIdDepartamento());
-        nuevoAgente.setIdRol(rol.getIdRol());        
-
-        return nuevoAgente;
+        // Devolver DTO con datos guardados
+        return convertirADTO(agente);
     }
 
-     @SuppressWarnings("unchecked")
+
     public List<AgenteDetalle> buscarAgentes(String criterio) {
 
         List<Agente> agentes;
 
-        // Intentar buscar por idAgente si es número
         try {
             Integer id = Integer.parseInt(criterio);
             agentes = agenteRepository.findByIdAgente(id);
         } catch (NumberFormatException e) {
-            // Si no es número, buscar por nombre o usuario
-            agentes = agenteRepository.findByNombreContainingIgnoreCase(criterio);
-            if (agentes.isEmpty()) {
-                agentes = (List<Agente>) agenteRepository.findByUsuario(criterio);
-            }
+            agentes = agenteRepository.findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCaseOrUsuarioContainingIgnoreCase(
+                    criterio, criterio, criterio);
         }
 
-        // Convertir entidades a DTO
-        return agentes.stream().map(agente -> {
-            AgenteDetalle dto = new AgenteDetalle();
-            dto.setIdAgente(agente.getIdAgente());
-            dto.setNombre(agente.getNombre());
-            dto.setApellido(agente.getApellido());
-            dto.setUsuario(agente.getUsuario());
-            dto.setActivo(agente.getActivo());
-            dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
-            // Si quieres incluir rol más adelante, se puede agregar
-            return dto;
-        }).collect(Collectors.toList());
+        // Convertir la lista de entidades a DTO
+        return agentes.stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    public AgenteDetalle editarAgente(Integer idAgente, AgenteDetalle agenteDTO) {
+        // Validar ID
+        if (idAgente == null) {
+            throw new IllegalArgumentException("El ID del agente no puede ser null");
+        }
+
+        // Buscar el agente en BD
+        Agente agente = agenteRepository.findById(idAgente)
+                .orElseThrow(() -> new RuntimeException("Agente no encontrado"));
+
+        // Buscar departamento y rol
+        Departamento departamento = departamentoRepository.findById(agenteDTO.getIdDepartamento())
+                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+
+        Rol rol = rolRepository.findById(agenteDTO.getIdRol())
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        // Actualizar los campos
+        agente.setNombre(agenteDTO.getNombre());
+        agente.setApellido(agenteDTO.getApellido());
+        agente.setUsuario(agenteDTO.getUsuario());
+        agente.setContrasenia(agenteDTO.getContrasenia());
+        agente.setActivo(agenteDTO.getActivo());
+        agente.setDepartamento(departamento);
+        agente.setRol(rol);
+        agente.setFechaActualizacion(LocalDateTime.now());
+
+        agenteRepository.save(agente);
+
+        AgenteDetalle actualizado = new AgenteDetalle();
+        actualizado.setIdAgente(agente.getIdAgente());
+        actualizado.setNombre(agente.getNombre());
+        actualizado.setApellido(agente.getApellido());
+        actualizado.setUsuario(agente.getUsuario());
+        actualizado.setContrasenia(agente.getContrasenia());
+        actualizado.setActivo(agente.getActivo());
+        actualizado.setIdDepartamento(departamento.getIdDepartamento());
+        actualizado.setIdRol(rol.getIdRol());
+
+        return actualizado;
+    }
+
+    private AgenteDetalle convertirADTO(Agente agente) {
+        AgenteDetalle dto = new AgenteDetalle();
+        dto.setIdAgente(agente.getIdAgente());
+        dto.setNombre(agente.getNombre());
+        dto.setApellido(agente.getApellido());
+        dto.setUsuario(agente.getUsuario());
+        dto.setContrasenia(agente.getContrasenia());
+        dto.setActivo(agente.getActivo());
+        dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
+        dto.setIdRol(agente.getRol().getIdRol());
+        return dto;
     }
 }

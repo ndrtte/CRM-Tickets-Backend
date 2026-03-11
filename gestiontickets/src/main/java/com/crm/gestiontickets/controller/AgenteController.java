@@ -27,6 +27,11 @@ public class AgenteController {
     public List<AgenteDetalle> buscarAgentes(@RequestParam("criterio") String criterio) {
         return agenteService.buscarAgentes(criterio);
     }
-    
+
+    //ennpoint para editar un agente
+    @PutMapping("/editar-agente/{id}")
+    public AgenteDetalle editarAgente(@PathVariable("id") Integer id, @RequestBody AgenteDetalle agente) {
+    return agenteService.editarAgente(id, agente);
+    }
 
 }
