@@ -34,4 +34,10 @@ public class AgenteController {
     return agenteService.editarAgente(id, agente);
     }
 
+    //endpoint para bloquear un agente
+    @PutMapping("/bloquear-agente/{id}")
+    public AgenteDetalle bloquearAgente(@PathVariable("id") Integer id) {
+        return agenteService.bloquearAgente(id);
+    }
+
 }

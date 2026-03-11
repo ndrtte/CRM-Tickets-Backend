@@ -128,4 +128,38 @@ public class AgenteService {
         dto.setIdRol(agente.getRol().getIdRol());
         return dto;
     }
+
+    public AgenteDetalle bloquearAgente(Integer idAgente) {
+        // Validar ID
+        if (idAgente == null) {
+            throw new IllegalArgumentException("El ID del agente no puede ser null");
+        }
+
+        // Buscar el agente en BD
+        Agente agente = agenteRepository.findById(idAgente)
+                .orElseThrow(() -> new RuntimeException("Agente no encontrado"));
+
+        // Bloquear el agente
+        if ("S".equals(agente.getActivo())) {
+         agente.setActivo("N"); // bloquear
+        } else {
+        agente.setActivo("S"); // desbloquear
+        }
+        agente.setFechaActualizacion(LocalDateTime.now());
+
+        agenteRepository.save(agente);
+
+        //retornar el DTO actualizado
+        AgenteDetalle dto = new AgenteDetalle();
+        dto.setIdAgente(agente.getIdAgente());
+        dto.setNombre(agente.getNombre());
+        dto.setApellido(agente.getApellido());
+        dto.setUsuario(agente.getUsuario());
+        dto.setActivo(agente.getActivo());
+        dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
+        dto.setIdRol(agente.getRol().getIdRol());
+
+
+        return convertirADTO(agente);
+    }
 }
