@@ -52,6 +52,12 @@ public class TicketController {
     public Respuesta<TicketEtapaDetalle> obtenerEtapaTicket(@RequestParam String idTicket, @RequestParam Integer idPaso) {
         return ticketService.obtenerEstadoTicketEtapa(idTicket, idPaso);
     }
+
+    
+    @GetMapping("/otener-tickets-departamento")
+    public List<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento) {
+        return ticketService.obtenerTicketsDepartamento(idDepartamento);
+    }
     
 
 }
