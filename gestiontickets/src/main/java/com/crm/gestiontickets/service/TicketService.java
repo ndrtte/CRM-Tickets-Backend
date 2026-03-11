@@ -237,34 +237,47 @@ public class TicketService {
         Cliente cliente = ticket.getCliente();
         detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
 
+        String categoria = ticket.getCategoria() != null
+                ? ticket.getCategoria().getNombre()
+                : "";
+
         PasoFlujo pasoConsulta;
         Departamento departamento;
-        String nota = "";
         String agenteNombre = "Sin asignar";
+        String nota = "";
         EstadoEtapaTicket estado;
-        String categoria = "";
-        if (ticket.getCategoria() != null) {
-            categoria = ticket.getCategoria().getNombre();
-        }
 
-        if (ticket.getPasoActual().getIdPasosFlujo().equals(idPaso)) {
+        boolean esPasoActual = ticket.getPasoActual().getIdPasosFlujo().equals(idPaso);
+
+        if (esPasoActual) {
+
             estado = EstadoEtapaTicket.EN_PROCESO;
+
             pasoConsulta = ticket.getPasoActual();
             departamento = pasoConsulta.getIdDepartamento();
+
             if (ticket.getAgenteAsignado() != null) {
-                agenteNombre = ticket.getAgenteAsignado().getNombre() + " " + ticket.getAgenteAsignado().getApellido();
+                agenteNombre = ticket.getAgenteAsignado().getNombre() + " "
+                        + ticket.getAgenteAsignado().getApellido();
             }
+
         } else {
+
             List<HistoricoTicket> historicos = historicoTicketRepository
                     .findHistoricoTicketByTicketYEtapa(ticket.getIdTicket(), idPaso);
 
             if (!historicos.isEmpty()) {
+
                 HistoricoTicket historico = historicos.get(0);
                 estado = EstadoEtapaTicket.FINALIZADO;
 
-                pasoConsulta = historico.getPasoDestino() != null ? historico.getPasoDestino()
+                pasoConsulta = historico.getPasoDestino() != null
+                        ? historico.getPasoDestino()
                         : historico.getPasoOrigen();
-                departamento = pasoConsulta != null ? pasoConsulta.getIdDepartamento() : new Departamento();
+
+                departamento = pasoConsulta != null
+                        ? pasoConsulta.getIdDepartamento()
+                        : null;
 
                 if (historico.getAgenteDestino() != null) {
                     agenteNombre = historico.getAgenteDestino().getNombre() + " "
@@ -272,11 +285,15 @@ public class TicketService {
                 }
 
                 List<Nota> notas = notaRepository.findNotasByHistoricoTicket(historico);
+
                 if (!notas.isEmpty()) {
                     nota = notas.get(0).getDescripcion();
                 }
+
             } else {
+
                 estado = EstadoEtapaTicket.NO_INICIADO;
+
                 pasoConsulta = new PasoFlujo();
                 pasoConsulta.setDescripcion("Etapa no iniciada");
 
@@ -292,9 +309,11 @@ public class TicketService {
         detalle.setNota(nota);
         detalle.setEstadoTicket(estado);
 
-        boolean exito = estado != EstadoEtapaTicket.NO_INICIADO;
-        String mensaje = exito ? "Ok" : "Etapa no iniciada o no asignada";
+        boolean etapaIniciada = estado != EstadoEtapaTicket.NO_INICIADO;
 
-        return new Respuesta<>(exito, mensaje, detalle);
+        String mensaje = etapaIniciada ? "Ok" : "Etapa no iniciada o no asignada";
+
+        return new Respuesta<>(true, mensaje, detalle);
     }
+
 }
