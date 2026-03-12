@@ -243,7 +243,7 @@ public class TicketService {
         detalle.setAgente(agenteNombre);
         detalle.setNota(nota);
         detalle.setEstadoEtapa(estado);
-        detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), pasoConsulta));
+        detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), ticket.getPasoActual()));
 
         String mensaje = estado == EstadoEtapaTicket.NO_INICIADO
                 ? "Etapa no iniciada o no asignada"
