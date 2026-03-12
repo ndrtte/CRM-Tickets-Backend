@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.dto.IdTicket;
+import com.crm.gestiontickets.dto.Respuesta;
 import com.crm.gestiontickets.dto.TicketApertura;
 import com.crm.gestiontickets.dto.TicketCreacion;
 import com.crm.gestiontickets.dto.TicketDetalle;
+import com.crm.gestiontickets.dto.TicketEtapaDetalle;
 import com.crm.gestiontickets.service.TicketService;
 
 @CrossOrigin("*")
@@ -46,6 +48,12 @@ public class TicketController {
         return ticketService.obtenerTicketsCliente(idCliente);
     }
 
+    @GetMapping("/filtrar-ticket-etapa")
+    public Respuesta<TicketEtapaDetalle> obtenerEtapaTicket(@RequestParam String idTicket, @RequestParam Integer idPaso) {
+        return ticketService.obtenerEstadoTicketEtapa(idTicket, idPaso);
+    }
+
+    
     @GetMapping("/otener-tickets-departamento")
     public List<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento) {
         return ticketService.obtenerTicketsDepartamento(idDepartamento);

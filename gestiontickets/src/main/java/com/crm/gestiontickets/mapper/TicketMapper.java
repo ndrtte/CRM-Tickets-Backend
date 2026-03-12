@@ -1,27 +1,21 @@
 package com.crm.gestiontickets.mapper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.crm.gestiontickets.dto.EtapaTicket;
 import com.crm.gestiontickets.dto.TicketDetalle;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.entity.EstadoTicket;
-import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
-import com.crm.gestiontickets.repository.FlujoRepository;
 
 @Component
 public class TicketMapper {
 
     @Autowired
-    private FlujoRepository flujoRepository;
+    private PasoFlujoMapper pasoFlujoMapper;
 
     public TicketDetalle mapearTicketADetalle(Ticket ticket) {
         TicketDetalle detalle = new TicketDetalle();
@@ -63,22 +57,7 @@ public class TicketMapper {
             detalle.setEstado(estado.getEstadoTicket());
         }
 
-        List<EtapaTicket> listaEtapas = new ArrayList<>();
-
-        detalle.setListaEtapas(listaEtapas);
-        if (categoria != null) {
-            Flujo flujo = flujoRepository.findByCategoria(categoria);
-            if (flujo != null && flujo.getPasos() != null) {
-                for (PasoFlujo paso : flujo.getPasos()) {
-                    EtapaTicket etapa = new EtapaTicket();
-                    etapa.setIdPaso(paso.getIdPasosFlujo());
-                    etapa.setDescripcion(paso.getDescripcion());
-                    etapa.setEsActual(pasoActual != null
-                            && paso.getIdPasosFlujo().equals(pasoActual.getIdPasosFlujo()));
-                    detalle.getListaEtapas().add(etapa);
-                }
-            }
-        }
+        detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(categoria, pasoActual));
 
         return detalle;
     }

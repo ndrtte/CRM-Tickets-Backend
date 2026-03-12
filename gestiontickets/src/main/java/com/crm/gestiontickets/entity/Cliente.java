@@ -17,8 +17,8 @@ import lombok.Setter;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Setter
+@Getter
 @Entity
 @Table(name = "tbl_clientes")
 public class Cliente {
