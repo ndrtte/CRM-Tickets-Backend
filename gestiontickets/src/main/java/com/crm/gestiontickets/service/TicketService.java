@@ -24,6 +24,7 @@ import com.crm.gestiontickets.entity.Nota;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.enums.EstadoEtapaTicket;
+import com.crm.gestiontickets.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.mapper.TicketMapper;
 import com.crm.gestiontickets.repository.AgenteRepository;
 import com.crm.gestiontickets.repository.CategoriaRepository;
@@ -74,6 +75,9 @@ public class TicketService {
 
     @Autowired
     private NotaRepository notaRepository;
+
+    @Autowired
+    private PasoFlujoMapper pasoFlujoMapper;
 
     public IdTicket aperturaTicket(TicketApertura ticketAperturaDTO) {
 
@@ -253,6 +257,7 @@ public class TicketService {
         detalle.setAgente(agenteNombre);
         detalle.setNota(nota);
         detalle.setEstadoTicket(estado);
+        detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), pasoConsulta));
 
         boolean etapaIniciada = estado != EstadoEtapaTicket.NO_INICIADO;
 

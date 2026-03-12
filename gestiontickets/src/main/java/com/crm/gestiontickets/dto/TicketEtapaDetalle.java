@@ -1,5 +1,7 @@
 package com.crm.gestiontickets.dto;
 
+import java.util.List;
+
 import com.crm.gestiontickets.enums.EstadoEtapaTicket;
 
 import lombok.AllArgsConstructor;
@@ -21,4 +23,5 @@ public class TicketEtapaDetalle{
     private String departamento;
     private String nota;
     private EstadoEtapaTicket estadoTicket;
+    private List<EtapaTicket> listaEtapas;
 }
