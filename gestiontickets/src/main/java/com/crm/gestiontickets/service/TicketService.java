@@ -86,9 +86,11 @@ public class TicketService {
         Agente agente = agenteRepository.findById(dto.getIdAgenteAsignado()).get();
         Cliente cliente = clienteRepository.findById(dto.getIdCliente()).get();
         EstadoTicket estadoNuevo = estadoTicketRepository.findByEstadoTicket("Nuevo");
+        PasoFlujo pasoFlujo = pasoFlujoRepository.findByDescripcion("APERTURA");
 
         LocalDateTime ahora = LocalDateTime.now();
 
+        ticket.setPasoActual(pasoFlujo);
         ticket.setIdTicket(idTicket);
         ticket.setAgenteAsignado(agente);
         ticket.setCliente(cliente);
