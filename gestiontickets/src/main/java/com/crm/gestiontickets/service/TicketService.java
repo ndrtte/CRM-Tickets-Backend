@@ -75,7 +75,6 @@ public class TicketService {
     @Autowired
     private NotaRepository notaRepository;
 
-
     public IdTicket aperturaTicket(TicketApertura ticketAperturaDTO) {
 
         Ticket ticketArpetura = new Ticket();
@@ -140,7 +139,6 @@ public class TicketService {
         return historicoTicketRepository.existsByTicketAndPasoDestino(ticket, paso);
     }
 
-
     public TicketDetalle obtenerTicketDTO(String idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
         return ticketMapper.mapearTicketADetalle(ticket);
@@ -163,10 +161,21 @@ public class TicketService {
     public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(String idTicket, Integer idPaso) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
 
-        if (ticket.getPasoActual() == null) {
-            return new Respuesta<>(false, "El ticket no tiene etapa asignada", null);
+        Flujo flujo = flujoRepository.findByCategoria(ticket.getCategoria());
+
+        boolean pasoValido = false;
+
+        for (PasoFlujo paso : flujo.getPasos()) {
+            if (paso.getIdPasosFlujo().equals(idPaso)) {
+                pasoValido = true;
+                break;
+            }
         }
 
+        if (!pasoValido) {
+            return new Respuesta<>(false, "Esta etapa no pertenece al flujo del ticket", null);
+        }
+        
         TicketEtapaDetalle detalle = new TicketEtapaDetalle();
         detalle.setIdTicket(idTicket);
 
@@ -251,7 +260,6 @@ public class TicketService {
 
         return new Respuesta<>(true, mensaje, detalle);
     }
-
 
     public List<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento) {
 
