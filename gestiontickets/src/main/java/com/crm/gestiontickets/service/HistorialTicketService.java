@@ -15,7 +15,7 @@ public class HistorialTicketService {
     @Autowired
     private HistoricoTicketRepository historicoTicketRepository;
 
-    public void registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen,
+    protected HistoricoTicket registrarHistorico(Ticket ticket, Agente agenteOrigen, Agente agenteDestino, PasoFlujo pasoOrigen,
             PasoFlujo pasoDestino) {
         HistoricoTicket historico = new HistoricoTicket();
         historico.setTicket(ticket);
@@ -25,6 +25,8 @@ public class HistorialTicketService {
         historico.setPasoDestino(pasoDestino);
 
         historicoTicketRepository.save(historico);
+
+        return historico;
     }
 
 }

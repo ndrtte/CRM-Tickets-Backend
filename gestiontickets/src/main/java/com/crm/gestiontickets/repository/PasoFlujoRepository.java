@@ -14,4 +14,6 @@ public interface PasoFlujoRepository extends JpaRepository<PasoFlujo, Integer>{
 
     public List<PasoFlujo> findByIdFlujoOrderByOrdenAsc (Flujo idFlujo);
 
+    public PasoFlujo findFirstByIdFlujoOrderByOrdenAsc(Flujo flujo);
+
 }

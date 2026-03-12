@@ -29,12 +29,12 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping("/apertura")
-    public IdTicket aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
+    public Respuesta<IdTicket> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
         return ticketService.aperturaTicket(ticketAperturaDTO);
     }
 
     @PutMapping("/crear-ticket")
-    public IdTicket creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO){
+    public Respuesta<IdTicket> creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO){
         return ticketService.crearTicket(ticketDetalleDTO);
     }
 

@@ -22,6 +22,6 @@ public class TicketEtapaDetalle{
     private String agente;
     private String departamento;
     private String nota;
-    private EstadoEtapaTicket estadoTicket;
+    private EstadoEtapaTicket estadoEtapa;
     private List<EtapaTicket> listaEtapas;
 }
