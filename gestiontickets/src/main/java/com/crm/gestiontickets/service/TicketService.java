@@ -172,11 +172,16 @@ public class TicketService {
         detalle.setIdTicket(idTicket);
 
         Cliente cliente = ticket.getCliente();
+        detalle.setIdCliente(cliente.getIdCliente());
         detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
 
         String categoria = ticket.getCategoria() != null
                 ? ticket.getCategoria().getNombre()
                 : "";
+
+        Integer idCategoria = ticket.getCategoria() != null
+                ? ticket.getCategoria().getIdCategoria()
+                : null;
 
         boolean esPasoActual = ticket.getPasoActual().getIdPasosFlujo().equals(idPaso);
 
@@ -185,7 +190,10 @@ public class TicketService {
 
         PasoFlujo pasoConsulta = null;
         Departamento departamento = null;
+
         String agenteNombre = "Sin asignar";
+        Integer idAgente = null;
+
         String nota = "";
         EstadoEtapaTicket estado;
 
@@ -199,6 +207,8 @@ public class TicketService {
             if (ticket.getAgenteAsignado() != null) {
                 agenteNombre = ticket.getAgenteAsignado().getNombre() + " "
                         + ticket.getAgenteAsignado().getApellido();
+
+                idAgente = ticket.getAgenteAsignado().getIdAgente();
             }
 
             if (!historicos.isEmpty()) {
@@ -222,6 +232,8 @@ public class TicketService {
             if (historico.getAgenteDestino() != null) {
                 agenteNombre = historico.getAgenteDestino().getNombre() + " "
                         + historico.getAgenteDestino().getApellido();
+
+                idAgente = historico.getAgenteDestino().getIdAgente();
             }
 
             nota = notaService.obtenerNotaPorHistorico(historico);
@@ -237,10 +249,18 @@ public class TicketService {
             departamento.setNombreDepartamento("Sin asignar");
         }
 
+        Integer idDepartamento = departamento != null
+                ? departamento.getIdDepartamento()
+                : null;
+
+        detalle.setIdCategoria(idCategoria);
+        detalle.setIdAgente(idAgente);
+        detalle.setIdDepartamento(idDepartamento);
+
         detalle.setCategoria(categoria);
         detalle.setPasoActual(pasoConsulta != null ? pasoConsulta.getDescripcion() : "Desconocido");
         detalle.setDepartamento(departamento != null ? departamento.getNombreDepartamento() : "Desconocido");
-        detalle.setAgente(agenteNombre);
+        detalle.setNombreAgente(agenteNombre);
         detalle.setNota(nota);
         detalle.setEstadoEtapa(estado);
         detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), ticket.getPasoActual()));
