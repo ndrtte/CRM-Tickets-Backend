@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.dto.Respuesta;
 import com.crm.gestiontickets.dto.ticket.IdTicket;
+import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
@@ -35,8 +36,8 @@ public class TicketFlujoService {
     @Autowired
     private EstadoTicketRepository estadoTicketRepository;
 
-    public Respuesta<IdTicket> avanzarEtapa(String idTicket, String nota) {
-        Ticket ticket = ticketRepository.findById(idTicket).get();
+    public Respuesta<IdTicket> avanzarEtapa(TicketAvanzarEtapa ticketNvoEtapa) {
+        Ticket ticket = ticketRepository.findById(ticketNvoEtapa.getIdTicket()).get();
 
         PasoFlujo pasoActual = ticket.getPasoActual();
         PasoFlujo pasoAnterior = pasoActual;
@@ -45,31 +46,30 @@ public class TicketFlujoService {
 
         Integer siguienteOrden = pasoActual.getOrden() + 1;
 
-        PasoFlujo siguientePaso = pasoFlujoRepository
-                .findByIdFlujoAndOrden(flujo, siguienteOrden);
+        PasoFlujo siguientePaso = pasoFlujoRepository.findByIdFlujoAndOrden(flujo, siguienteOrden);
+
+        if (siguientePaso == null) {
+            return new Respuesta<>(false, "El ticket ya se encuentra en la última etapa del flujo", new IdTicket(ticket.getIdTicket()));
+        }
 
         Agente agenteOrigen = ticket.getAgenteAsignado();
 
         ticket.setPasoActual(siguientePaso);
         ticket.setFechaActualizacion(LocalDateTime.now());
 
-        HistoricoTicket historico = historialTicketService.registrarHistorico(
-                ticket,
-                agenteOrigen,
-                null,
-                pasoAnterior,
-                siguientePaso
-        );
+        HistoricoTicket historico = historialTicketService.registrarHistorico(ticket, agenteOrigen, null, pasoAnterior, siguientePaso);
 
-        notaService.registrarNota(nota, historico);
+        notaService.registrarNota(ticketNvoEtapa.getNota(), historico);
 
         ticketRepository.save(ticket);
 
         return new Respuesta<>(true, "Ticket avanzado a la siguiente etapa", new IdTicket(ticket.getIdTicket()));
     }
 
-    public Respuesta<IdTicket> cerrarTicket(String idTicket, String nota) {
-        Ticket ticket = ticketRepository.findById(idTicket).get();
+
+    
+    public Respuesta<IdTicket> cerrarTicket(TicketAvanzarEtapa ticketNvoEtapa) {
+        Ticket ticket = ticketRepository.findById(ticketNvoEtapa.getIdTicket()).get();
 
         PasoFlujo pasoActual = ticket.getPasoActual();
         Agente agenteOrigen = ticket.getAgenteAsignado();
@@ -84,10 +84,10 @@ public class TicketFlujoService {
                 agenteOrigen,
                 null,
                 pasoActual,
-                pasoActual
+                null
         );
 
-        notaService.registrarNota(nota, historico);
+        notaService.registrarNota(ticketNvoEtapa.getNota(), historico);
 
         ticketRepository.save(ticket);
 

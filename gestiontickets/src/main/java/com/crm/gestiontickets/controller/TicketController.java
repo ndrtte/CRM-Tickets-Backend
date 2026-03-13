@@ -15,11 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crm.gestiontickets.dto.Respuesta;
 import com.crm.gestiontickets.dto.ticket.IdTicket;
 import com.crm.gestiontickets.dto.ticket.TicketApertura;
+import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
 import com.crm.gestiontickets.dto.ticket.TicketCreacion;
 import com.crm.gestiontickets.dto.ticket.TicketDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.service.ticket.TicketAperturaService;
 import com.crm.gestiontickets.service.ticket.TicketBusquedaService;
+
+import com.crm.gestiontickets.service.ticket.TicketFlujoService;
+
 
 @CrossOrigin("*")
 @RestController
@@ -31,6 +35,9 @@ public class TicketController {
 
     @Autowired
     private TicketAperturaService ticketCreacionService;
+
+    @Autowired
+    private TicketFlujoService ticketFlujoService;
 
     @PostMapping("/apertura")
     public Respuesta<IdTicket> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
@@ -63,5 +70,14 @@ public class TicketController {
         return ticketBusquedaService.obtenerTicketsDepartamento(idDepartamento);
     }
     
+    @PutMapping("/avanzar-etapa")
+    public Respuesta<IdTicket> avanzarEtapa(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
+        return ticketFlujoService.avanzarEtapa(ticketNvoEtapa);
+    }
+
+    @PutMapping("/cerrar-ticket")
+    public Respuesta<IdTicket> cerrarTicket(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
+        return ticketFlujoService.cerrarTicket(ticketNvoEtapa);
+    }
 
 }
