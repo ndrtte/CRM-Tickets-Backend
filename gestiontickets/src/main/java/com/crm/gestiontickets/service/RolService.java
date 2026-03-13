@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crm.gestiontickets.dto.RolDetalle;
+import com.crm.gestiontickets.dto.agente.RolDetalle;
 import com.crm.gestiontickets.entity.Rol;
 import com.crm.gestiontickets.repository.RolRepository;
 

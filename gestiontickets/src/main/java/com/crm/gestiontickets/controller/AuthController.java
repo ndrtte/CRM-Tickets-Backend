@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.dto.Respuesta;
-import com.crm.gestiontickets.dto.ResumenAgente;
 import com.crm.gestiontickets.dto.SolicitudLogin;
+import com.crm.gestiontickets.dto.agente.ResumenAgente;
 import com.crm.gestiontickets.service.AuthService;
 
 @CrossOrigin("*")

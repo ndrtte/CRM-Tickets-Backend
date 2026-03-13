@@ -1,16 +1,18 @@
-package com.crm.gestiontickets.dto;
+package com.crm.gestiontickets.dto.ticket;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PermisoRol {
-    private Integer idPermiso;
+@Setter
+public class TicketAvanzarEtapa {
 
-    private String codigo;
+    private String idTicket;
+
+    private String nota;
+
 }

@@ -12,13 +12,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crm.gestiontickets.dto.IdTicket;
 import com.crm.gestiontickets.dto.Respuesta;
-import com.crm.gestiontickets.dto.TicketApertura;
-import com.crm.gestiontickets.dto.TicketCreacion;
-import com.crm.gestiontickets.dto.TicketDetalle;
-import com.crm.gestiontickets.dto.TicketEtapaDetalle;
-import com.crm.gestiontickets.service.TicketService;
+import com.crm.gestiontickets.dto.ticket.IdTicket;
+import com.crm.gestiontickets.dto.ticket.TicketApertura;
+import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
+import com.crm.gestiontickets.dto.ticket.TicketCreacion;
+import com.crm.gestiontickets.dto.ticket.TicketDetalle;
+import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
+import com.crm.gestiontickets.service.ticket.TicketAperturaService;
+import com.crm.gestiontickets.service.ticket.TicketBusquedaService;
+
+import com.crm.gestiontickets.service.ticket.TicketFlujoService;
+
 
 @CrossOrigin("*")
 @RestController
@@ -26,38 +31,53 @@ import com.crm.gestiontickets.service.TicketService;
 public class TicketController {
 
     @Autowired
-    private TicketService ticketService;
+    private TicketBusquedaService ticketBusquedaService;
+
+    @Autowired
+    private TicketAperturaService ticketCreacionService;
+
+    @Autowired
+    private TicketFlujoService ticketFlujoService;
 
     @PostMapping("/apertura")
     public Respuesta<IdTicket> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
-        return ticketService.aperturaTicket(ticketAperturaDTO);
+        return ticketCreacionService.aperturaTicket(ticketAperturaDTO);
     }
 
     @PutMapping("/crear-ticket")
     public Respuesta<IdTicket> creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO){
-        return ticketService.crearTicket(ticketDetalleDTO);
+        return ticketCreacionService.crearTicket(ticketDetalleDTO);
     }
 
     @GetMapping("/obtener-ticket")
     public TicketDetalle obtenerTicket(@RequestParam String idTicket) {
-        return ticketService.obtenerTicketDTO(idTicket);
+        return ticketBusquedaService.obtenerTicketDTO(idTicket);
     }
     
     @GetMapping("/obtener-tickets-cliente")
     public List<TicketDetalle> obtenerTicketsCliente(@RequestParam Long idCliente){
-        return ticketService.obtenerTicketsCliente(idCliente);
+        return ticketBusquedaService.obtenerTicketsCliente(idCliente);
     }
 
     @GetMapping("/filtrar-ticket-etapa")
     public Respuesta<TicketEtapaDetalle> obtenerEtapaTicket(@RequestParam String idTicket, @RequestParam Integer idPaso) {
-        return ticketService.obtenerEstadoTicketEtapa(idTicket, idPaso);
+        return ticketBusquedaService.obtenerEstadoTicketEtapa(idTicket, idPaso);
     }
 
     
     @GetMapping("/otener-tickets-departamento")
     public List<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento) {
-        return ticketService.obtenerTicketsDepartamento(idDepartamento);
+        return ticketBusquedaService.obtenerTicketsDepartamento(idDepartamento);
     }
     
+    @PutMapping("/avanzar-etapa")
+    public Respuesta<IdTicket> avanzarEtapa(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
+        return ticketFlujoService.avanzarEtapa(ticketNvoEtapa);
+    }
+
+    @PutMapping("/cerrar-ticket")
+    public Respuesta<IdTicket> cerrarTicket(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
+        return ticketFlujoService.cerrarTicket(ticketNvoEtapa);
+    }
 
 }

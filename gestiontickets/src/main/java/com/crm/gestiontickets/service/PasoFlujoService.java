@@ -3,8 +3,8 @@ package com.crm.gestiontickets.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crm.gestiontickets.dto.IdPasoFlujo;
 import com.crm.gestiontickets.dto.Respuesta;
+import com.crm.gestiontickets.dto.ticket.IdPasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.repository.TicketRepository;
 

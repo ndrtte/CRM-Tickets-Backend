@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.crm.gestiontickets.dto.EtapaTicket;
+import com.crm.gestiontickets.dto.ticket.EtapaTicket;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.PasoFlujo;

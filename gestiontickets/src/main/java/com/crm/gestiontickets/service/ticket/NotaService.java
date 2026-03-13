@@ -1,4 +1,4 @@
-package com.crm.gestiontickets.service;
+package com.crm.gestiontickets.service.ticket;
 
 import java.util.List;
 
