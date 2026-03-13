@@ -1,6 +1,7 @@
 package com.crm.gestiontickets.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,22 +57,24 @@ public class AgenteService {
     }
 
 
-    public List<AgenteDetalle> buscarAgentes(String criterio) {
+    public List<AgenteDetalle> obtenerAgentes(String valorBusqueda) {
+        List<Agente> listaAgentes = agenteRepository.buscarPorCriterio(valorBusqueda);        List<AgenteDetalle> listaAgenteDetalles = new ArrayList<>();
+        for (Agente agente : listaAgentes) {
+            AgenteDetalle dto = new AgenteDetalle();
+            dto.setIdAgente(agente.getIdAgente());
+            dto.setNombre(agente.getNombre());
+            dto.setApellido(agente.getApellido());
+            dto.setUsuario(agente.getUsuario());
+            dto.setActivo(agente.getActivo());
+            dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
+            dto.setIdRol(agente.getRol().getIdRol());
 
-        List<Agente> agentes;
-
-        try {
-            Integer id = Integer.parseInt(criterio);
-            agentes = agenteRepository.findByIdAgente(id);
-        } catch (NumberFormatException e) {
-            agentes = agenteRepository.findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCaseOrUsuarioContainingIgnoreCase(
-                    criterio, criterio, criterio);
+            listaAgenteDetalles.add(dto);
         }
+        
+        return listaAgenteDetalles;
 
-        // Convertir la lista de entidades a DTO
-        return agentes.stream()
-                .map(this::convertirADTO)
-                .collect(Collectors.toList());
+       
     }
 
     public AgenteDetalle editarAgente(Integer idAgente, AgenteDetalle agenteDTO) {
