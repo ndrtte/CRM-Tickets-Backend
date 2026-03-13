@@ -279,6 +279,28 @@ public class TicketService {
         return listaTicketsDTO;
     }
 
+    public Respuesta<IdTicket> avanzarEtapa(String idTicket, String nota) {
+
+        Ticket ticket = ticketRepository.findById(idTicket).get();
+
+        PasoFlujo pasoActual = ticket.getPasoActual();
+        PasoFlujo pasoSiguiente = pasoFlujoRepository.findByIdFlujoAndOrden(pasoActual.getIdFlujo(),pasoActual.getOrden() + 1);
+
+        PasoFlujo pasoAnterior = pasoActual;
+        Agente agenteOrigen = ticket.getAgenteAsignado();
+
+        ticket.setPasoActual(pasoSiguiente);
+        ticket.setFechaActualizacion(LocalDateTime.now());
+
+        HistoricoTicket historico = historialTicketService.registrarHistorico(ticket, agenteOrigen,null, pasoAnterior, pasoSiguiente );
+
+        notaService.registrarNota(nota, historico);
+
+        ticketRepository.save(ticket);
+
+        return new Respuesta<>(true, "Ticket avanzado de etapa", new IdTicket(ticket.getIdTicket()));
+    }
+
     // Metodos auxiliares
     private Ticket crearTicketBase(String idTicket, Cliente cliente, Agente agente, EstadoTicket estado, PasoFlujo paso) {
         Ticket ticket = new Ticket();
