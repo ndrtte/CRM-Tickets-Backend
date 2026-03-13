@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "GestionTickets",
+            "request": "launch",
+            "mainClass": "com.crm.gestiontickets.GestionTicketsApplication",
+            "projectName": "gestiontickets",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

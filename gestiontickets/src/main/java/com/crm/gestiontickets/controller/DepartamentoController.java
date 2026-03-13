@@ -1,9 +1,12 @@
 package com.crm.gestiontickets.controller;
 
+import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.crm.gestiontickets.dto.DepartamentoDetalle;
+import com.crm.gestiontickets.entity.Departamento;
 import com.crm.gestiontickets.service.DepartamentoService;
 
 @CrossOrigin("*")
@@ -31,5 +34,14 @@ public class DepartamentoController {
         departamentoService.eliminarDepartamento(id);
         return "Departamento con ID " + id + " eliminado exitosamente.";
     }
+
+    //endpoint para bloquear o desbloquear departamento
+    @PutMapping("/bloquear/{id}")
+    public ResponseEntity<Departamento> bloquearDepartamento(@PathVariable Integer id){
+
+    Departamento departamento = departamentoService.bloquearDepartamento(id);
+
+    return ResponseEntity.ok(departamento);
+}
 
 }

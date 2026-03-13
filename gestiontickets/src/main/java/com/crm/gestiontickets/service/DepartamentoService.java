@@ -64,5 +64,21 @@ public class DepartamentoService {
 
         departamentoRepository.delete(departamento);
     }
-}
 
+    //desactivar o activar un departamento
+    public Departamento bloquearDepartamento(Integer idDepartamento) {
+
+    Departamento departamento = departamentoRepository.findById(idDepartamento)
+            .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+
+    if ("S".equals(departamento.getActivo())) {
+        departamento.setActivo("N"); // bloquear
+    } else {
+        departamento.setActivo("S"); // desbloquear
+    }
+
+    departamento.setFechaActualizacion(LocalDateTime.now());
+
+    return departamentoRepository.save(departamento);
+}
+}
