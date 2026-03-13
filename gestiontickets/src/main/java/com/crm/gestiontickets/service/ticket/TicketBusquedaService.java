@@ -1,23 +1,16 @@
-package com.crm.gestiontickets.service;
+package com.crm.gestiontickets.service.ticket;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crm.gestiontickets.dto.IdTicket;
 import com.crm.gestiontickets.dto.Respuesta;
-import com.crm.gestiontickets.dto.TicketApertura;
-import com.crm.gestiontickets.dto.TicketCreacion;
-import com.crm.gestiontickets.dto.TicketDetalle;
-import com.crm.gestiontickets.dto.TicketEtapaDetalle;
-import com.crm.gestiontickets.entity.Agente;
-import com.crm.gestiontickets.entity.Categoria;
+import com.crm.gestiontickets.dto.ticket.TicketDetalle;
+import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.entity.Departamento;
-import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.HistoricoTicket;
 import com.crm.gestiontickets.entity.PasoFlujo;
@@ -25,36 +18,16 @@ import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.enums.EstadoEtapaTicket;
 import com.crm.gestiontickets.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.mapper.TicketMapper;
-import com.crm.gestiontickets.repository.AgenteRepository;
-import com.crm.gestiontickets.repository.CategoriaRepository;
 import com.crm.gestiontickets.repository.ClienteRepository;
-import com.crm.gestiontickets.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.repository.FlujoRepository;
 import com.crm.gestiontickets.repository.HistoricoTicketRepository;
-import com.crm.gestiontickets.repository.PasoFlujoRepository;
-import com.crm.gestiontickets.repository.SecuencialTicketRepository;
 import com.crm.gestiontickets.repository.TicketRepository;
 
 @Service
-public class TicketService {
+public class TicketBusquedaService {
 
     @Autowired
     private TicketRepository ticketRepository;
-
-    @Autowired
-    private EstadoTicketRepository estadoTicketRepository;
-
-    @Autowired
-    private AgenteRepository agenteRepository;
-
-    @Autowired
-    private SecuencialTicketRepository secuencialTicketRepository;
-
-    @Autowired
-    private CategoriaRepository categoriaRepository;
-
-    @Autowired
-    private PasoFlujoRepository pasoFlujoRepository;
 
     @Autowired
     private ClienteRepository clienteRepository;
@@ -66,9 +39,6 @@ public class TicketService {
     private TicketMapper ticketMapper;
 
     @Autowired
-    private HistorialTicketService historialTicketService;
-
-    @Autowired
     private HistoricoTicketRepository historicoTicketRepository;
 
     @Autowired
@@ -76,58 +46,6 @@ public class TicketService {
 
     @Autowired
     private NotaService notaService;
-
-    public Respuesta<IdTicket> aperturaTicket(TicketApertura dto) {
-
-        String idTicket = secuencialTicketRepository.generarIdTicket();
-
-        Agente agente = agenteRepository.findById(dto.getIdAgenteAsignado()).get();
-        Cliente cliente = clienteRepository.findById(dto.getIdCliente()).get();
-
-        EstadoTicket estadoNuevo = estadoTicketRepository.findByEstadoTicket("Nuevo");
-        PasoFlujo pasoApertura = pasoFlujoRepository.findByDescripcion("APERTURA");
-
-        Ticket ticket = crearTicketBase(idTicket, cliente, agente, estadoNuevo, pasoApertura);
-
-        ticketRepository.save(ticket);
-
-        return new Respuesta<>(true, "Ticket abierto correctamente", new IdTicket(idTicket));
-    }
-
-    public Respuesta<IdTicket> crearTicket(TicketCreacion dto) {
-        Ticket ticket = ticketRepository.findById(dto.getIdTicket()).get();
-
-        PasoFlujo pasoAnterior = ticket.getPasoActual();
-        Agente agenteOrigen = ticket.getAgenteAsignado();
-
-        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria()).get();
-        Flujo flujo = flujoRepository.findByCategoria(categoria);
-
-        PasoFlujo primerPaso = pasoFlujoRepository
-                .findFirstByIdFlujoOrderByOrdenAsc(flujo);
-
-        EstadoTicket estadoProceso = estadoTicketRepository
-                .findByEstadoTicket("En Proceso");
-
-        ticket.setCategoria(categoria);
-        ticket.setPasoActual(primerPaso);
-        ticket.setEstado(estadoProceso);
-        ticket.setFechaActualizacion(LocalDateTime.now());
-
-        HistoricoTicket historico = historialTicketService.registrarHistorico(
-                ticket,
-                agenteOrigen,
-                null,
-                pasoAnterior,
-                primerPaso
-        );
-
-        notaService.registrarNota(dto.getNota(), historico);
-
-        ticketRepository.save(ticket);
-
-        return new Respuesta<>(true, "Ticket creado correctamente", new IdTicket(ticket.getIdTicket()));
-    }
 
     public TicketDetalle obtenerTicketDTO(String idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
@@ -143,6 +61,20 @@ public class TicketService {
         for (Ticket ticket : listaTickets) {
             TicketDetalle detalle = ticketMapper.mapearTicketADetalle(ticket);
             listaTicketsDTO.add(detalle);
+        }
+
+        return listaTicketsDTO;
+    }
+
+    public List<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento) {
+
+        List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
+
+        List<Ticket> listaTicket = ticketRepository.findTicketsByDepartamento(idDepartamento);
+
+        for (Ticket ticket : listaTicket) {
+            TicketDetalle ticketDetalle = ticketMapper.mapearTicketADetalle(ticket);
+            listaTicketsDTO.add(ticketDetalle);
         }
 
         return listaTicketsDTO;
@@ -181,8 +113,9 @@ public class TicketService {
         List<HistoricoTicket> historicos = historicoTicketRepository
                 .findHistoricoTicketByTicketYEtapa(ticket.getIdTicket(), idPaso);
 
-        PasoFlujo pasoConsulta = null;
-        Departamento departamento = null;
+        @SuppressWarnings(value = { "" })
+        PasoFlujo pasoConsulta;
+        Departamento departamento;
 
         String agenteNombre = "Sin asignar";
         Integer idAgente = null;
@@ -263,55 +196,6 @@ public class TicketService {
                 : "Ok";
 
         return new Respuesta<>(true, mensaje, detalle);
-    }
-
-    public List<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento) {
-
-        List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
-
-        List<Ticket> listaTicket = ticketRepository.findTicketsByDepartamento(idDepartamento);
-
-        for (Ticket ticket : listaTicket) {
-            TicketDetalle ticketDetalle = ticketMapper.mapearTicketADetalle(ticket);
-            listaTicketsDTO.add(ticketDetalle);
-        }
-
-        return listaTicketsDTO;
-    }
-
-    public Respuesta<IdTicket> avanzarEtapa(String idTicket, String nota) {
-
-        Ticket ticket = ticketRepository.findById(idTicket).get();
-
-        PasoFlujo pasoActual = ticket.getPasoActual();
-        PasoFlujo pasoSiguiente = pasoFlujoRepository.findByIdFlujoAndOrden(pasoActual.getIdFlujo(),pasoActual.getOrden() + 1);
-
-        PasoFlujo pasoAnterior = pasoActual;
-        Agente agenteOrigen = ticket.getAgenteAsignado();
-
-        ticket.setPasoActual(pasoSiguiente);
-        ticket.setFechaActualizacion(LocalDateTime.now());
-
-        HistoricoTicket historico = historialTicketService.registrarHistorico(ticket, agenteOrigen,null, pasoAnterior, pasoSiguiente );
-
-        notaService.registrarNota(nota, historico);
-
-        ticketRepository.save(ticket);
-
-        return new Respuesta<>(true, "Ticket avanzado de etapa", new IdTicket(ticket.getIdTicket()));
-    }
-
-    // Metodos auxiliares
-    private Ticket crearTicketBase(String idTicket, Cliente cliente, Agente agente, EstadoTicket estado, PasoFlujo paso) {
-        Ticket ticket = new Ticket();
-        ticket.setIdTicket(idTicket);
-        ticket.setCliente(cliente);
-        ticket.setAgenteAsignado(agente);
-        ticket.setEstado(estado);
-        ticket.setPasoActual(paso);
-        ticket.setActivo('S');
-        ticket.setFechaAsignacion(LocalDateTime.now());
-        return ticket;
     }
 
 }

@@ -3,7 +3,7 @@ package com.crm.gestiontickets.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.crm.gestiontickets.dto.TicketDetalle;
+import com.crm.gestiontickets.dto.ticket.TicketDetalle;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;

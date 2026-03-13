@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crm.gestiontickets.dto.IdPasoFlujo;
 import com.crm.gestiontickets.dto.Respuesta;
+import com.crm.gestiontickets.dto.ticket.IdPasoFlujo;
 import com.crm.gestiontickets.service.PasoFlujoService;
 
 

@@ -1,4 +1,4 @@
-package com.crm.gestiontickets.dto;
+package com.crm.gestiontickets.dto.ticket;
 
 import java.util.List;
 

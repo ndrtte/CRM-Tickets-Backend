@@ -1,4 +1,4 @@
-package com.crm.gestiontickets.dto;
+package com.crm.gestiontickets.dto.agente;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

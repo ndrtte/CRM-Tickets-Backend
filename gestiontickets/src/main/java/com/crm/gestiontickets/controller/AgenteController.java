@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.crm.gestiontickets.dto.AgenteDetalle;
+import com.crm.gestiontickets.dto.agente.AgenteDetalle;
 import com.crm.gestiontickets.service.AgenteService;
 
 

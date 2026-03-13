@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crm.gestiontickets.dto.PermisoRol;
 import com.crm.gestiontickets.dto.Respuesta;
-import com.crm.gestiontickets.dto.ResumenAgente;
 import com.crm.gestiontickets.dto.SolicitudLogin;
+import com.crm.gestiontickets.dto.agente.PermisoRol;
+import com.crm.gestiontickets.dto.agente.ResumenAgente;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Permiso;
 import com.crm.gestiontickets.repository.AgenteRepository;

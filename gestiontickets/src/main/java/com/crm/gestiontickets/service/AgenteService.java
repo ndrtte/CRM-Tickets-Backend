@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.crm.gestiontickets.dto.AgenteDetalle;
+import com.crm.gestiontickets.dto.agente.AgenteDetalle;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Departamento;
 import com.crm.gestiontickets.entity.Rol;
