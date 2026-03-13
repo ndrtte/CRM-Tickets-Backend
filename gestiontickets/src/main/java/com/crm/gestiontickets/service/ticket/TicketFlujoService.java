@@ -49,7 +49,7 @@ public class TicketFlujoService {
         PasoFlujo siguientePaso = pasoFlujoRepository.findByIdFlujoAndOrden(flujo, siguienteOrden);
 
         if (siguientePaso == null) {
-            return new Respuesta<>(false, "El ticket ya se encuentra en la última etapa del flujo", new IdTicket(ticket.getIdTicket()));
+            return cerrarTicket(ticketNvoEtapa);
         }
 
         Agente agenteOrigen = ticket.getAgenteAsignado();
