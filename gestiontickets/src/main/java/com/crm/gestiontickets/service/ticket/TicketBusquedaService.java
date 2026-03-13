@@ -113,7 +113,7 @@ public class TicketBusquedaService {
         List<HistoricoTicket> historicos = historicoTicketRepository
                 .findHistoricoTicketByTicketYEtapa(ticket.getIdTicket(), idPaso);
 
-        @SuppressWarnings(value = { "" })
+        @SuppressWarnings(value = {""})
         PasoFlujo pasoConsulta;
         Departamento departamento;
 
@@ -142,7 +142,6 @@ public class TicketBusquedaService {
             }
 
         } else if (!historicos.isEmpty()) {
-
             HistoricoTicket historico = historicos.get(0);
 
             estado = EstadoEtapaTicket.FINALIZADO;
@@ -155,15 +154,14 @@ public class TicketBusquedaService {
                     ? pasoConsulta.getIdDepartamento()
                     : null;
 
-            if (historico.getAgenteDestino() != null) {
-                agenteNombre = historico.getAgenteDestino().getNombre() + " "
-                        + historico.getAgenteDestino().getApellido();
+            if (historico.getAgenteOrigen() != null) {
+                agenteNombre = historico.getAgenteOrigen().getNombre() + " "
+                        + historico.getAgenteOrigen().getApellido();
 
-                idAgente = historico.getAgenteDestino().getIdAgente();
+                idAgente = historico.getAgenteOrigen().getIdAgente();
             }
 
             nota = notaService.obtenerNotaPorHistorico(historico);
-
         } else {
 
             estado = EstadoEtapaTicket.NO_INICIADO;
