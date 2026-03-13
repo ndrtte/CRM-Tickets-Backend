@@ -79,30 +79,19 @@ public class TicketService {
 
     public Respuesta<IdTicket> aperturaTicket(TicketApertura dto) {
 
-        Ticket ticket = new Ticket();
-
         String idTicket = secuencialTicketRepository.generarIdTicket();
 
         Agente agente = agenteRepository.findById(dto.getIdAgenteAsignado()).get();
         Cliente cliente = clienteRepository.findById(dto.getIdCliente()).get();
+
         EstadoTicket estadoNuevo = estadoTicketRepository.findByEstadoTicket("Nuevo");
-        PasoFlujo pasoFlujo = pasoFlujoRepository.findByDescripcion("APERTURA");
+        PasoFlujo pasoApertura = pasoFlujoRepository.findByDescripcion("APERTURA");
 
-        LocalDateTime ahora = LocalDateTime.now();
-
-        ticket.setPasoActual(pasoFlujo);
-        ticket.setIdTicket(idTicket);
-        ticket.setAgenteAsignado(agente);
-        ticket.setCliente(cliente);
-        ticket.setEstado(estadoNuevo);
-        ticket.setActivo('S');
-        ticket.setFechaAsignacion(ahora);
+        Ticket ticket = crearTicketBase(idTicket, cliente, agente, estadoNuevo, pasoApertura);
 
         ticketRepository.save(ticket);
 
-        IdTicket resultado = new IdTicket(idTicket);
-
-        return new Respuesta<>(true, "Ticket abierto correctamente", resultado);
+        return new Respuesta<>(true, "Ticket abierto correctamente", new IdTicket(idTicket));
     }
 
     public Respuesta<IdTicket> crearTicket(TicketCreacion dto) {
@@ -112,24 +101,24 @@ public class TicketService {
         Agente agenteOrigen = ticket.getAgenteAsignado();
 
         Categoria categoria = categoriaRepository.findById(dto.getIdCategoria()).get();
-        ticket.setCategoria(categoria);
 
         Flujo flujo = flujoRepository.findByCategoria(categoria);
 
-        PasoFlujo primerPaso = pasoFlujoRepository.findFirstByIdFlujoOrderByOrdenAsc(flujo);
+        PasoFlujo primerPaso = pasoFlujoRepository
+                .findFirstByIdFlujoOrderByOrdenAsc(flujo);
+
+        EstadoTicket estadoProceso = estadoTicketRepository
+                .findByEstadoTicket("En Proceso");
+
+        PasoFlujo pasoAnterior = ticket.getPasoActual();
+
+        // actualizar ticket
+        ticket.setCategoria(categoria);
         ticket.setPasoActual(primerPaso);
-
-        EstadoTicket estadoProceso = estadoTicketRepository.findByEstadoTicket("En Proceso");
         ticket.setEstado(estadoProceso);
-
         ticket.setFechaActualizacion(LocalDateTime.now());
 
-        HistoricoTicket historico = historialTicketService.registrarHistorico(
-                ticket,
-                agenteOrigen,
-                null,
-                ticket.getPasoActual(),
-                primerPaso);
+        HistoricoTicket historico = historialTicketService.registrarHistorico(ticket, agenteOrigen, null, pasoAnterior,primerPaso);
 
         notaService.registrarNota(dto.getNota(), historico);
 
@@ -286,6 +275,26 @@ public class TicketService {
         }
 
         return listaTicketsDTO;
+    }
+
+    // Metodos auxiliares
+    private Ticket crearTicketBase(String idTicket, Cliente cliente, Agente agente, EstadoTicket estado, PasoFlujo paso) {
+        Ticket ticket = new Ticket();
+        ticket.setIdTicket(idTicket);
+        ticket.setCliente(cliente);
+        ticket.setAgenteAsignado(agente);
+        ticket.setEstado(estado);
+        ticket.setPasoActual(paso);
+        ticket.setActivo('S');
+        ticket.setFechaAsignacion(LocalDateTime.now());
+        return ticket;
+    }
+
+    private void activarTicket(Ticket ticket, Categoria categoria, PasoFlujo primerPaso, EstadoTicket estadoProceso) {
+        ticket.setCategoria(categoria);
+        ticket.setPasoActual(primerPaso);
+        ticket.setEstado(estadoProceso);
+        ticket.setFechaActualizacion(LocalDateTime.now());
     }
 
 }
