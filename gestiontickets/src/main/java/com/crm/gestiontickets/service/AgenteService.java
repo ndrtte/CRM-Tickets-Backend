@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.dto.AgenteDetalle;
+import com.crm.gestiontickets.dto.CategoriaDetalle;
 import com.crm.gestiontickets.entity.Agente;
+import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Departamento;
 import com.crm.gestiontickets.entity.Rol;
 import com.crm.gestiontickets.repository.AgenteRepository;
@@ -165,4 +167,6 @@ public class AgenteService {
 
         return convertirADTO(agente);
     }
+
+    
 }

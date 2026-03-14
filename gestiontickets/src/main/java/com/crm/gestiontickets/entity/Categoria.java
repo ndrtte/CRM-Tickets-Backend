@@ -1,6 +1,7 @@
 package com.crm.gestiontickets.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -17,13 +18,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
+
 @Setter
 @Data
 @NoArgsConstructor
@@ -32,24 +33,25 @@ import lombok.Setter;
 @Table(name = "tbl_categorias")
 public class Categoria {
 
-    @Id
+   @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_categoria")
     private Integer idCategoria;
 
     @Column(name = "nombre_categoria")
-    private String nombre;
+    private String nombreCategoria;
 
-    private Character activo;
+    @Column(name = "activo")
+    private String activo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria_padre")
-    @JsonBackReference 
+    @JsonBackReference
     private Categoria padre;
 
     @OneToMany(mappedBy = "padre", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Categoria> subcategorias;
+    private List<Categoria> subcategorias = new ArrayList<>();
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;

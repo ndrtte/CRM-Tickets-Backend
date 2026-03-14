@@ -1,3 +1,4 @@
+
 package com.crm.gestiontickets.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class TicketMapper {
         Categoria categoria = ticket.getCategoria();
         if (categoria != null) {
             detalle.setIdCategoria(categoria.getIdCategoria());
-            detalle.setCategoria(categoria.getNombre());
+            detalle.setCategoria(categoria.getNombreCategoria());
         }
 
         PasoFlujo pasoActual = ticket.getPasoActual();

@@ -14,7 +14,11 @@ import lombok.Setter;
 public class CategoriaDetalle {
 
     private Integer idCategoria;
-    private String nombre;
+    private String nombreCategoria;
+    private Integer idCategoriaPadre;
+    private Integer idFlujo; 
+    private String activo;
 
-    private List<CategoriaDetalle> subCategorias;
+    private List<CategoriaDetalle> subCategorias; 
+
 }
