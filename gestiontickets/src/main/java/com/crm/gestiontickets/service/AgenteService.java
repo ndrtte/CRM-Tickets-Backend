@@ -1,6 +1,7 @@
 package com.crm.gestiontickets.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,22 +58,11 @@ public class AgenteService {
 
 
     public List<AgenteDetalle> buscarAgentes(String criterio) {
-
-        List<Agente> agentes;
-
-        try {
-            Integer id = Integer.parseInt(criterio);
-            agentes = agenteRepository.findByIdAgente(id);
-        } catch (NumberFormatException e) {
-            agentes = agenteRepository.findByNombreContainingIgnoreCaseOrApellidoContainingIgnoreCaseOrUsuarioContainingIgnoreCase(
-                    criterio, criterio, criterio);
-        }
-
-        // Convertir la lista de entidades a DTO
-        return agentes.stream()
-                .map(this::convertirADTO)
-                .collect(Collectors.toList());
-    }
+    List<Agente> agentes = agenteRepository.buscarPorCriterio(criterio);
+    return agentes.stream()
+                  .map(this::convertirADTO)
+                  .collect(Collectors.toList());
+}
 
     public AgenteDetalle editarAgente(Integer idAgente, AgenteDetalle agenteDTO) {
         // Validar ID
@@ -141,9 +131,9 @@ public class AgenteService {
 
         // Bloquear el agente
         if ("S".equals(agente.getActivo())) {
-         agente.setActivo("N"); // bloquear
+         agente.setActivo("N"); 
         } else {
-        agente.setActivo("S"); // desbloquear
+        agente.setActivo("S"); 
         }
         agente.setFechaActualizacion(LocalDateTime.now());
 

@@ -38,9 +38,10 @@ public class Categoria {
     private Integer idCategoria;
 
     @Column(name = "nombre_categoria")
-    private String nombre;
+    private String nombreCategoria;
 
-    private Character activo;
+     @Column(name = "activo", nullable = false, length = 1)
+    private String activo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_categoria_padre")

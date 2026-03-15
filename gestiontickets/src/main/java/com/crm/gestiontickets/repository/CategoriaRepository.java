@@ -6,4 +6,8 @@ import com.crm.gestiontickets.entity.Categoria;
 
 public interface CategoriaRepository extends JpaRepository<Categoria, Integer>{
     
+    boolean existsByNombreCategoria(String nombreCategoria);
+
+    boolean existsByNombreCategoriaAndIdCategoriaNot(String nombreCategoria, Integer idCategoria);
+
 }
