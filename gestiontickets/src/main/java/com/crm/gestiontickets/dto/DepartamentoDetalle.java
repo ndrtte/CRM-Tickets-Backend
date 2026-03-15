@@ -14,13 +14,9 @@ import lombok.Setter;
 public class DepartamentoDetalle {
 
     private Integer idDepartamento;
-
     private String nombreDepartamento;
-
     private String descripcion;
-
-    private LocalDateTime fechaCreacion;       
-    
+    private LocalDateTime fechaCreacion;         
     private LocalDateTime fechaActualizacion;  
 
 }

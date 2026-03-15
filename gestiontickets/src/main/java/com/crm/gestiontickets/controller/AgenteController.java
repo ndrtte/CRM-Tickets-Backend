@@ -25,7 +25,7 @@ public class AgenteController {
     //endpoint para buscar agentes por nombre, usuario o id_agente
     @GetMapping("/buscar")
     public List<AgenteDetalle> buscarAgentes(@RequestParam("criterio") String criterio) {
-        return agenteService.buscarAgentes(criterio);
+    return agenteService.buscarAgentes(criterio);
     }
 
     //ennpoint para editar un agente

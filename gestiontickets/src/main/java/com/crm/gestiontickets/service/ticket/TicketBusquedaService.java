@@ -101,7 +101,7 @@ public class TicketBusquedaService {
         detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
 
         String categoria = ticket.getCategoria() != null
-                ? ticket.getCategoria().getNombre()
+                ? ticket.getCategoria().getNombreCategoria()
                 : "";
 
         Integer idCategoria = ticket.getCategoria() != null
