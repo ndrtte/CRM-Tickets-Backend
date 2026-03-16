@@ -92,15 +92,17 @@ public class TicketAperturaService {
         EstadoTicket estadoProceso = estadoTicketRepository
                 .findByEstadoTicket("En Proceso");
 
+
         ticket.setCategoria(categoria);
         ticket.setPasoActual(primerPaso);
         ticket.setEstado(estadoProceso);
         ticket.setFechaActualizacion(LocalDateTime.now());
+        ticket.setAgenteAsignado(null);
 
         HistoricoTicket historico = historialTicketService.registrarHistorico(
                 ticket,
                 agenteOrigen,
-                null,
+                ticket.getAgenteAsignado(),
                 pasoAnterior,
                 primerPaso
         );
