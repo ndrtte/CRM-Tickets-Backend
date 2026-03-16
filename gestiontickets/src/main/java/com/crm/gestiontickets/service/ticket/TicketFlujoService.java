@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.dto.Respuesta;
-import com.crm.gestiontickets.dto.ticket.IdTicket;
 import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
+import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
@@ -36,7 +36,7 @@ public class TicketFlujoService {
     @Autowired
     private EstadoTicketRepository estadoTicketRepository;
 
-    public Respuesta<IdTicket> avanzarEtapa(TicketAvanzarEtapa ticketNvoEtapa) {
+    public Respuesta<TicketPasoResponse> avanzarEtapa(TicketAvanzarEtapa ticketNvoEtapa) {
         Ticket ticket = ticketRepository.findById(ticketNvoEtapa.getIdTicket()).get();
 
         PasoFlujo pasoActual = ticket.getPasoActual();
@@ -62,13 +62,17 @@ public class TicketFlujoService {
         notaService.registrarNota(ticketNvoEtapa.getNota(), historico);
 
         ticketRepository.save(ticket);
+        
+        String idTicket = ticket.getIdTicket();
 
-        return new Respuesta<>(true, "Ticket avanzado a la siguiente etapa", new IdTicket(ticket.getIdTicket()));
+        Integer idPaso = ticket.getPasoActual().getIdPasosFlujo();
+
+        return new Respuesta<>(true, "Ticket avanzado a la siguiente etapa", new TicketPasoResponse(idTicket, idPaso));
     }
 
 
     
-    public Respuesta<IdTicket> cerrarTicket(TicketAvanzarEtapa ticketNvoEtapa) {
+    public Respuesta<TicketPasoResponse> cerrarTicket(TicketAvanzarEtapa ticketNvoEtapa) {
         Ticket ticket = ticketRepository.findById(ticketNvoEtapa.getIdTicket()).get();
 
         PasoFlujo pasoActual = ticket.getPasoActual();
@@ -91,7 +95,11 @@ public class TicketFlujoService {
 
         ticketRepository.save(ticket);
 
-        return new Respuesta<>(true, "Ticket cerrado correctamente", new IdTicket(ticket.getIdTicket()));
+        String idTicket = ticket.getIdTicket();
+
+        Integer idPaso = ticket.getPasoActual().getIdPasosFlujo();
+
+        return new Respuesta<>(true, "Ticket cerrado correctamente", new TicketPasoResponse(idTicket, idPaso));
     }
 
 }

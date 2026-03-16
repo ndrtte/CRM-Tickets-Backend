@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.dto.Respuesta;
-import com.crm.gestiontickets.dto.ticket.IdTicket;
 import com.crm.gestiontickets.dto.ticket.TicketApertura;
 import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
 import com.crm.gestiontickets.dto.ticket.TicketCreacion;
@@ -72,12 +71,12 @@ public class TicketController {
     }
     
     @PutMapping("/avanzar-etapa")
-    public Respuesta<IdTicket> avanzarEtapa(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
+    public Respuesta<TicketPasoResponse> avanzarEtapa(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
         return ticketFlujoService.avanzarEtapa(ticketNvoEtapa);
     }
 
     @PutMapping("/cerrar-ticket")
-    public Respuesta<IdTicket> cerrarTicket(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
+    public Respuesta<TicketPasoResponse> cerrarTicket(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
         return ticketFlujoService.cerrarTicket(ticketNvoEtapa);
     }
 
