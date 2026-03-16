@@ -55,6 +55,7 @@ public class TicketFlujoService {
         Agente agenteOrigen = ticket.getAgenteAsignado();
 
         ticket.setPasoActual(siguientePaso);
+        ticket.setAgenteAsignado(null);
         ticket.setFechaActualizacion(LocalDateTime.now());
 
         HistoricoTicket historico = historialTicketService.registrarHistorico(ticket, agenteOrigen, null, pasoAnterior, siguientePaso);
