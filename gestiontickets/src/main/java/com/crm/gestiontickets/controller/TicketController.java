@@ -19,6 +19,7 @@ import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
 import com.crm.gestiontickets.dto.ticket.TicketCreacion;
 import com.crm.gestiontickets.dto.ticket.TicketDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
+import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
 import com.crm.gestiontickets.service.ticket.TicketAperturaService;
 import com.crm.gestiontickets.service.ticket.TicketBusquedaService;
 
@@ -40,12 +41,12 @@ public class TicketController {
     private TicketFlujoService ticketFlujoService;
 
     @PostMapping("/apertura")
-    public Respuesta<IdTicket> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
+    public Respuesta<TicketPasoResponse> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
         return ticketCreacionService.aperturaTicket(ticketAperturaDTO);
     }
 
     @PutMapping("/crear-ticket")
-    public Respuesta<IdTicket> creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO){
+    public Respuesta<TicketPasoResponse> creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO){
         return ticketCreacionService.crearTicket(ticketDetalleDTO);
     }
 

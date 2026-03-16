@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.dto.Respuesta;
-import com.crm.gestiontickets.dto.ticket.IdTicket;
 import com.crm.gestiontickets.dto.ticket.TicketApertura;
 import com.crm.gestiontickets.dto.ticket.TicketCreacion;
+import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
@@ -60,7 +60,7 @@ public class TicketAperturaService {
     @Autowired
     private NotaService notaService;
 
-    public Respuesta<IdTicket> aperturaTicket(TicketApertura dto) {
+    public Respuesta<TicketPasoResponse> aperturaTicket(TicketApertura dto) {
 
         String idTicket = secuencialTicketRepository.generarIdTicket();
 
@@ -74,10 +74,10 @@ public class TicketAperturaService {
 
         ticketRepository.save(ticket);
 
-        return new Respuesta<>(true, "Ticket abierto correctamente", new IdTicket(idTicket));
+        return new Respuesta<>(true, "Ticket abierto correctamente", new TicketPasoResponse(idTicket, pasoApertura.getIdPasosFlujo()));
     }
 
-    public Respuesta<IdTicket> crearTicket(TicketCreacion dto) {
+    public Respuesta<TicketPasoResponse> crearTicket(TicketCreacion dto) {
         Ticket ticket = ticketRepository.findById(dto.getIdTicket()).get();
 
         PasoFlujo pasoAnterior = ticket.getPasoActual();
@@ -109,7 +109,11 @@ public class TicketAperturaService {
 
         ticketRepository.save(ticket);
 
-        return new Respuesta<>(true, "Ticket creado correctamente", new IdTicket(ticket.getIdTicket()));
+        String idTicket = ticket.getIdTicket();
+        Integer idPaso = ticket.getPasoActual().getIdPasosFlujo();
+
+
+        return new Respuesta<>(true, "Ticket creado correctamente", new TicketPasoResponse(idTicket, idPaso));
     }
 
         // Metodos auxiliares
