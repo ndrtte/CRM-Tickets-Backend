@@ -133,9 +133,15 @@ public class TicketBusquedaService {
         String nota = "";
         EstadoEtapaTicket estado;
 
+        boolean ticketCerrado = ticket.getEstado().getEstadoTicket().equals("Cerrado");
+
         if (esPasoActual) {
 
-            estado = EstadoEtapaTicket.EN_PROCESO;
+            if (ticketCerrado) {
+                estado = EstadoEtapaTicket.FINALIZADO;
+            } else {
+                estado = EstadoEtapaTicket.EN_PROCESO;
+            }
 
             pasoConsulta = ticket.getPasoActual();
             departamento = pasoConsulta.getIdDepartamento();
