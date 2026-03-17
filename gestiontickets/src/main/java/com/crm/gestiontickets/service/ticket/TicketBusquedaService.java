@@ -85,26 +85,66 @@ public class TicketBusquedaService {
         return listaTicketsDTO;
     }
 
-    public List<TicketDetalle> obtenerTicketsAgente(Integer idAgente) {
-        List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
+    public List<TicketDetalle> obtenerTicketsAgente(Integer idAgente, String filtro) {
+        Agente agente = agenteRepository.findById(idAgente).orElseThrow();
 
-        Agente agente = agenteRepository.findById(idAgente).get();
+        List<Ticket> resultado = new ArrayList<>();
 
-        List<HistoricoTicket> listaHistorico = historicoTicketRepository.findHistoricoTicketByAgenteDestino(agente);
+        List<Ticket> enProceso = ticketRepository.findByAgenteAsignado(agente);
 
-        List<Ticket> listaTickets = new ArrayList<>();
+        List<HistoricoTicket> historicos = historicoTicketRepository.findHistoricoTicketByAgenteOrigen(agente);
 
-        for (HistoricoTicket historico : listaHistorico) {
-            Ticket ticket = historico.getTicket();
-            listaTickets.add(ticket);
+        List<Ticket> finalizados = new ArrayList<>();
+
+        for (HistoricoTicket h : historicos) {
+            Ticket ticket = h.getTicket();
+
+            boolean existe = false;
+
+            for (Ticket t : finalizados) {
+                if (t.getIdTicket().equals(ticket.getIdTicket())) {
+                    existe = true;
+                    break;
+                }
+            }
+
+            if (!existe) {
+                finalizados.add(ticket);
+            }
         }
 
-        for (Ticket ticket : listaTickets) {
-            TicketDetalle ticketDetalle = ticketMapper.mapearTicketADetalle(ticket);
-            listaTicketsDTO.add(ticketDetalle);
+        if ("En proceso".equals(filtro)) {
+            resultado = enProceso;
+
+        } else if ("Finalizado".equals(filtro)) {
+            resultado = finalizados;
+
+        } else {
+            resultado.addAll(enProceso);
+
+            for (Ticket t : finalizados) {
+                boolean existe = false;
+
+                for (Ticket e : enProceso) {
+                    if (e.getIdTicket().equals(t.getIdTicket())) {
+                        existe = true;
+                        break;
+                    }
+                }
+
+                if (!existe) {
+                    resultado.add(t);
+                }
+            }
         }
 
-        return listaTicketsDTO;
+        List<TicketDetalle> listaTickets = new ArrayList<>();
+
+        for (Ticket t : resultado) {
+            listaTickets.add(ticketMapper.mapearTicketADetalle(t));
+        }
+
+        return listaTickets;
     }
 
     public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(String idTicket, Integer idPaso) {

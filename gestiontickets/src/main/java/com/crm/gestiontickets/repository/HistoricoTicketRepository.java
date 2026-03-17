@@ -22,6 +22,6 @@ public interface HistoricoTicketRepository extends JpaRepository<HistoricoTicket
     ORDER BY h.idHistoricoTickets DESC""")
     List<HistoricoTicket> findHistoricoTicketByTicketYEtapa(String idTicket, Integer idPaso);
 
-    List<HistoricoTicket>findHistoricoTicketByAgenteDestino(Agente agente);
+    List<HistoricoTicket>findHistoricoTicketByAgenteOrigen(Agente agente);
 
 }
