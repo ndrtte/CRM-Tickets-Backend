@@ -153,10 +153,6 @@ public class TicketBusquedaService {
                 idAgente = ticket.getAgenteAsignado().getIdAgente();
             }
 
-            if (!historicos.isEmpty()) {
-                nota = notaService.obtenerNotaPorHistorico(historicos.get(0));
-            }
-
         } else if (!historicos.isEmpty()) {
             HistoricoTicket historico = historicos.get(0);
 
