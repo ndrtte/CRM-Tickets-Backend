@@ -12,15 +12,17 @@ import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.entity.Departamento;
+import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Flujo;
 import com.crm.gestiontickets.entity.HistoricoTicket;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
-import com.crm.gestiontickets.enums.EstadoEtapaTicket;
+import com.crm.gestiontickets.enums.EstadoEtapaTicketEnum;
 import com.crm.gestiontickets.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.mapper.TicketMapper;
 import com.crm.gestiontickets.repository.AgenteRepository;
 import com.crm.gestiontickets.repository.ClienteRepository;
+import com.crm.gestiontickets.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.repository.FlujoRepository;
 import com.crm.gestiontickets.repository.HistoricoTicketRepository;
 import com.crm.gestiontickets.repository.TicketRepository;
@@ -51,6 +53,9 @@ public class TicketBusquedaService {
 
     @Autowired
     private AgenteRepository agenteRepository;
+
+    @Autowired
+    private EstadoTicketRepository estadoTicketRepository;
 
     public TicketDetalle obtenerTicketDTO(String idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
@@ -85,66 +90,26 @@ public class TicketBusquedaService {
         return listaTicketsDTO;
     }
 
-    public List<TicketDetalle> obtenerTicketsAgente(Integer idAgente, String filtro) {
-        Agente agente = agenteRepository.findById(idAgente).orElseThrow();
+    public List<TicketDetalle> obtenerTicketsAgente(Integer idAgente, Integer filtroEstado) {
 
-        List<Ticket> resultado = new ArrayList<>();
+        Agente agente = agenteRepository.findById(idAgente).get();
 
-        List<Ticket> enProceso = ticketRepository.findByAgenteAsignado(agente);
+        List<Ticket> tickets;
 
-        List<HistoricoTicket> historicos = historicoTicketRepository.findHistoricoTicketByAgenteOrigen(agente);
-
-        List<Ticket> finalizados = new ArrayList<>();
-
-        for (HistoricoTicket h : historicos) {
-            Ticket ticket = h.getTicket();
-
-            boolean existe = false;
-
-            for (Ticket t : finalizados) {
-                if (t.getIdTicket().equals(ticket.getIdTicket())) {
-                    existe = true;
-                    break;
-                }
-            }
-
-            if (!existe) {
-                finalizados.add(ticket);
-            }
-        }
-
-        if ("En proceso".equals(filtro)) {
-            resultado = enProceso;
-
-        } else if ("Finalizado".equals(filtro)) {
-            resultado = finalizados;
-
+        if (filtroEstado != null) {
+            EstadoTicket estadoTicket = estadoTicketRepository.findById(filtroEstado).get();
+            tickets = ticketRepository.findByAgenteAsignadoAndEstado(agente, estadoTicket);
         } else {
-            resultado.addAll(enProceso);
-
-            for (Ticket t : finalizados) {
-                boolean existe = false;
-
-                for (Ticket e : enProceso) {
-                    if (e.getIdTicket().equals(t.getIdTicket())) {
-                        existe = true;
-                        break;
-                    }
-                }
-
-                if (!existe) {
-                    resultado.add(t);
-                }
-            }
+            tickets = ticketRepository.findByAgenteAsignado(agente);
         }
 
-        List<TicketDetalle> listaTickets = new ArrayList<>();
+        List<TicketDetalle> response = new ArrayList<>();
 
-        for (Ticket t : resultado) {
-            listaTickets.add(ticketMapper.mapearTicketADetalle(t));
+        for (Ticket t : tickets) {
+            response.add(ticketMapper.mapearTicketADetalle(t));
         }
 
-        return listaTickets;
+        return response;
     }
 
     public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(String idTicket, Integer idPaso) {
@@ -188,11 +153,11 @@ public class TicketBusquedaService {
         Integer idAgente = null;
 
         String nota = "";
-        EstadoEtapaTicket estado;
+        EstadoEtapaTicketEnum estado;
 
         if (esPasoActual) {
 
-            estado = EstadoEtapaTicket.EN_PROCESO;
+            estado = EstadoEtapaTicketEnum.EN_PROCESO;
 
             pasoConsulta = ticket.getPasoActual();
             departamento = pasoConsulta.getIdDepartamento();
@@ -211,7 +176,7 @@ public class TicketBusquedaService {
         } else if (!historicos.isEmpty()) {
             HistoricoTicket historico = historicos.get(0);
 
-            estado = EstadoEtapaTicket.FINALIZADO;
+            estado = EstadoEtapaTicketEnum.FINALIZADO;
 
             pasoConsulta = historico.getPasoDestino() != null
                     ? historico.getPasoDestino()
@@ -231,7 +196,7 @@ public class TicketBusquedaService {
             nota = notaService.obtenerNotaPorHistorico(historico);
         } else {
 
-            estado = EstadoEtapaTicket.NO_INICIADO;
+            estado = EstadoEtapaTicketEnum.NO_INICIADO;
 
             pasoConsulta = new PasoFlujo();
             pasoConsulta.setDescripcion("Etapa no iniciada");
@@ -256,7 +221,7 @@ public class TicketBusquedaService {
         detalle.setEstadoEtapa(estado);
         detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), ticket.getPasoActual()));
 
-        String mensaje = estado == EstadoEtapaTicket.NO_INICIADO
+        String mensaje = estado == EstadoEtapaTicketEnum.NO_INICIADO
                 ? "Etapa no iniciada o no asignada"
                 : "Ok";
 

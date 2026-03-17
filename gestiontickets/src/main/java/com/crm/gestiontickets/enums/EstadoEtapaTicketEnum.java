@@ -3,7 +3,7 @@ package com.crm.gestiontickets.enums;
 import lombok.Getter;
 
 @Getter
-public enum EstadoEtapaTicket {
+public enum EstadoEtapaTicketEnum {
 
     NO_INICIADO("No iniciado"),
     EN_PROCESO("En proceso"),
@@ -11,7 +11,7 @@ public enum EstadoEtapaTicket {
 
     private final String descripcion;
 
-    EstadoEtapaTicket(String descripcion) {
+    EstadoEtapaTicketEnum(String descripcion) {
         this.descripcion = descripcion;
     }
 

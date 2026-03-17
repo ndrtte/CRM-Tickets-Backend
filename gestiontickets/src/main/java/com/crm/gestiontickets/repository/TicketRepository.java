@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Cliente;
+import com.crm.gestiontickets.entity.EstadoTicket;
 import com.crm.gestiontickets.entity.Ticket;
 
 public interface TicketRepository extends JpaRepository<Ticket, String> {
@@ -20,5 +21,7 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
         """)
     List<Ticket> findTicketsByDepartamento(Integer idDepartamento);
 
-    List<Ticket> findByAgenteAsignado(Agente agente);
+    List<Ticket> findByAgenteAsignado(Agente agenteAsignado);
+
+    List<Ticket> findByAgenteAsignadoAndEstado(Agente agenteAsignado, EstadoTicket estado);
 }

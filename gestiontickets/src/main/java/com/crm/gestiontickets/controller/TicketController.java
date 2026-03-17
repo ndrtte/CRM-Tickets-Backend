@@ -81,7 +81,7 @@ public class TicketController {
     }
 
     @GetMapping("/obtener-tickets-agente")
-    public List<TicketDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, @RequestParam String filtro) {
-        return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtro);
+    public List<TicketDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, @RequestParam(required=false) Integer filtroEstado) {
+        return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtroEstado);
     }
 }
