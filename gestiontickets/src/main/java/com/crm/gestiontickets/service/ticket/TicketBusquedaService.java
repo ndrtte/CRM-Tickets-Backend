@@ -7,20 +7,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.dto.Respuesta;
+import com.crm.gestiontickets.dto.ticket.EtapaTicket;
 import com.crm.gestiontickets.dto.ticket.TicketDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.entity.Cliente;
-import com.crm.gestiontickets.entity.Departamento;
-import com.crm.gestiontickets.entity.Flujo;
-import com.crm.gestiontickets.entity.HistoricoTicket;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.enums.EstadoEtapaTicket;
 import com.crm.gestiontickets.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.mapper.TicketMapper;
 import com.crm.gestiontickets.repository.ClienteRepository;
-import com.crm.gestiontickets.repository.FlujoRepository;
-import com.crm.gestiontickets.repository.HistoricoTicketRepository;
 import com.crm.gestiontickets.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.repository.TicketRepository;
 
@@ -34,13 +30,7 @@ public class TicketBusquedaService {
     private ClienteRepository clienteRepository;
 
     @Autowired
-    private FlujoRepository flujoRepository;
-
-    @Autowired
     private TicketMapper ticketMapper;
-
-    @Autowired
-    private HistoricoTicketRepository historicoTicketRepository;
 
     @Autowired
     private PasoFlujoMapper pasoFlujoMapper;
@@ -84,128 +74,82 @@ public class TicketBusquedaService {
         return listaTicketsDTO;
     }
 
-    public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(String idTicket, Integer idPaso) {
-
+    public Respuesta<TicketEtapaDetalle> obtenerEtapaTicket(String idTicket, Integer idPaso) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
 
-        Flujo flujo = flujoRepository.findByCategoria(ticket.getCategoria());
-
-        PasoFlujo pasoApertura = pasoFlujoRepository.findByDescripcion("APERTURA");
-
-        boolean esPasoApertura = pasoApertura != null
-                && pasoApertura.getIdPasosFlujo().equals(idPaso);
-
-        boolean pasoValido = flujo.getPasos().stream()
-                .anyMatch(p -> p.getIdPasosFlujo().equals(idPaso))
-                || esPasoApertura;
-
-        if (!pasoValido) {
-            return new Respuesta<>(false, "Esta etapa no pertenece al flujo del ticket", null);
-        }
-
-        TicketEtapaDetalle detalle = new TicketEtapaDetalle();
-        detalle.setIdTicket(idTicket);
-
-        Cliente cliente = ticket.getCliente();
-        detalle.setIdCliente(cliente.getIdCliente());
-        detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
-
-        String categoria = ticket.getCategoria() != null
-                ? ticket.getCategoria().getNombreCategoria()
-                : "";
-
-        Integer idCategoria = ticket.getCategoria() != null
-                ? ticket.getCategoria().getIdCategoria()
-                : null;
-
-        boolean esPasoActual = ticket.getPasoActual().getIdPasosFlujo().equals(idPaso);
-
-        List<HistoricoTicket> historicos = historicoTicketRepository
-                .findHistoricoTicketByTicketYEtapa(ticket.getIdTicket(), idPaso);
-
-        @SuppressWarnings(value = {""})
-        PasoFlujo pasoConsulta;
-        Departamento departamento;
-
-        String agenteNombre = "Sin asignar";
-        Integer idAgente = null;
-
-        String nota = "";
-        EstadoEtapaTicket estado;
+        PasoFlujo pasoActual = ticket.getPasoActual();
 
         boolean ticketCerrado = ticket.getEstado().getEstadoTicket().equals("Cerrado");
 
-        if (esPasoActual) {
+        List<EtapaTicket> etapas = pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), pasoActual);
 
-            if (ticketCerrado) {
-                estado = EstadoEtapaTicket.FINALIZADO;
-            } else {
-                estado = EstadoEtapaTicket.EN_PROCESO;
-            }
+        PasoFlujo paso = pasoFlujoRepository.findById(idPaso).get();
 
-            pasoConsulta = ticket.getPasoActual();
-            departamento = pasoConsulta.getIdDepartamento();
+        EstadoEtapaTicket estado = calcularEstado(paso, pasoActual, ticketCerrado);
 
-            if (ticket.getAgenteAsignado() != null) {
-                agenteNombre = ticket.getAgenteAsignado().getNombre() + " "
-                        + ticket.getAgenteAsignado().getApellido();
+        TicketEtapaDetalle detalle = new TicketEtapaDetalle();
 
-                idAgente = ticket.getAgenteAsignado().getIdAgente();
-            }
+        String nota = notaService.obtenerNota(ticket, idPaso);
 
-        } else if (!historicos.isEmpty()) {
-            HistoricoTicket historico = historicos.get(0);
-
-            estado = EstadoEtapaTicket.FINALIZADO;
-
-            pasoConsulta = historico.getPasoDestino() != null
-                    ? historico.getPasoDestino()
-                    : historico.getPasoOrigen();
-
-            departamento = pasoConsulta != null
-                    ? pasoConsulta.getIdDepartamento()
-                    : null;
-
-            if (historico.getAgenteOrigen() != null) {
-                agenteNombre = historico.getAgenteOrigen().getNombre() + " "
-                        + historico.getAgenteOrigen().getApellido();
-
-                idAgente = historico.getAgenteOrigen().getIdAgente();
-            }
-
-            nota = notaService.obtenerNotaPorHistorico(historico);
-        } else {
-
-            estado = EstadoEtapaTicket.NO_INICIADO;
-
-            pasoConsulta = new PasoFlujo();
-            pasoConsulta.setDescripcion("Etapa no iniciada");
-
-            departamento = new Departamento();
-            departamento.setNombreDepartamento("Sin asignar");
-        }
-
-        Integer idDepartamento = departamento != null
-                ? departamento.getIdDepartamento()
-                : null;
-
-        detalle.setIdCategoria(idCategoria);
-        detalle.setIdAgente(idAgente);
-        detalle.setIdDepartamento(idDepartamento);
-
-        detalle.setCategoria(categoria);
-        detalle.setPasoActual(pasoConsulta != null ? pasoConsulta.getDescripcion() : "Desconocido");
-        detalle.setDepartamento(departamento != null ? departamento.getNombreDepartamento() : "Desconocido");
-        detalle.setNombreAgente(agenteNombre);
+        detalle.setPasoActual(paso.getDescripcion());
         detalle.setNota(nota);
         detalle.setEstadoEtapa(estado);
-        detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), ticket.getPasoActual()));
 
-        String mensaje = estado == EstadoEtapaTicket.NO_INICIADO
-                ? "Etapa no iniciada o no asignada"
-                : "Ok";
+        detalle.setCategoria(ticket.getCategoria().getNombreCategoria());
 
-        return new Respuesta<>(true, mensaje, detalle);
+        String departamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
+        detalle.setDepartamento(departamento);
+
+        detalle.setIdAgente( ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getIdAgente() : null);
+
+        detalle.setIdCategoria(ticket.getCategoria().getIdCategoria());
+        detalle.setIdCliente(ticket.getCliente().getIdCliente());
+
+        Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
+        detalle.setIdDepartamento(idDepartamento);
+
+        detalle.setIdTicket(ticket.getIdTicket());
+        detalle.setListaEtapas(etapas);
+
+        detalle.setNombreAgente(
+                ticket.getAgenteAsignado() != null
+                ? ticket.getAgenteAsignado().getNombre()
+                : "Sin asignar"
+        );
+
+        detalle.setNombreCliente(ticket.getCliente().getNombre());
+
+        return new Respuesta<>(false, "Ok", detalle);
+    }
+
+    private EstadoEtapaTicket calcularEstado(PasoFlujo paso, PasoFlujo pasoActual, boolean ticketCerrado) {
+        if (paso.getDescripcion().equals("APERTURA")) {
+
+            if (pasoActual != null && pasoActual.getOrden() > 0) {
+                return EstadoEtapaTicket.FINALIZADO;
+            } else {
+                return EstadoEtapaTicket.EN_PROCESO;
+            }
+        }
+
+        if (pasoActual == null) {
+            return EstadoEtapaTicket.NO_INICIADO;
+        }
+
+        int ordenActual = pasoActual.getOrden();
+        int ordenPaso = paso.getOrden();
+
+        if (ordenPaso < ordenActual) {
+            return EstadoEtapaTicket.FINALIZADO;
+
+        } else if (ordenPaso == ordenActual) {
+            return ticketCerrado
+                    ? EstadoEtapaTicket.FINALIZADO
+                    : EstadoEtapaTicket.EN_PROCESO;
+
+        } else {
+            return EstadoEtapaTicket.NO_INICIADO;
+        }
     }
 
 }

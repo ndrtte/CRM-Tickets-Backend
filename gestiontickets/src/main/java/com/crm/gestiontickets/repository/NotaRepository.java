@@ -7,9 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.crm.gestiontickets.entity.HistoricoTicket;
 import com.crm.gestiontickets.entity.Nota;
 
+public interface NotaRepository extends JpaRepository<Nota, Integer> {
 
-public interface NotaRepository extends JpaRepository<Nota, Integer>{
+    List<Nota> findNotasByHistoricoTicketOrderByIdDesc(HistoricoTicket historico);
 
- public List<Nota> findNotasByHistoricoTicket(HistoricoTicket historicoTicket);
-    
 }
