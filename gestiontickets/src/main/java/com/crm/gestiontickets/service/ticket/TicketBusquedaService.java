@@ -21,6 +21,7 @@ import com.crm.gestiontickets.mapper.TicketMapper;
 import com.crm.gestiontickets.repository.ClienteRepository;
 import com.crm.gestiontickets.repository.FlujoRepository;
 import com.crm.gestiontickets.repository.HistoricoTicketRepository;
+import com.crm.gestiontickets.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.repository.TicketRepository;
 
 @Service
@@ -46,6 +47,9 @@ public class TicketBusquedaService {
 
     @Autowired
     private NotaService notaService;
+
+    @Autowired
+    private PasoFlujoRepository pasoFlujoRepository;
 
     public TicketDetalle obtenerTicketDTO(String idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
@@ -86,8 +90,14 @@ public class TicketBusquedaService {
 
         Flujo flujo = flujoRepository.findByCategoria(ticket.getCategoria());
 
+        PasoFlujo pasoApertura = pasoFlujoRepository.findByDescripcion("APERTURA");
+
+        boolean esPasoApertura = pasoApertura != null
+                && pasoApertura.getIdPasosFlujo().equals(idPaso);
+
         boolean pasoValido = flujo.getPasos().stream()
-                .anyMatch(p -> p.getIdPasosFlujo().equals(idPaso));
+                .anyMatch(p -> p.getIdPasosFlujo().equals(idPaso))
+                || esPasoApertura;
 
         if (!pasoValido) {
             return new Respuesta<>(false, "Esta etapa no pertenece al flujo del ticket", null);
