@@ -85,14 +85,13 @@ public class TicketBusquedaService {
 
         PasoFlujo paso = pasoFlujoRepository.findById(idPaso).get();
 
-        EstadoEtapaTicket estado = calcularEstado(paso, pasoActual, ticketCerrado);
+        EstadoEtapaTicket estado = obtenerEstado(paso, pasoActual, ticketCerrado);
 
         TicketEtapaDetalle detalle = new TicketEtapaDetalle();
 
-        String nota = notaService.obtenerNota(ticket, idPaso);
-
+        // String nota = notaService.obtenerNota(ticket, idPaso);
         detalle.setPasoActual(paso.getDescripcion());
-        detalle.setNota(nota);
+        detalle.setNota("");
         detalle.setEstadoEtapa(estado);
 
         detalle.setCategoria(ticket.getCategoria().getNombreCategoria());
@@ -100,7 +99,7 @@ public class TicketBusquedaService {
         String departamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
         detalle.setDepartamento(departamento);
 
-        detalle.setIdAgente( ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getIdAgente() : null);
+        detalle.setIdAgente(ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getIdAgente() : null);
 
         detalle.setIdCategoria(ticket.getCategoria().getIdCategoria());
         detalle.setIdCliente(ticket.getCliente().getIdCliente());
@@ -119,10 +118,10 @@ public class TicketBusquedaService {
 
         detalle.setNombreCliente(ticket.getCliente().getNombre());
 
-        return new Respuesta<>(false, "Ok", detalle);
+        return new Respuesta<>(true, "Ok", detalle);
     }
 
-    private EstadoEtapaTicket calcularEstado(PasoFlujo paso, PasoFlujo pasoActual, boolean ticketCerrado) {
+    private EstadoEtapaTicket obtenerEstado(PasoFlujo paso, PasoFlujo pasoActual, boolean ticketCerrado) {
         if (paso.getDescripcion().equals("APERTURA")) {
 
             if (pasoActual != null && pasoActual.getOrden() > 0) {

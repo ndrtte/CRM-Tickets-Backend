@@ -23,9 +23,6 @@ import com.crm.gestiontickets.service.ticket.TicketAperturaService;
 import com.crm.gestiontickets.service.ticket.TicketBusquedaService;
 import com.crm.gestiontickets.service.ticket.TicketFlujoService;
 
-import tools.jackson.databind.annotation.JsonAppend.Attr;
-
-
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/ticket")
