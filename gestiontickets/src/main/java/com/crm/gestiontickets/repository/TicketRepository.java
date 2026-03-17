@@ -17,4 +17,5 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
         WHERE t.pasoActual.idDepartamento.idDepartamento = :idDepartamento
         """)
     List<Ticket> findTicketsByDepartamento(Integer idDepartamento);
+
 }

@@ -80,4 +80,8 @@ public class TicketController {
         return ticketFlujoService.cerrarTicket(ticketNvoEtapa);
     }
 
+    @GetMapping("/obtener-tickets-agente")
+    public List<TicketDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente) {
+        return ticketBusquedaService.obtenerTicketsAgente(idAgente);
+    }
 }

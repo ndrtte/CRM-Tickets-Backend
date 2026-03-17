@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.crm.gestiontickets.dto.Respuesta;
 import com.crm.gestiontickets.dto.ticket.TicketDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
+import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.entity.Departamento;
 import com.crm.gestiontickets.entity.Flujo;
@@ -18,6 +19,7 @@ import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.enums.EstadoEtapaTicket;
 import com.crm.gestiontickets.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.mapper.TicketMapper;
+import com.crm.gestiontickets.repository.AgenteRepository;
 import com.crm.gestiontickets.repository.ClienteRepository;
 import com.crm.gestiontickets.repository.FlujoRepository;
 import com.crm.gestiontickets.repository.HistoricoTicketRepository;
@@ -47,6 +49,9 @@ public class TicketBusquedaService {
     @Autowired
     private NotaService notaService;
 
+    @Autowired
+    private AgenteRepository agenteRepository;
+
     public TicketDetalle obtenerTicketDTO(String idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
         return ticketMapper.mapearTicketADetalle(ticket);
@@ -70,9 +75,31 @@ public class TicketBusquedaService {
 
         List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
 
-        List<Ticket> listaTicket = ticketRepository.findTicketsByDepartamento(idDepartamento);
+        List<Ticket> listaTickets = ticketRepository.findTicketsByDepartamento(idDepartamento);
 
-        for (Ticket ticket : listaTicket) {
+        for (Ticket ticket : listaTickets) {
+            TicketDetalle ticketDetalle = ticketMapper.mapearTicketADetalle(ticket);
+            listaTicketsDTO.add(ticketDetalle);
+        }
+
+        return listaTicketsDTO;
+    }
+
+    public List<TicketDetalle> obtenerTicketsAgente(Integer idAgente) {
+        List<TicketDetalle> listaTicketsDTO = new ArrayList<>();
+
+        Agente agente = agenteRepository.findById(idAgente).get();
+
+        List<HistoricoTicket> listaHistorico = historicoTicketRepository.findHistoricoTicketByAgenteDestino(agente);
+
+        List<Ticket> listaTickets = new ArrayList<>();
+
+        for (HistoricoTicket historico : listaHistorico) {
+            Ticket ticket = historico.getTicket();
+            listaTickets.add(ticket);
+        }
+
+        for (Ticket ticket : listaTickets) {
             TicketDetalle ticketDetalle = ticketMapper.mapearTicketADetalle(ticket);
             listaTicketsDTO.add(ticketDetalle);
         }
