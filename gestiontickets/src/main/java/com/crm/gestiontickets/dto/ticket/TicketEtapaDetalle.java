@@ -1,6 +1,6 @@
 package com.crm.gestiontickets.dto.ticket;
 
-import com.crm.gestiontickets.enums.EstadoEtapaTicket;
+import com.crm.gestiontickets.enums.EstadoEtapaTicketEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,5 +15,5 @@ public class TicketEtapaDetalle extends BaseTicketDetalle{
 
     private String pasoActual;
     private String nota;
-    private EstadoEtapaTicket estadoEtapa;
+    private EstadoEtapaTicketEnum estadoEtapa;
 }
