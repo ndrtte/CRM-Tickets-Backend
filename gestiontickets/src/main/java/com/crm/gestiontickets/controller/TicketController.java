@@ -19,6 +19,7 @@ import com.crm.gestiontickets.dto.ticket.TicketCreacion;
 import com.crm.gestiontickets.dto.ticket.TicketDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
+import com.crm.gestiontickets.enums.FiltroTicketsAgenteEnum;
 import com.crm.gestiontickets.service.ticket.TicketAperturaService;
 import com.crm.gestiontickets.service.ticket.TicketBusquedaService;
 
@@ -81,7 +82,7 @@ public class TicketController {
     }
 
     @GetMapping("/obtener-tickets-agente")
-    public List<TicketDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, @RequestParam(required=false) Integer filtroEstado) {
+    public List<TicketDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, @RequestParam(required=false) FiltroTicketsAgenteEnum filtroEstado) {
         return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtroEstado);
     }
 }

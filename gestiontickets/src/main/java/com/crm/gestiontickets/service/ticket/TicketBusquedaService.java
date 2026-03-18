@@ -18,6 +18,7 @@ import com.crm.gestiontickets.entity.HistoricoTicket;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.enums.EstadoEtapaTicketEnum;
+import com.crm.gestiontickets.enums.FiltroTicketsAgenteEnum;
 import com.crm.gestiontickets.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.mapper.TicketMapper;
 import com.crm.gestiontickets.repository.AgenteRepository;
@@ -90,24 +91,13 @@ public class TicketBusquedaService {
         return listaTicketsDTO;
     }
 
-    public List<TicketDetalle> obtenerTicketsAgente(Integer idAgente, Integer filtroEstado) {
+    public List<TicketDetalle> obtenerTicketsAgente(Integer idAgente, FiltroTicketsAgenteEnum filtroEstado) {
 
         Agente agente = agenteRepository.findById(idAgente).get();
 
         List<Ticket> tickets;
 
-        if (filtroEstado != null) {
-            EstadoTicket estadoTicket = estadoTicketRepository.findById(filtroEstado).get();
-            tickets = ticketRepository.findByAgenteAsignadoAndEstado(agente, estadoTicket);
-        } else {
-            tickets = ticketRepository.findByAgenteAsignado(agente);
-        }
-
         List<TicketDetalle> response = new ArrayList<>();
-
-        for (Ticket t : tickets) {
-            response.add(ticketMapper.mapearTicketADetalle(t));
-        }
 
         return response;
     }
