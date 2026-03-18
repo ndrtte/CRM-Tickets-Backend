@@ -60,4 +60,7 @@ public class Rol {
 
     @Column(name = "fecha_actualizacion")
     private LocalDateTime fechaActualizacion;
+
+    @Column(name = "activo")
+    private String activo;
 }

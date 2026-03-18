@@ -17,6 +17,7 @@ public class DepartamentoDetalle {
     private String nombreDepartamento;
     private String descripcion;
     private LocalDateTime fechaCreacion;         
-    private LocalDateTime fechaActualizacion;  
+    private LocalDateTime fechaActualizacion;
+    private String activo;
 
 }

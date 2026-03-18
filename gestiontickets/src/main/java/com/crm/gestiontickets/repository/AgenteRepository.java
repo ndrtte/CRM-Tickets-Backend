@@ -25,6 +25,7 @@ public interface AgenteRepository extends JpaRepository<Agente, Integer>{
         @Query("SELECT a FROM Agente a " +
            "WHERE a.nombre LIKE %:valor% " +
            "   OR a.apellido LIKE %:valor% " +
-           "   OR a.usuario LIKE %:valor%")
+           "   OR a.usuario LIKE %:valor%" +
+           "   OR CAST(a.idAgente as string) LIKE CONCAT('%', :valor, '%')")
     List<Agente> buscarPorCriterio(@Param("valor") String valor);
 }
