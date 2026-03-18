@@ -1,5 +1,7 @@
 package com.crm.gestiontickets.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +43,19 @@ public class DepartamentoController {
     Departamento departamento = departamentoService.bloquearDepartamento(id);
 
     return ResponseEntity.ok(departamento);
+    }
+
+    //Endpoint para buscar un departamento
+    @GetMapping("/buscar")
+    public List<DepartamentoDetalle> buscarDepartamentos(@RequestParam("criterio") String criterio) {
+        return departamentoService.buscarDepartamentos(criterio);
+    }
+
+    //optener los departamentos
+   // Endpoint para obtener departamentos activos
+    @GetMapping("/departamentos-activos")
+    public List<DepartamentoDetalle> obtenerDepartamentosActivos() {
+        return departamentoService.obtenerDepartamentosActivos();
     }
 
 }

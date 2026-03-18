@@ -1,6 +1,8 @@
 package com.crm.gestiontickets.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,8 @@ public class DepartamentoService {
         departamento.setNombreDepartamento(departamentoDTO.getNombreDepartamento());
         departamento.setDescripcion(departamentoDTO.getDescripcion());
         departamento.setFechaCreacion(LocalDateTime.now());
-
+        departamento.setActivo("S");
+        
         departamentoRepository.save(departamento);
 
         DepartamentoDetalle nuevoDepartamento = new DepartamentoDetalle();
@@ -80,5 +83,33 @@ public class DepartamentoService {
 
     return departamentoRepository.save(departamento);
     }
+
+    //buscar departamento 
+     public List<DepartamentoDetalle> buscarDepartamentos(String valor) {
+        List<Departamento> departamentos = departamentoRepository.buscarPorCriterio(valor);
+        return departamentos.stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+    }
+
+    private DepartamentoDetalle convertirADTO(Departamento dep) {
+        DepartamentoDetalle dto = new DepartamentoDetalle();
+        dto.setIdDepartamento(dep.getIdDepartamento());
+        dto.setNombreDepartamento(dep.getNombreDepartamento());
+        dto.setDescripcion(dep.getDescripcion());
+        dto.setActivo(dep.getActivo());
+        return dto;
+    }
+    
+    //obtener los  departamentos
+    public List<DepartamentoDetalle> obtenerDepartamentosActivos() {
+    List<Departamento> lista = departamentoRepository.findByActivo("S");
+    return lista.stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
+}
+
+    
+
 }
 
