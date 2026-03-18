@@ -15,5 +15,6 @@ public class RolDetalle {
     private Integer idRol;
     private String nombreRol;
     private String descripcionRol;
+    private String activo;
 
 }

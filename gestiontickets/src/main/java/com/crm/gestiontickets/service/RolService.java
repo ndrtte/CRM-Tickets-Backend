@@ -1,6 +1,8 @@
 package com.crm.gestiontickets.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,22 @@ public class RolService {
         nuevoRol.setIdRol(rol.getIdRol());
         nuevoRol.setNombreRol(rol.getNombre());
         nuevoRol.setDescripcionRol(rol.getDescripcion());
+        nuevoRol.setActivo(rol.getActivo());
 
         return nuevoRol;
     }
+
+   public List<RolDetalle> obtenerRolesActivos() {
+    List<Rol> roles = rolRepository.findByActivo("S");
+    return roles.stream()
+                .map(rol -> {
+                    RolDetalle dto = new RolDetalle();
+                    dto.setIdRol(rol.getIdRol());
+                    dto.setNombreRol(rol.getNombre());
+                    dto.setDescripcionRol(rol.getDescripcion());
+                    dto.setActivo(rol.getActivo());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+}
 }

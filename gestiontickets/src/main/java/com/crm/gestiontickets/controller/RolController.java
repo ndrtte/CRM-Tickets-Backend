@@ -1,5 +1,7 @@
 package com.crm.gestiontickets.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,5 +21,10 @@ public class RolController {
     public RolDetalle crearRol(@RequestBody RolDetalle rol) {
         return rolService.crearRol(rol);
     }
+
+    @GetMapping("/roles-activos")
+    public List<RolDetalle> obtenerRolesActivos() {
+    return rolService.obtenerRolesActivos();
+}
 
 }

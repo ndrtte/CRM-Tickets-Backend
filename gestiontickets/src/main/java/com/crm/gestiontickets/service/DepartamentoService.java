@@ -80,5 +80,10 @@ public class DepartamentoService {
 
     return departamentoRepository.save(departamento);
     }
+
+        public Object obtenerDepartamentosActivos() {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'obtenerDepartamentosActivos'");
+        }
 }
 
