@@ -90,6 +90,11 @@ public class TicketBusquedaService {
         boolean ticketCerrado = ticket.getEstado().getEstadoTicket().equals("Cerrado");
 
         List<EtapaTicket> etapas = pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), pasoActual);
+        boolean pasoValido = etapas.stream().anyMatch(e -> e.getIdPaso().equals(idPaso));
+
+        if (!pasoValido) {
+            return new Respuesta<>(false, "El paso no pertenece al flujo del ticket", null);
+        }
 
         PasoFlujo paso = pasoFlujoRepository.findById(idPaso).get();
 
@@ -97,7 +102,7 @@ public class TicketBusquedaService {
 
         HistoricoTicket historico = historicoRepository.findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(ticket, paso);
 
-        String nota = historico!= null ? notaService.obtenerNotaHistorico(historico) : null;
+        String nota = historico != null ? notaService.obtenerNotaHistorico(historico) : null;
 
         TicketEtapaDetalle detalle = ticketMapper.mapearATicketEtapaDetalle(ticket, paso, estado, nota, etapas);
 
