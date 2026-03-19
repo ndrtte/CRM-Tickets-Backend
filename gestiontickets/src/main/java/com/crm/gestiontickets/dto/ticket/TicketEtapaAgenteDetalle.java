@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TicketEstadoEtapaDetalle extends BaseTicketDetalle{
+public class TicketEtapaAgenteDetalle extends TicketDetalle{
     
-    private Integer idEstadoEtapa;
     private String estadoEtapa;
 }

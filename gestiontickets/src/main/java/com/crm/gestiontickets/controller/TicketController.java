@@ -17,12 +17,12 @@ import com.crm.gestiontickets.dto.ticket.TicketApertura;
 import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
 import com.crm.gestiontickets.dto.ticket.TicketCreacion;
 import com.crm.gestiontickets.dto.ticket.TicketDetalle;
+import com.crm.gestiontickets.dto.ticket.TicketEtapaAgenteDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
 import com.crm.gestiontickets.enums.FiltroTicketsAgenteEnum;
 import com.crm.gestiontickets.service.ticket.TicketAperturaService;
 import com.crm.gestiontickets.service.ticket.TicketBusquedaService;
-
 import com.crm.gestiontickets.service.ticket.TicketFlujoService;
 
 
@@ -82,7 +82,7 @@ public class TicketController {
     }
 
     @GetMapping("/obtener-tickets-agente")
-    public List<TicketDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, @RequestParam(required=false) FiltroTicketsAgenteEnum filtroEstado) {
+    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, FiltroTicketsAgenteEnum filtroEstado) {
         return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtroEstado);
     }
 }

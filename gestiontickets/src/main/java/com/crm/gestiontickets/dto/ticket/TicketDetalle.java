@@ -13,6 +13,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TicketDetalle extends BaseTicketDetalle {
     private Integer idEstado;
-    private String estado;
+    private String estadoTicket;
     private LocalDateTime fechaCreacion;
 }
