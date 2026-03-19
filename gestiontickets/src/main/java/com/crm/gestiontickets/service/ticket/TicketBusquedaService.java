@@ -46,6 +46,9 @@ public class TicketBusquedaService {
     @Autowired
     private PasoFlujoRepository pasoFlujoRepository;
 
+    @Autowired
+    private EstadoEtapaService estadoEtapaService;
+
     public TicketDetalle obtenerTicketDTO(String idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
         return ticketMapper.mapearTicketADetalle(ticket);
@@ -90,70 +93,15 @@ public class TicketBusquedaService {
 
         PasoFlujo paso = pasoFlujoRepository.findById(idPaso).get();
 
-        EstadoEtapaTicket estado = obtenerEstado(paso, pasoActual, ticketCerrado);
-
-        TicketEtapaDetalle detalle = new TicketEtapaDetalle();
+        EstadoEtapaTicket estado = estadoEtapaService.obtenerEstado(paso, pasoActual, ticketCerrado);
 
         HistoricoTicket historico = historicoRepository.findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(ticket, paso);
 
         String nota = historico!= null ? notaService.obtenerNotaHistorico(historico) : null;
 
-        detalle.setNota(nota);
-
-        detalle.setPasoActual(paso.getDescripcion());
-        detalle.setEstadoEtapa(estado);
-
-        detalle.setCategoria(ticket.getCategoria().getNombreCategoria());
-
-        String departamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
-        detalle.setDepartamento(departamento);
-
-        detalle.setIdAgente(ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getIdAgente() : null);
-
-        detalle.setIdCategoria(ticket.getCategoria().getIdCategoria());
-        detalle.setIdCliente(ticket.getCliente().getIdCliente());
-
-        Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
-        detalle.setIdDepartamento(idDepartamento);
-
-        detalle.setIdTicket(ticket.getIdTicket());
-        detalle.setListaEtapas(etapas);
-
-        detalle.setNombreAgente(ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getNombre() : "Sin asignar");
-
-        detalle.setNombreCliente(ticket.getCliente().getNombre());
+        TicketEtapaDetalle detalle = ticketMapper.mapearATicketEtapaDetalle(ticket, paso, estado, nota, etapas);
 
         return new Respuesta<>(true, "Ok", detalle);
-    }
-
-    private EstadoEtapaTicket obtenerEstado(PasoFlujo paso, PasoFlujo pasoActual, boolean ticketCerrado) {
-        if (paso.getDescripcion().equals("APERTURA")) {
-
-            if (pasoActual != null && pasoActual.getOrden() > 0) {
-                return EstadoEtapaTicket.FINALIZADO;
-            } else {
-                return EstadoEtapaTicket.EN_PROCESO;
-            }
-        }
-
-        if (pasoActual == null) {
-            return EstadoEtapaTicket.NO_INICIADO;
-        }
-
-        int ordenActual = pasoActual.getOrden();
-        int ordenPaso = paso.getOrden();
-
-        if (ordenPaso < ordenActual) {
-            return EstadoEtapaTicket.FINALIZADO;
-
-        } else if (ordenPaso == ordenActual) {
-            return ticketCerrado
-                    ? EstadoEtapaTicket.FINALIZADO
-                    : EstadoEtapaTicket.EN_PROCESO;
-
-        } else {
-            return EstadoEtapaTicket.NO_INICIADO;
-        }
     }
 
 }
