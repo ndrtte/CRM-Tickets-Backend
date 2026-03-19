@@ -11,12 +11,14 @@ import com.crm.gestiontickets.dto.ticket.EtapaTicket;
 import com.crm.gestiontickets.dto.ticket.TicketDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.entity.Cliente;
+import com.crm.gestiontickets.entity.HistoricoTicket;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.enums.EstadoEtapaTicket;
 import com.crm.gestiontickets.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.mapper.TicketMapper;
 import com.crm.gestiontickets.repository.ClienteRepository;
+import com.crm.gestiontickets.repository.HistoricoTicketRepository;
 import com.crm.gestiontickets.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.repository.TicketRepository;
 
@@ -37,6 +39,9 @@ public class TicketBusquedaService {
 
     @Autowired
     private NotaService notaService;
+
+    @Autowired
+    private HistoricoTicketRepository historicoRepository;
 
     @Autowired
     private PasoFlujoRepository pasoFlujoRepository;
@@ -89,9 +94,13 @@ public class TicketBusquedaService {
 
         TicketEtapaDetalle detalle = new TicketEtapaDetalle();
 
-        // String nota = notaService.obtenerNota(ticket, idPaso);
+        HistoricoTicket historico = historicoRepository.findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(ticket, paso);
+
+        String nota = historico!= null ? notaService.obtenerNotaHistorico(historico) : null;
+
+        detalle.setNota(nota);
+
         detalle.setPasoActual(paso.getDescripcion());
-        detalle.setNota("");
         detalle.setEstadoEtapa(estado);
 
         detalle.setCategoria(ticket.getCategoria().getNombreCategoria());
@@ -110,11 +119,7 @@ public class TicketBusquedaService {
         detalle.setIdTicket(ticket.getIdTicket());
         detalle.setListaEtapas(etapas);
 
-        detalle.setNombreAgente(
-                ticket.getAgenteAsignado() != null
-                ? ticket.getAgenteAsignado().getNombre()
-                : "Sin asignar"
-        );
+        detalle.setNombreAgente(ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getNombre() : "Sin asignar");
 
         detalle.setNombreCliente(ticket.getCliente().getNombre());
 

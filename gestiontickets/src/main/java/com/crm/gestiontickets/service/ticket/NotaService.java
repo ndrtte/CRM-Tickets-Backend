@@ -21,4 +21,9 @@ public class NotaService {
         notaRepository.save(nvaNota);
     }
 
+    public String obtenerNotaHistorico(HistoricoTicket historico){
+        Nota nota = notaRepository.findByHistoricoTicket(historico);
+        return nota.getDescripcion();
+    }
+
 }
