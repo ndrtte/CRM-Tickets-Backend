@@ -55,7 +55,7 @@ public class TicketAperturaService {
     private FlujoRepository flujoRepository;
 
     @Autowired
-    private HistorialTicketService historialTicketService;
+    private HistoricoTicketService historicoTicketService;
 
     @Autowired
     private NotaService notaService;
@@ -99,7 +99,7 @@ public class TicketAperturaService {
         ticket.setFechaActualizacion(LocalDateTime.now());
         ticket.setAgenteAsignado(null);
 
-        HistoricoTicket historico = historialTicketService.registrarHistorico(
+        HistoricoTicket historico = historicoTicketService.registrarHistorico(
                 ticket,
                 agenteOrigen,
                 ticket.getAgenteAsignado(),

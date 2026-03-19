@@ -1,10 +1,14 @@
 package com.crm.gestiontickets.mapper;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.crm.gestiontickets.dto.ticket.EtapaTicket;
 import com.crm.gestiontickets.dto.ticket.TicketDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketEtapaAgenteDetalle;
+import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
@@ -13,6 +17,7 @@ import com.crm.gestiontickets.entity.HistoricoTicket;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.enums.FiltroTicketsAgenteEnum;
+import com.crm.gestiontickets.enums.EstadoEtapaTicketEnum;
 
 @Component
 public class TicketMapper {
@@ -65,7 +70,7 @@ public class TicketMapper {
         return detalle;
     }
 
-    public TicketEtapaAgenteDetalle mapearTicketAEtapaDetalle( Ticket ticket, HistoricoTicket historico, FiltroTicketsAgenteEnum filtro) {
+    public TicketEtapaAgenteDetalle mapearTicketAEtapaDetalle(Ticket ticket, HistoricoTicket historico, FiltroTicketsAgenteEnum filtro) {
         TicketEtapaAgenteDetalle detalle = new TicketEtapaAgenteDetalle();
 
         detalle.setIdTicket(ticket.getIdTicket());
@@ -116,6 +121,39 @@ public class TicketMapper {
 
         detalle.setFechaCreacion(ticket.getFechaCreacion());
         detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(categoria, ticket.getPasoActual()));
+
+        return detalle;
+    }
+
+    
+    public TicketEtapaDetalle mapearATicketEtapaDetalle(Ticket ticket,PasoFlujo paso,EstadoEtapaTicketEnum estado,String nota,List<EtapaTicket> etapas) {
+        TicketEtapaDetalle detalle = new TicketEtapaDetalle();
+
+        detalle.setNota(nota);
+        detalle.setPasoActual(paso.getDescripcion());
+        detalle.setEstadoEtapa(estado);
+
+        detalle.setCategoria(ticket.getCategoria().getNombreCategoria());
+
+        String departamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
+
+        detalle.setDepartamento(departamento);
+
+        detalle.setIdAgente(ticket.getAgenteAsignado() != null? ticket.getAgenteAsignado().getIdAgente(): null);
+
+        detalle.setIdCategoria(ticket.getCategoria().getIdCategoria());
+        detalle.setIdCliente(ticket.getCliente().getIdCliente());
+
+        Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
+
+        detalle.setIdDepartamento(idDepartamento);
+
+        detalle.setIdTicket(ticket.getIdTicket());
+        detalle.setListaEtapas(etapas);
+
+        detalle.setNombreAgente(ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getNombre(): "Sin asignar");
+
+        detalle.setNombreCliente(ticket.getCliente().getNombre());
 
         return detalle;
     }

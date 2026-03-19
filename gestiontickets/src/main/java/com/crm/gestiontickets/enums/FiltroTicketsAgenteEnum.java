@@ -3,8 +3,8 @@ package com.crm.gestiontickets.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
+@Getter
 public enum FiltroTicketsAgenteEnum {
     EN_PROCESO("En Proceso"),
     FINALIZADOS("Finalizado"),

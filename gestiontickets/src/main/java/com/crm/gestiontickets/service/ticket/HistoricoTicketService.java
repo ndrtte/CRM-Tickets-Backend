@@ -10,7 +10,7 @@ import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.repository.HistoricoTicketRepository;
 
 @Service
-public class HistorialTicketService {
+public class HistoricoTicketService {
 
     @Autowired
     private HistoricoTicketRepository historicoTicketRepository;

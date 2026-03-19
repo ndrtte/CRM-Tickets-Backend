@@ -25,7 +25,6 @@ import com.crm.gestiontickets.service.ticket.TicketAperturaService;
 import com.crm.gestiontickets.service.ticket.TicketBusquedaService;
 import com.crm.gestiontickets.service.ticket.TicketFlujoService;
 
-
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/ticket")
@@ -61,10 +60,9 @@ public class TicketController {
     }
 
     @GetMapping("/filtrar-ticket-etapa")
-    public Respuesta<TicketEtapaDetalle> obtenerEtapaTicket(@RequestParam String idTicket, @RequestParam Integer idPaso) {
+    public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(@RequestParam String idTicket, @RequestParam Integer idPaso) {
         return ticketBusquedaService.obtenerEstadoTicketEtapa(idTicket, idPaso);
     }
-
     
     @GetMapping("/otener-tickets-departamento")
     public List<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento) {

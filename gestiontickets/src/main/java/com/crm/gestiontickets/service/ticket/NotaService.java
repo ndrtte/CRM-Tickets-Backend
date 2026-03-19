@@ -1,7 +1,5 @@
 package com.crm.gestiontickets.service.ticket;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +21,9 @@ public class NotaService {
         notaRepository.save(nvaNota);
     }
 
-    public String obtenerNotaPorHistorico(HistoricoTicket historico) {
-        List<Nota> notas = notaRepository.findNotasByHistoricoTicket(historico);
-        return notas.isEmpty() ? "" : notas.get(0).getDescripcion();
+    public String obtenerNotaHistorico(HistoricoTicket historico){
+        Nota nota = notaRepository.findByHistoricoTicket(historico);
+        return nota.getDescripcion();
     }
 
 }
