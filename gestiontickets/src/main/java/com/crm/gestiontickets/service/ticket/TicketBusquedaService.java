@@ -89,65 +89,77 @@ public class TicketBusquedaService {
         return listaTicketsDTO;
     }
 
-    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente( Integer idAgente, FiltroTicketsAgenteEnum filtro) {
+    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(
+            Integer idAgente,
+            FiltroTicketsAgenteEnum filtro) {
+
         Agente agente = agenteRepository.findById(idAgente).orElseThrow();
 
+        return switch (filtro) {
+            case EN_PROCESO ->
+                mapearEnProceso(agente);
+            case FINALIZADOS ->
+                mapearFinalizados(agente);
+            case TODOS ->
+                mapearTodos(agente);
+        };
+    }
+
+    private List<TicketEtapaAgenteDetalle> mapearEnProceso(Agente agente) {
+
+        List<Ticket> tickets = ticketRepository.findByAgenteAsignado(agente);
         List<TicketEtapaAgenteDetalle> response = new ArrayList<>();
 
-        switch (filtro) {
-            case EN_PROCESO -> {
-                List<Ticket> enProceso = obtenerEnProceso(agente);
-
-                for (Ticket t : enProceso) {
-                    response.add(
-                            ticketMapper.mapearTicketAEtapaDetalle(t, null, filtro)
-                    );
-                }
-            }
-            
-            case FINALIZADOS -> {
-                List<HistoricoTicket> historicos
-                        = historicoRepository.findHistoricoTicketByAgenteOrigen(agente);
-
-                for (HistoricoTicket h : historicos) {
-                    response.add(
-                            ticketMapper.mapearTicketAEtapaDetalle(
-                                    h.getTicket(),
-                                    h,
-                                    FiltroTicketsAgenteEnum.FINALIZADOS
-                            )
-                    );
-                }
-            }
-
-            case TODOS -> {
-                List<Ticket> enProcesoTodos = obtenerEnProceso(agente);
-                for (Ticket t : enProcesoTodos) {
-                    response.add(ticketMapper.mapearTicketAEtapaDetalle(t, null, FiltroTicketsAgenteEnum.EN_PROCESO));
-                }
-
-                List<HistoricoTicket> historicosTodos = historicoRepository.findHistoricoTicketByAgenteOrigen(agente);
-
-                for (HistoricoTicket h : historicosTodos) {
-                    boolean existe = false;
-                    for (Ticket t : enProcesoTodos) {
-                        if (t.getIdTicket().equals(h.getTicket().getIdTicket())) {
-                            existe = true;
-                            break;
-                        }
-                    }
-                    if (!existe) {
-                        response.add(ticketMapper.mapearTicketAEtapaDetalle(h.getTicket(), h, FiltroTicketsAgenteEnum.FINALIZADOS));
-                    }
-                }
-            }
+        for (Ticket t : tickets) {
+            response.add(ticketMapper.mapearTicketAEtapaDetalle(t, null, FiltroTicketsAgenteEnum.EN_PROCESO));
         }
 
         return response;
     }
 
-    private List<Ticket> obtenerEnProceso(Agente agente) {
-        return ticketRepository.findByAgenteAsignado(agente);
+    private List<TicketEtapaAgenteDetalle> mapearFinalizados(Agente agente) {
+
+        List<HistoricoTicket> historicos
+                = historicoRepository.findHistoricoTicketByAgenteOrigen(agente);
+
+        List<TicketEtapaAgenteDetalle> response = new ArrayList<>();
+
+        for (HistoricoTicket h : historicos) {
+            response.add(
+                    ticketMapper.mapearTicketAEtapaDetalle(
+                            h.getTicket(),
+                            h,
+                            FiltroTicketsAgenteEnum.FINALIZADOS
+                    )
+            );
+        }
+
+        return response;
+    }
+
+    private List<TicketEtapaAgenteDetalle> mapearTodos(Agente agente) {
+
+        List<Ticket> enProceso = ticketRepository.findByAgenteAsignado(agente);
+        List<HistoricoTicket> historicos = historicoRepository.findHistoricoTicketByAgenteOrigen(agente);
+
+        List<TicketEtapaAgenteDetalle> response = new ArrayList<>();
+
+        for (Ticket t : enProceso) {
+            response.add(ticketMapper.mapearTicketAEtapaDetalle(t, null, FiltroTicketsAgenteEnum.EN_PROCESO));
+        }
+
+        List<String> idsEnProceso = new ArrayList<>();
+        for (Ticket t : enProceso) {
+            idsEnProceso.add(t.getIdTicket());
+        }
+
+        for (HistoricoTicket h : historicos) {
+            if (!idsEnProceso.contains(h.getTicket().getIdTicket())) {
+                response.add(ticketMapper.mapearTicketAEtapaDetalle(h.getTicket(), h, FiltroTicketsAgenteEnum.FINALIZADOS));
+            }
+        }
+
+        return response;
     }
 
     public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(String idTicket, Integer idPaso) {
@@ -169,7 +181,8 @@ public class TicketBusquedaService {
 
         EstadoEtapaTicketEnum estado = estadoEtapaService.obtenerEstado(paso, pasoActual, ticketCerrado);
 
-        HistoricoTicket historico = historicoRepository.findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(ticket, paso);
+        HistoricoTicket historico = historicoRepository
+                .findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(ticket, paso);
 
         String nota = historico != null ? notaService.obtenerNotaHistorico(historico) : null;
 
