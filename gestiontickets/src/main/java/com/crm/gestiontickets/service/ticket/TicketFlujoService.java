@@ -28,7 +28,7 @@ public class TicketFlujoService {
     private PasoFlujoRepository pasoFlujoRepository;
 
     @Autowired
-    private HistorialTicketService historialTicketService;
+    private HistoricoTicketService historicoTicketService;
 
     @Autowired
     private NotaService notaService;
@@ -58,7 +58,7 @@ public class TicketFlujoService {
         ticket.setAgenteAsignado(null);
         ticket.setFechaActualizacion(LocalDateTime.now());
 
-        HistoricoTicket historico = historialTicketService.registrarHistorico(ticket, agenteOrigen, null, pasoAnterior, siguientePaso);
+        HistoricoTicket historico = historicoTicketService.registrarHistorico(ticket, agenteOrigen, null, pasoAnterior, siguientePaso);
 
         notaService.registrarNota(ticketNvoEtapa.getNota(), historico);
 
@@ -84,7 +84,7 @@ public class TicketFlujoService {
         ticket.setEstado(estadoCerrado);
         ticket.setFechaActualizacion(LocalDateTime.now());
 
-        HistoricoTicket historico = historialTicketService.registrarHistorico(
+        HistoricoTicket historico = historicoTicketService.registrarHistorico(
                 ticket,
                 agenteOrigen,
                 null,
@@ -102,5 +102,7 @@ public class TicketFlujoService {
 
         return new Respuesta<>(true, "Ticket cerrado correctamente", new TicketPasoResponse(idTicket, idPaso));
     }
+
+    
 
 }

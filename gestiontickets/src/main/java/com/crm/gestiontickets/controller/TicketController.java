@@ -21,9 +21,7 @@ import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
 import com.crm.gestiontickets.service.ticket.TicketAperturaService;
 import com.crm.gestiontickets.service.ticket.TicketBusquedaService;
-
 import com.crm.gestiontickets.service.ticket.TicketFlujoService;
-
 
 @CrossOrigin("*")
 @RestController
@@ -61,7 +59,7 @@ public class TicketController {
 
     @GetMapping("/filtrar-ticket-etapa")
     public Respuesta<TicketEtapaDetalle> obtenerEtapaTicket(@RequestParam String idTicket, @RequestParam Integer idPaso) {
-        return ticketBusquedaService.obtenerEstadoTicketEtapa(idTicket, idPaso);
+        return ticketBusquedaService.obtenerEtapaTicket(idTicket, idPaso);
     }
 
     
@@ -80,8 +78,4 @@ public class TicketController {
         return ticketFlujoService.cerrarTicket(ticketNvoEtapa);
     }
 
-    @GetMapping("/obtener-tickets-agente")
-    public List<TicketDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, @RequestParam(required=false) Integer filtroEstado) {
-        return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtroEstado);
-    }
 }
