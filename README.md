@@ -180,7 +180,7 @@ https://www.docker.com/products/docker-desktop/
 Antes de ejecutar el contenedor, asegúrate de lo siguiente:
 
 - Estar exactamente en el directorio donde se encuentra el archivo `docker-compose.yaml`.  
-  En este proyecto, el directorio raíz es `gestiontickets`.
+  En este proyecto, el directorio raíz es `CRM-TICKETS-BACKEND`.
 
 
 - Tener Docker Desktop ejecutándose en segundo plano.
