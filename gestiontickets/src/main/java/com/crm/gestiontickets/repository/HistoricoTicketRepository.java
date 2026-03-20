@@ -11,4 +11,6 @@ public interface HistoricoTicketRepository extends JpaRepository<HistoricoTicket
     public boolean existsByTicketAndPasoOrigen(Ticket ticket, PasoFlujo paso);
 
     public HistoricoTicket findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(Ticket ticket, PasoFlujo paso);
+
+    public HistoricoTicket findTopByTicketOrderByFechaHistoricoDesc(Ticket ticket);
 }
