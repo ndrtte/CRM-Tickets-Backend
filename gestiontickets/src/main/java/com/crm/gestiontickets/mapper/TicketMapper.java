@@ -12,6 +12,7 @@ import com.crm.gestiontickets.entity.Agente;
 import com.crm.gestiontickets.entity.Categoria;
 import com.crm.gestiontickets.entity.Cliente;
 import com.crm.gestiontickets.entity.EstadoTicket;
+import com.crm.gestiontickets.entity.HistoricoTicket;
 import com.crm.gestiontickets.entity.PasoFlujo;
 import com.crm.gestiontickets.entity.Ticket;
 import com.crm.gestiontickets.enums.EstadoEtapaTicketEnum;
@@ -67,17 +68,18 @@ public class TicketMapper {
         return detalle;
     }
 
-    public TicketEtapaDetalle mapearATicketEtapaDetalle(Ticket ticket,PasoFlujo paso,EstadoEtapaTicketEnum estado,String nota,List<EtapaTicket> etapas) {
+    public TicketEtapaDetalle mapearATicketEtapaDetalle(Ticket ticket, PasoFlujo paso, EstadoEtapaTicketEnum estado, String nota, List<EtapaTicket> etapas, HistoricoTicket historico) {
         TicketEtapaDetalle detalle = new TicketEtapaDetalle();
 
         Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
         String departamento = idDepartamento != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
 
-        Integer idAgente = ticket.getAgenteAsignado() != null? ticket.getAgenteAsignado().getIdAgente(): null;
-        String nombreAgente = ticket.getAgenteAsignado() != null ? ticket.getAgenteAsignado().getNombre() + ticket.getAgenteAsignado().getApellido(): "Sin asignar";
+        Agente agente = historico != null ? historico.getAgenteDestino() : ticket.getAgenteAsignado();
+        Integer idAgente = agente != null ? agente.getIdAgente() : null;
+        String nombreAgente = agente != null ? agente.getNombre() + " " + agente.getApellido() : "Sin asignar";
 
         Integer idCategoria = ticket.getCategoria() != null ? ticket.getCategoria().getIdCategoria() : null;
-        String categoria = idCategoria != null ? ticket.getCategoria().getNombreCategoria() : null; 
+        String categoria = idCategoria != null ? ticket.getCategoria().getNombreCategoria() : null;
 
         Long idCliente = ticket.getCliente().getIdCliente();
         String nombreCliente = ticket.getCliente().getNombre();
@@ -100,7 +102,6 @@ public class TicketMapper {
         detalle.setNota(nota);
         detalle.setPasoActual(paso.getDescripcion());
         detalle.setEstadoEtapa(estado);
-
 
         return detalle;
     }

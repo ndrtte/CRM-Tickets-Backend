@@ -104,8 +104,7 @@ public class TicketBusquedaService {
 
         String nota = historico != null ? notaService.obtenerNotaHistorico(historico) : null;
 
-        TicketEtapaDetalle detalle = ticketMapper.mapearATicketEtapaDetalle(ticket, paso, estado, nota, etapas);
-
+        TicketEtapaDetalle detalle = ticketMapper.mapearATicketEtapaDetalle(ticket, paso, estado, nota, etapas, historico);
         return new Respuesta<>(true, "Ok", detalle);
     }
 
