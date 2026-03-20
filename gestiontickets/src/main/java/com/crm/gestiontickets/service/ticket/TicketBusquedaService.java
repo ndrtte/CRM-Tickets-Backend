@@ -98,14 +98,13 @@ public class TicketBusquedaService {
 
         PasoFlujo paso = pasoFlujoRepository.findById(idPaso).get();
 
-        EstadoEtapaTicketEnum estado = estadoEtapaService.obtenerEstado(paso, pasoActual, ticketCerrado);
+        EstadoEtapaTicketEnum estado = estadoEtapaService.obtenerEstado(ticket, paso, pasoActual, ticketCerrado);
 
         HistoricoTicket historico = historicoRepository.findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(ticket, paso);
 
         String nota = historico != null ? notaService.obtenerNotaHistorico(historico) : null;
 
-        TicketEtapaDetalle detalle = ticketMapper.mapearATicketEtapaDetalle(ticket, paso, estado, nota, etapas);
-
+        TicketEtapaDetalle detalle = ticketMapper.mapearATicketEtapaDetalle(ticket, paso, estado, nota, etapas, historico);
         return new Respuesta<>(true, "Ok", detalle);
     }
 
