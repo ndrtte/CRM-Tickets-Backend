@@ -8,6 +8,7 @@ import com.crm.gestiontickets.entity.Ticket;
 
 public interface HistoricoTicketRepository extends JpaRepository<HistoricoTicket, Integer> {
 
+    public boolean existsByTicketAndPasoOrigen(Ticket ticket, PasoFlujo paso);
 
     public HistoricoTicket findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(Ticket ticket, PasoFlujo paso);
 }

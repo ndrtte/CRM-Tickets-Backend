@@ -98,7 +98,7 @@ public class TicketBusquedaService {
 
         PasoFlujo paso = pasoFlujoRepository.findById(idPaso).get();
 
-        EstadoEtapaTicketEnum estado = estadoEtapaService.obtenerEstado(paso, pasoActual, ticketCerrado);
+        EstadoEtapaTicketEnum estado = estadoEtapaService.obtenerEstado(ticket, paso, pasoActual, ticketCerrado);
 
         HistoricoTicket historico = historicoRepository.findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(ticket, paso);
 
