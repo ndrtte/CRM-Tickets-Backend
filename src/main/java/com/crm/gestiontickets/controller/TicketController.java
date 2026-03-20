@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,12 +15,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.dto.Respuesta;
+import com.crm.gestiontickets.dto.agente.IdAgente;
+import com.crm.gestiontickets.dto.ticket.IdTicket;
 import com.crm.gestiontickets.dto.ticket.TicketApertura;
 import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
 import com.crm.gestiontickets.dto.ticket.TicketCreacion;
 import com.crm.gestiontickets.dto.ticket.TicketDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketEtapaDetalle;
 import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
+import com.crm.gestiontickets.service.ticket.TicketAgenteService;
 import com.crm.gestiontickets.service.ticket.TicketAperturaService;
 import com.crm.gestiontickets.service.ticket.TicketBusquedaService;
 import com.crm.gestiontickets.service.ticket.TicketFlujoService;
@@ -36,6 +41,9 @@ public class TicketController {
 
     @Autowired
     private TicketFlujoService ticketFlujoService;
+
+    @Autowired
+    private TicketAgenteService ticketAgenteService;
 
     @PostMapping("/apertura")
     public Respuesta<TicketPasoResponse> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
@@ -76,6 +84,11 @@ public class TicketController {
     @PutMapping("/cerrar-ticket")
     public Respuesta<TicketPasoResponse> cerrarTicket(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
         return ticketFlujoService.cerrarTicket(ticketNvoEtapa);
+    }
+
+    @PatchMapping("{idTicket}/asignar-agente")
+    public Respuesta<IdTicket> asignarAgenteATicket(@PathVariable String idTicket, @RequestBody IdAgente idAgente){
+        return ticketAgenteService.asignarAgenteATicket(idTicket, idAgente);
     }
 
 }
