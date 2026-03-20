@@ -45,7 +45,7 @@ git clone https://github.com/ndrtte/CRM-Tickets-Backend.git
 3. Una vez finalizada la clonación, ingresar al directorio del proyecto:
 
 ```bash
-cd CRM-Tickets-Backend\gestiontickets
+cd CRM-Tickets-Backend
 ```
 
 4. Para abrir el proyecto en Visual Studio Code, ejecutar:
@@ -57,28 +57,6 @@ code .
 5. El proyecto se abrirá automáticamente en Visual Studio Code.
 
 ## Ejecutar el proyecto
-
-El proyecto tendrá la siguiente estructura:
-
-```text
-CRM-Tickets-Backend/
-└── gestiontickets/
-    ├── .mvn/
-    ├── .vscode/
-    ├── src/
-    │   ├── main/
-    │   │   ├── java/com/crm/gestiontickets/
-    │   │   └── resources/
-    │   └── test/
-    ├── target/
-    ├── .gitattributes
-    ├── .gitignore
-    ├── HELP.md
-    ├── mvnw
-    ├── mvnw.cmd
-    ├── pom.xml
-    └── README.md
-```
 
 Dentro del directorio `src/main/java/com/crm/gestiontickets/`, ubicar el archivo:
 
