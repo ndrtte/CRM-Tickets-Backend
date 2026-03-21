@@ -23,6 +23,8 @@ public class DepartamentoService {
         departamento.setNombreDepartamento(departamentoDTO.getNombreDepartamento());
         departamento.setDescripcion(departamentoDTO.getDescripcion());
         departamento.setFechaCreacion(LocalDateTime.now());
+        departamento.setFechaActualizacion(LocalDateTime.now());
+        departamento.setActivo(departamento.getActivo());
 
         departamentoRepository.save(departamento);
 
@@ -31,7 +33,9 @@ public class DepartamentoService {
         nuevoDepartamento.setIdDepartamento(departamento.getIdDepartamento());
         nuevoDepartamento.setNombreDepartamento(departamento.getNombreDepartamento());
         nuevoDepartamento.setDescripcion(departamento.getDescripcion());
-
+        nuevoDepartamento.setFechaCreacion(departamento.getFechaCreacion());
+        nuevoDepartamento.setFechaActualizacion(departamento.getFechaActualizacion());
+        nuevoDepartamento.setActivo(departamento.getActivo());
         return nuevoDepartamento;
     }
 
@@ -44,6 +48,7 @@ public class DepartamentoService {
         departamento.setNombreDepartamento(departamentoDTO.getNombreDepartamento());
         departamento.setDescripcion(departamentoDTO.getDescripcion());
         departamento.setFechaActualizacion(LocalDateTime.now());
+        departamento.setActivo(departamentoDTO.getActivo());
 
         departamentoRepository.save(departamento);
 
@@ -53,9 +58,11 @@ public class DepartamentoService {
         dto.setDescripcion(departamento.getDescripcion());
         dto.setFechaCreacion(departamento.getFechaCreacion());
         dto.setFechaActualizacion(departamento.getFechaActualizacion());
+        dto.setActivo(departamento.getActivo());
 
         return dto;
     }
+
 
     //eliminar un departamento
     public void eliminarDepartamento(Integer idDepartamento) {
@@ -65,7 +72,7 @@ public class DepartamentoService {
         departamentoRepository.delete(departamento);
     }
 
-        public Departamento bloquearDepartamento(Integer idDepartamento) {
+    public Departamento bloquearDepartamento(Integer idDepartamento) {
 
     Departamento departamento = departamentoRepository.findById(idDepartamento)
             .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
@@ -79,7 +86,7 @@ public class DepartamentoService {
     departamento.setFechaActualizacion(LocalDateTime.now());
 
     return departamentoRepository.save(departamento);
-    }
+}
 
         public Object obtenerDepartamentosActivos() {
             // TODO Auto-generated method stub

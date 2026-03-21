@@ -43,8 +43,10 @@ public class Departamento {
     @Column(name = "activo")
     private String activo;
 
-     public Integer getIdDepartamento() {
+    public Integer getIdDepartamento() {
         return idDepartamento;
     }
+
+    
 
 }
