@@ -132,7 +132,7 @@ public class TicketMapper {
         Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
         String departamento = idDepartamento != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
 
-        Agente agente = historico != null ? historico.getAgenteDestino() : ticket.getAgenteAsignado();
+        Agente agente = historico != null ? historico.getAgenteOrigen() : ticket.getAgenteAsignado();
         Integer idAgente = agente != null ? agente.getIdAgente() : null;
         String nombreAgente = agente != null ? agente.getNombre() + " " + agente.getApellido() : "Sin asignar";
 
