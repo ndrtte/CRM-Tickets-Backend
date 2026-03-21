@@ -14,7 +14,4 @@ public class Respuesta <R>{
     private boolean exito;
     private String mensaje;
     private R datos;
-
-
-
 }
