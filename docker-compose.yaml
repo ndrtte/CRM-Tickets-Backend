@@ -13,6 +13,18 @@ services:
       - "${DB_PORT}:1433"
     restart: unless-stopped
 
+  backend:
+    build: .
+    container_name: crm_backend
+    depends_on:
+      - sqlserver
+    networks:
+      - crm_bd_network
+    env_file:
+      - .env.docker
+    ports:
+      - "8080:8080"
+
 networks:
   crm_bd_network:
     driver: bridge
