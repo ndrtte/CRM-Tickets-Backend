@@ -18,7 +18,7 @@ import com.crm.gestiontickets.entity.Rol;
 import com.crm.gestiontickets.repository.AgenteRepository;
 import com.crm.gestiontickets.repository.DepartamentoRepository;
 import com.crm.gestiontickets.repository.RolRepository;
-import com.crm.gestiontickets.service.AgenteService;
+import com.crm.gestiontickets.service.Agente.AgenteService;
 
 public class AgenteServiceTest {
 
