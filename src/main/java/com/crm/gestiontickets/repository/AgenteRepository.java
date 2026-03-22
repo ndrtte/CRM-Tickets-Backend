@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.crm.gestiontickets.entity.Agente;
+import com.crm.gestiontickets.entity.Departamento;
 
 @Repository
 public interface AgenteRepository extends JpaRepository<Agente, Integer>{
@@ -28,4 +29,6 @@ public interface AgenteRepository extends JpaRepository<Agente, Integer>{
            "   OR a.usuario LIKE %:valor%" +
            "   OR CAST(a.idAgente as string) LIKE CONCAT('%', :valor, '%')")
     List<Agente> buscarPorCriterio(@Param("valor") String valor);
+
+    public List<Agente> findByDepartamentoAndActivo(Departamento departamento, String activo);
 }
