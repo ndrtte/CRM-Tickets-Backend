@@ -1,23 +1,33 @@
 package com.crm.gestiontickets.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crm.gestiontickets.dto.Respuesta;
 import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
 import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
-import com.crm.gestiontickets.entity.*;
-import com.crm.gestiontickets.repository.*;
+import com.crm.gestiontickets.entity.Flujo;
+import com.crm.gestiontickets.entity.PasoFlujo;
+import com.crm.gestiontickets.entity.Ticket;
+import com.crm.gestiontickets.repository.PasoFlujoRepository;
+import com.crm.gestiontickets.repository.TicketRepository;
 import com.crm.gestiontickets.service.ticket.HistoricoTicketService;
 import com.crm.gestiontickets.service.ticket.NotaService;
 import com.crm.gestiontickets.service.ticket.TicketFlujoService;
 
+@ExtendWith(MockitoExtension.class)
 class TicketFlujoServiceTest {
 
     @InjectMocks
@@ -30,18 +40,10 @@ class TicketFlujoServiceTest {
     private PasoFlujoRepository pasoFlujoRepository;
 
     @Mock
-    private EstadoTicketRepository estadoTicketRepository;
-
-    @Mock
     private HistoricoTicketService historialTicketService;
 
     @Mock
     private NotaService notaService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testAvanzarEtapa_exitoso() {

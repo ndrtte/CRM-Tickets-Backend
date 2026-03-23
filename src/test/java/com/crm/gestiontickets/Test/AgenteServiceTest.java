@@ -1,15 +1,17 @@
 package com.crm.gestiontickets.Test;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crm.gestiontickets.dto.agente.AgenteDetalle;
 import com.crm.gestiontickets.entity.Agente;
@@ -20,6 +22,7 @@ import com.crm.gestiontickets.repository.DepartamentoRepository;
 import com.crm.gestiontickets.repository.RolRepository;
 import com.crm.gestiontickets.service.Agente.AgenteService;
 
+@ExtendWith(MockitoExtension.class)
 public class AgenteServiceTest {
 
     @InjectMocks
@@ -33,11 +36,6 @@ public class AgenteServiceTest {
 
     @Mock
     private RolRepository rolRepository;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testCrearAgente_exitoso() {
