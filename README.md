@@ -93,10 +93,26 @@ DB_NAME=NOMBRE_BASE_DE_DATOS
 DB_USER=Usuario123
 DB_PASSWORD=ContraseñaSegura1234.
 ```
+### 3. Crear el archivo `.env.docker`
 
-**Importante:**  
-Verifica previamente que las credenciales, el puerto, el nombre de la base de datos y la configuración de red sean correctos.
+1. Copia el archivo `env.template`.
+2. Renombra la copia a `.env.docker`.
+3. Abre el archivo `.env.docker` y completa las variables con tus valores correspondientes. Por ejemplo:
 
+```
+DB_HOST=sqlserver
+DB_PORT=1433
+DB_NAME=NOMBRE_BASE_DE_DATOS
+DB_USER=Usuario123
+DB_PASSWORD=ContraseñaSegura1234.
+```
+
+### Notas importantes
+
+- El puerto `1433` es el puerto interno estándar de SQL Server.
+- Cuando se ejecuta dentro de Docker, no se debe usar `localhost` como host de la base de datos.
+- Cuando se ejecuta fuera de Docker, no se debe usar el nombre del servicio (`sqlserver`).
+- Asegúrate de que las credenciales y el nombre de la base de datos sean correctos antes de ejecutar el proyecto.
 
 ### 3. Crear la carpeta `.vscode`
 
@@ -140,6 +156,7 @@ Abre el archivo `.gitignore` y agrega lo siguiente:
 ```
 .vscode/
 .env
+.env.docker
 ```
 
 Después de esto, estos archivos deberían mostrarse en un tono más gris en el panel de control de cambios, indicando que Git ya no los incluirá en los commits.
@@ -153,79 +170,102 @@ Una vez completados todos los pasos:
 
 Si todo está correctamente configurado, la aplicación debería iniciar sin inconvenientes utilizando las variables de entorno definidas.
 
-## Configuración de Docker para SQL Server
+# Configuración con Docker: Backend y SQL Server
 
-En este apartado se explica cómo crear y ejecutar un contenedor de SQL Server utilizando Docker Desktop.
+Este apartado describe el proceso para construir y ejecutar el backend desarrollado en Spring Boot junto con una instancia de SQL Server utilizando Docker.
 
-### 1. Instalación de Docker Desktop
+## 1. Requisitos previos
 
-Para comenzar, es necesario tener instalada la aplicación de escritorio Docker Desktop.
+Antes de comenzar, asegúrate de cumplir con los siguientes requisitos:
 
-Sitio oficial de descarga:  
+- Tener Docker Desktop instalado
+- Tener el proyecto clonado en tu equipo
+- Estar ubicado en la raíz del proyecto: `CRM-TICKETS-BACKEND`
+
+## 2. Instalación de Docker Desktop
+
+Si no tienes Docker instalado, puedes descargarlo desde el sitio oficial:
+
 https://www.docker.com/products/docker-desktop/
 
-#### Pasos de instalación
+### Pasos de instalación
 
-1. Descarga la versión correspondiente a tu sistema operativo y arquitectura de procesador (ARM o AMD).
-2. Ejecuta el instalador y sigue las instrucciones del asistente.
-3. Durante la instalación, Docker puede solicitar:
-   - Activar WSL 2 (en Windows).
-   - Habilitar la virtualización en la BIOS.
-4. Si todo está correcto, el instalador pedirá reiniciar el equipo.
-5. Una vez reiniciado, Docker Desktop debería iniciar correctamente.
+1. Descarga la versión correspondiente a tu sistema operativo (Windows, Linux o macOS) y arquitectura (AMD o ARM).
+2. Ejecuta el instalador y sigue las instrucciones.
+3. Durante la instalación:
+   - En Windows, puede ser necesario habilitar WSL 2.
+   - Puede requerirse activar la virtualización en la BIOS.
+4. Reinicia el equipo si el instalador lo solicita.
+5. Verifica que Docker Desktop esté en ejecución.
 
+## 3. Preparación de la aplicación
 
-### 2. Creación y ejecución del contenedor SQL Server
+Antes de levantar los contenedores, es necesario generar el archivo `.jar` del proyecto.
 
-Antes de ejecutar el contenedor, asegúrate de lo siguiente:
-
-- Estar exactamente en el directorio donde se encuentra el archivo `docker-compose.yaml`.  
-  En este proyecto, el directorio raíz es `CRM-TICKETS-BACKEND`.
-
-
-- Tener Docker Desktop ejecutándose en segundo plano.
-
-#### Ejecutar el contenedor
-
-Abre una terminal en el directorio raíz del proyecto y ejecuta:
+Ejecuta el siguiente comando en la raíz del proyecto:
 
 ```bash
-docker compose up -d
+mvn clean install -DskipTests
+```
+Esto generará el archivo:
+
+`target/gestiontickets-0.0.1-SNAPSHOT.jar`
+
+Este archivo es necesario para construir la imagen del backend.
+
+## 4. Construcción y ejecución de contenedores
+
+Ubicado en la raíz del proyecto, ejecuta:
+
+```bash
+docker compose up -d --build
 ```
 
-Este comando:
+Este comando realiza lo siguiente:
 
-- Lee el archivo `docker-compose.yaml`.
-- Descarga la imagen de SQL Server (si no existe).
-- Crea y ejecuta el contenedor en segundo plano (`-d` = detached mode).
+- Construye la imagen del backend a partir del Dockerfile
+- Descarga la imagen de SQL Server si no existe localmente
+- Crea y ejecuta los contenedores definidos en docker-compose.yaml
+- Ejecuta los contenedores en segundo plano
 
-No cerrar la terminal hasta que el proceso haya finalizado correctamente.
+## 5. Verificación de contenedores
 
-#### Verificar que el contenedor está corriendo
-
-En el mismo directorio, ejecuta:
+Para verificar que los contenedores están en ejecución, utiliza:
 
 ```bash
 docker ps
 ```
 
-Si todo está correcto, deberías ver el contenedor de SQL Server en la lista.
+Deberías visualizar al menos:
 
-También puedes verificarlo desde Docker Desktop, en la sección de contenedores.
+- Un contenedor correspondiente a SQL Server
+- Un contenedor correspondiente al backend
 
-### Recomendaciones
+También puedes validarlo desde Docker Desktop en la sección de contenedores.
 
-Se recomienda instalar alguna de las siguientes extensiones en Visual Studio Code:
+## 6. Notas importantes
+Asegúrate de que Docker Desktop esté en ejecución antes de levantar los contenedores.
+Si realizas cambios en el Dockerfile o en el docker-compose.yaml, debes reconstruir las imágenes con:
+
+```bash
+docker compose up -d --build
+```
+
+## 7. Recomendaciones
+
+Se recomienda instalar las siguientes extensiones en Visual Studio Code:
 
 - Docker
 - Container Tools
 
-Ambas extensiones son desarrolladas por Microsoft.
-
-### Orden para ejecutar este repositorio
+## 8. Orden de ejecución
 
 Para ejecutar correctamente el proyecto, sigue este orden:
 
-1. Iniciar Docker Desktop.
-2. Ejecutar el contenedor de SQL Server con `docker compose up -d`.
-3. Ejecutar el proyecto Java Spring Boot.
+- Iniciar Docker Desktop
+- Ejecutar el siguiente comando en la raíz del proyecto:
+
+```bash
+docker compose up -d
+```
+La base de datos y la aplicación se iniciarán automáticamente.

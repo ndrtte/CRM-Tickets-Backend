@@ -12,6 +12,30 @@ services:
     ports:
       - "${DB_PORT}:1433"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd",
+            "-S", "localhost",
+            "-U", "sa",
+            "-P", "${DB_PASSWORD}",
+            "-C",
+            "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 60s
+
+  backend:
+    build: .
+    container_name: crm_backend
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - crm_bd_network
+    env_file:
+      - .env.docker
+    ports:
+      - "8080:8080"
 
 networks:
   crm_bd_network:
