@@ -1,25 +1,38 @@
 package com.crm.gestiontickets.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.crm.gestiontickets.dto.Respuesta;
 import com.crm.gestiontickets.dto.ticket.TicketCreacion;
-import com.crm.gestiontickets.entity.*;
-import com.crm.gestiontickets.repository.*;
+import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
+import com.crm.gestiontickets.entity.Categoria;
+import com.crm.gestiontickets.entity.EstadoTicket;
+import com.crm.gestiontickets.entity.Flujo;
+import com.crm.gestiontickets.entity.PasoFlujo;
+import com.crm.gestiontickets.entity.Ticket;
+import com.crm.gestiontickets.repository.CategoriaRepository;
+import com.crm.gestiontickets.repository.EstadoTicketRepository;
+import com.crm.gestiontickets.repository.FlujoRepository;
+import com.crm.gestiontickets.repository.PasoFlujoRepository;
+import com.crm.gestiontickets.repository.TicketRepository;
 import com.crm.gestiontickets.service.ticket.HistoricoTicketService;
 import com.crm.gestiontickets.service.ticket.NotaService;
 import com.crm.gestiontickets.service.ticket.TicketAperturaService;
-import com.crm.gestiontickets.dto.Respuesta;
-import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
 
+@ExtendWith(MockitoExtension.class)
 class TicketAperturaServiceTest {
 
     @InjectMocks
@@ -45,11 +58,6 @@ class TicketAperturaServiceTest {
 
     @Mock
     private NotaService notaService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testCrearTicket_exitoso() {

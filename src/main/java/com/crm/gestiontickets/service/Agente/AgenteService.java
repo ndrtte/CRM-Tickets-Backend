@@ -1,4 +1,4 @@
-package com.crm.gestiontickets.service;
+package com.crm.gestiontickets.service.Agente;
 
 import java.time.LocalDateTime;
 import java.util.List;

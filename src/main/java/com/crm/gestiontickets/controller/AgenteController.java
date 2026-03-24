@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.crm.gestiontickets.dto.agente.AgenteDepartamento;
 import com.crm.gestiontickets.dto.agente.AgenteDetalle;
-import com.crm.gestiontickets.service.AgenteService;
+import com.crm.gestiontickets.service.Agente.AgenteBusquedaService;
+import com.crm.gestiontickets.service.Agente.AgenteService;
+
 
 
 @CrossOrigin("*")
@@ -15,7 +18,10 @@ import com.crm.gestiontickets.service.AgenteService;
 
 public class AgenteController {
     @Autowired
-    private AgenteService agenteService;  
+    private AgenteService agenteService;
+    
+    @Autowired
+    private AgenteBusquedaService agenteBusquedaService;
 
     @PostMapping("/crear-agente")
     public AgenteDetalle crearAgente(@RequestBody AgenteDetalle agente) {
@@ -39,5 +45,11 @@ public class AgenteController {
     public AgenteDetalle bloquearAgente(@PathVariable("id") Integer id) {
         return agenteService.bloquearAgente(id);
     }
+
+    @GetMapping("/obtener/agente-departamento")
+    public List<AgenteDepartamento> getMethodName(@RequestParam Integer idDepartamento) {
+        return agenteBusquedaService.agentePorDepartamento(idDepartamento);
+    }
+    
 
 }
