@@ -205,7 +205,7 @@ Antes de levantar los contenedores, es necesario generar el archivo `.jar` del p
 Ejecuta el siguiente comando en la raíz del proyecto:
 
 ```bash
-mvn clean install -DskipTests
+./mvnw clean package -DskipTests
 ```
 Esto generará el archivo:
 
