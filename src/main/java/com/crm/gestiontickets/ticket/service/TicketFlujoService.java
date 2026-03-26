@@ -70,6 +70,7 @@ public class TicketFlujoService {
         Integer idPaso = ticket.getPasoActual().getIdPasosFlujo();
 
         return new Respuesta<>(true, "Ticket avanzado a la siguiente etapa", new TicketPasoResponse(idTicket, idPaso));
+        
     }
 
 
