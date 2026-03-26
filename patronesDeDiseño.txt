@@ -1,0 +1,10 @@
+Patrón global:
+El proyecto sigue principalmente el Layered Architecture 
+(Arquitectura en Capas), común en aplicaciones Spring Boot:
+
+Capa de presentación → controller
+Capa de negocio → service
+Capa de acceso a datos → repository
+Capa de modelado → entity y dto
+Capa de mapeo/conversión → mapper
+
