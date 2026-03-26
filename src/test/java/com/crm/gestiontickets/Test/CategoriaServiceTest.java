@@ -9,10 +9,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.crm.gestiontickets.dto.CategoriaDetalle;
-import com.crm.gestiontickets.entity.Categoria;
-import com.crm.gestiontickets.repository.CategoriaRepository;
-import com.crm.gestiontickets.service.CategoriaService;
+import com.crm.gestiontickets.ticket.dto.CategoriaDetalle;
+import com.crm.gestiontickets.ticket.entity.Categoria;
+import com.crm.gestiontickets.ticket.repository.CategoriaRepository;
+import com.crm.gestiontickets.ticket.service.CategoriaService;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoriaServiceTest {

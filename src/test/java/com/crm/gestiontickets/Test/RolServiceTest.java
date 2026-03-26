@@ -12,10 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.crm.gestiontickets.dto.agente.RolDetalle;
-import com.crm.gestiontickets.entity.Rol;
-import com.crm.gestiontickets.repository.RolRepository;
-import com.crm.gestiontickets.service.RolService;
+import com.crm.gestiontickets.agente.dto.RolDetalle;
+import com.crm.gestiontickets.agente.entity.Rol;
+import com.crm.gestiontickets.agente.repository.RolRepository;
+import com.crm.gestiontickets.agente.service.RolService;
 
 @ExtendWith(MockitoExtension.class)
 class RolServiceTest {

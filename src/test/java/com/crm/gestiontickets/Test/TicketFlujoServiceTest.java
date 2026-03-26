@@ -15,17 +15,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.crm.gestiontickets.dto.Respuesta;
-import com.crm.gestiontickets.dto.ticket.TicketAvanzarEtapa;
-import com.crm.gestiontickets.dto.ticket.TicketPasoResponse;
-import com.crm.gestiontickets.entity.Flujo;
-import com.crm.gestiontickets.entity.PasoFlujo;
-import com.crm.gestiontickets.entity.Ticket;
-import com.crm.gestiontickets.repository.PasoFlujoRepository;
-import com.crm.gestiontickets.repository.TicketRepository;
-import com.crm.gestiontickets.service.ticket.HistoricoTicketService;
-import com.crm.gestiontickets.service.ticket.NotaService;
-import com.crm.gestiontickets.service.ticket.TicketFlujoService;
+import com.crm.gestiontickets.shared.dto.Respuesta;
+import com.crm.gestiontickets.ticket.dto.TicketAvanzarEtapa;
+import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
+import com.crm.gestiontickets.ticket.entity.Flujo;
+import com.crm.gestiontickets.ticket.entity.PasoFlujo;
+import com.crm.gestiontickets.ticket.entity.Ticket;
+import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
+import com.crm.gestiontickets.ticket.repository.TicketRepository;
+import com.crm.gestiontickets.ticket.service.HistoricoTicketService;
+import com.crm.gestiontickets.ticket.service.NotaService;
+import com.crm.gestiontickets.ticket.service.TicketFlujoService;
 
 @ExtendWith(MockitoExtension.class)
 class TicketFlujoServiceTest {
