@@ -1,3 +1,4 @@
+/*Patron: estructural: Facade, expone los endpoint REST, delega la logica de negocios al service */
 package com.crm.gestiontickets.agente.controller;
 
 import java.util.List;

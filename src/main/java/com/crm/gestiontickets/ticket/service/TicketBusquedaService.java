@@ -1,3 +1,4 @@
+/*Patron: estructural: facade, obtine la informacion de un ticket y sus etapas */
 package com.crm.gestiontickets.ticket.service;
 
 import java.util.ArrayList;

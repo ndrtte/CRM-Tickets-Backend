@@ -1,3 +1,6 @@
+/* Patrón: estructural: Facade, centraliza la lógica de autenticación,
+   simplifica la interacción entre controller y repositorios */
+   
 package com.crm.gestiontickets.auth.service;
 
 import java.util.ArrayList;

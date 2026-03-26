@@ -1,3 +1,4 @@
+/* Patrón: creacional: DTO, transporta la informacion del estado de un ticket */
 package com.crm.gestiontickets.ticket.entity;
 
 import jakarta.persistence.Column;

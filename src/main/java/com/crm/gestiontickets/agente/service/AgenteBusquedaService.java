@@ -1,3 +1,6 @@
+/* Patrón: estructural: Facade, búsqueda de agentes, simplifica la interacción entre controller y 
+repositorio, simplifica la obtención y mapeo de datos */
+
 package com.crm.gestiontickets.agente.service;
 
 import java.util.ArrayList;

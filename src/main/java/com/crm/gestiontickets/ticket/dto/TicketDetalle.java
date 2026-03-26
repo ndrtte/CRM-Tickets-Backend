@@ -1,3 +1,4 @@
+/*patron: creacional: abstract factory,  hereda los dtoas de BaseTicketDetalle */
 package com.crm.gestiontickets.ticket.dto;
 
 import java.time.LocalDateTime;

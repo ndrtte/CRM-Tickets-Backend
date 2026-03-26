@@ -1,3 +1,4 @@
+/*Patron: estructural: Composite, representa el historico de un ticket*/
 package com.crm.gestiontickets.ticket.entity;
 
 import java.time.LocalDateTime;

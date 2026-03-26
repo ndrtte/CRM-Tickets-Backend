@@ -1,3 +1,4 @@
+/*patron: facade, brinda informacion del estado de un ticket */
 package com.crm.gestiontickets.ticket.service;
 
 import java.util.ArrayList;

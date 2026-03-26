@@ -1,3 +1,4 @@
+/*Patron: comportamiento: Command,  encapsula la operacion de crear o visualizar una nota */
 package com.crm.gestiontickets.ticket.service;
 
 import org.springframework.beans.factory.annotation.Autowired;

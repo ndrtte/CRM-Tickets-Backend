@@ -1,3 +1,5 @@
+/* Patrón: creacional: DTO, representa las etapas del ticket */
+
 package com.crm.gestiontickets.ticket.dto;
 
 import lombok.AllArgsConstructor;

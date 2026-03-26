@@ -1,3 +1,5 @@
+/* Patrón: creacional: DTO, encapsula los datos para transportarlos entre capas */
+
 package com.crm.gestiontickets.cliente.dto;
 
 import lombok.AllArgsConstructor;

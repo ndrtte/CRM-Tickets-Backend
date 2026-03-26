@@ -1,3 +1,4 @@
+/*Patron: creacional: DTO, representa un documento adjunto a un ticket */
 package com.crm.gestiontickets.ticket.entity;
 
 import jakarta.persistence.Column;

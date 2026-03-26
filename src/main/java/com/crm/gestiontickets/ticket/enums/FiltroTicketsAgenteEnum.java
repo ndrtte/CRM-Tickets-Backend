@@ -1,3 +1,5 @@
+/*Patron, comportamental: strategy, filtra los ticket de un agente */
+
 package com.crm.gestiontickets.ticket.enums;
 
 import lombok.AllArgsConstructor;

@@ -1,3 +1,4 @@
+/*patron: estructural: Composite, representa jerarquizar las categorías y subcategorías */
 package com.crm.gestiontickets.ticket.entity;
 
 import java.time.LocalDateTime;

@@ -1,3 +1,4 @@
+/*Patron: comportamiento: Strategy,  define las reglas para determinar el estado de una etapa de un ticket*/
 package com.crm.gestiontickets.ticket.service;
 
 import org.springframework.beans.factory.annotation.Autowired;

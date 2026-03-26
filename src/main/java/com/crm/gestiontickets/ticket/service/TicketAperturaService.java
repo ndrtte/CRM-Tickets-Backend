@@ -1,3 +1,4 @@
+/*Patron: Creacional: Builder,  construccion de un ticket completo */
 package com.crm.gestiontickets.ticket.service;
 
 import java.time.LocalDateTime;

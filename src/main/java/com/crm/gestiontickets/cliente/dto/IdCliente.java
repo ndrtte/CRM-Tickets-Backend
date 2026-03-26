@@ -1,3 +1,5 @@
+/* Patrón: creacional: DTO, encapsula el idcliente para transportarlko entre capas */
+
 package com.crm.gestiontickets.cliente.dto;
 
 import lombok.AllArgsConstructor;

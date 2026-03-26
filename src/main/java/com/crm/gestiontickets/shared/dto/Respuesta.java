@@ -1,3 +1,5 @@
+/* Patrón: creacional: DTO, encapsula las respuestas del servise,
+   transforma datos y mensajes de forma uniforme */
 package com.crm.gestiontickets.shared.dto;
 
 import lombok.AllArgsConstructor;

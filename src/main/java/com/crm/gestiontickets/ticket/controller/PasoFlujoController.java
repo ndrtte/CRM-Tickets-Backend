@@ -1,3 +1,5 @@
+/* Patrón: estructural: Facade, delega la lógica de obtener el paso de flujo al service */
+
 package com.crm.gestiontickets.ticket.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;

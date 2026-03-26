@@ -1,3 +1,4 @@
+/*Patron: estructural: Composite, maneja los documentos dentro de la nota */
 package com.crm.gestiontickets.ticket.entity;
 
 import java.util.List;

@@ -1,3 +1,4 @@
+/*Patron: comportamiento: uilder,  construccion de objetos DTO*/
 package com.crm.gestiontickets.ticket.service;
 
 import java.time.LocalDateTime;

@@ -1,3 +1,5 @@
+/* Patrón: creacional: DTO, encapsula los datos de estado de ticket */
+
 package com.crm.gestiontickets.ticket.dto;
 
 import lombok.AllArgsConstructor;

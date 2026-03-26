@@ -1,3 +1,4 @@
+/*Patron: comportamental: Mapper, convierte entidades en DTOs */
 package com.crm.gestiontickets.ticket.mapper;
 
 import java.util.List;

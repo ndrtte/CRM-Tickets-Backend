@@ -1,3 +1,4 @@
+/*Patron: estructural: facade, permite obtener el paso acutla de un ticket */
 package com.crm.gestiontickets.ticket.service;
 
 import org.springframework.beans.factory.annotation.Autowired;

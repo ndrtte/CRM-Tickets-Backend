@@ -1,3 +1,4 @@
+/*Patron, comportamental: mapper, filtra los ticket de un agente */
 package com.crm.gestiontickets.ticket.mapper;
 
 import java.util.ArrayList;

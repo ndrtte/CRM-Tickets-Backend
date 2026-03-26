@@ -1,3 +1,6 @@
+/* Patrón: estructural: Facade, centraliza la lógica de negocio, interacción con el repositorio
+   creacional: Factory Method,  construlle el ClienteDetalle y IdCliente desde entidades */
+
 package com.crm.gestiontickets.cliente.service;
 
 import java.time.LocalDateTime;

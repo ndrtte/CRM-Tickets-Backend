@@ -1,3 +1,6 @@
+/* Patrón: estructural: Facade, simplifica la interacción con el cliente y delega la
+logica al EstadoTicketService */
+
 package com.crm.gestiontickets.ticket.controller;
 
 import java.util.List;

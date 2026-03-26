@@ -1,3 +1,5 @@
+/* Patrón: estructural: Composite, contiene las subcategorías recursivas */
+
 package com.crm.gestiontickets.ticket.dto;
 
 import java.util.List;

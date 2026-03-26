@@ -1,3 +1,4 @@
+/*patron: estructural: strategy, representa el estado del ticket en cada etapa */
 package com.crm.gestiontickets.ticket.enums;
 
 import lombok.AllArgsConstructor;

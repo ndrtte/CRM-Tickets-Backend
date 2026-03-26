@@ -1,3 +1,5 @@
+/*Patron:  Arquitectonico, encapsula CRUD de datos desacopla la logica de negocios de lapersistencia*/
+
 package com.crm.gestiontickets.ticket.repository;
 
 import java.util.List;

@@ -1,3 +1,5 @@
+/* Patrón: estructural: Composite, entidad raíz de Cliente,
+   permite contener relaciones entre entidades con estructura de arbol */
 package com.crm.gestiontickets.cliente.entity;
 
 import java.time.LocalDateTime;

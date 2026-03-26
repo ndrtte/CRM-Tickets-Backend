@@ -1,3 +1,4 @@
+/*Patron: estructural: DTO, convierte las entidades Agente en objetosDTO */
 package com.crm.gestiontickets.agente.mapper;
 
 import org.springframework.stereotype.Component;

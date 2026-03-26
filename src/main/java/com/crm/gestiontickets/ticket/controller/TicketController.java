@@ -1,3 +1,7 @@
+/* Patrón: estructural: Facade, centraliza los endpoints de ticket, delega los servicios
+   comportamental: Mediator, coordina los servicios de TicketBusquedaService, TicketAperturaService, 
+   TicketFlujoService y TicketAgenteService */
+
 package com.crm.gestiontickets.ticket.controller;
 
 import java.util.List;

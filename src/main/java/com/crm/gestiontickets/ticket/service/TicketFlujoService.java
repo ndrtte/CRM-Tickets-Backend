@@ -1,3 +1,4 @@
+/*Patron: comportamiento: State, administra la transicion de un ticket entre etapas */
 package com.crm.gestiontickets.ticket.service;
 
 import java.time.LocalDateTime;

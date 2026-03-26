@@ -1,3 +1,5 @@
+/* Patrón: creacional: DTO, encapsula los datos del login */
+
 package com.crm.gestiontickets.auth.dto;
 
 import lombok.AllArgsConstructor;

@@ -1,3 +1,4 @@
+/*Patron:  Comportamiento: Command,  encapsula la operacion de registro de historico de un ticket*/
 package com.crm.gestiontickets.ticket.service;
 
 import org.springframework.beans.factory.annotation.Autowired;

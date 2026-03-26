@@ -1,3 +1,4 @@
+/* Patrón: estructural: Facade, expone los endpoint REST,  delega la lógica de autenticación a AuthService */
 package com.crm.gestiontickets.auth.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;

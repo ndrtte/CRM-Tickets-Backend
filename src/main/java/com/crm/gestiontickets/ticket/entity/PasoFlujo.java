@@ -1,3 +1,4 @@
+
 package com.crm.gestiontickets.ticket.entity;
 
 import com.crm.gestiontickets.agente.entity.Departamento;

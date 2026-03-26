@@ -1,3 +1,5 @@
+/* Patrón: creacional: Abstract Factory, construlle el TicketDetalle y sus subclases */
+
 package com.crm.gestiontickets.ticket.dto;
 
 import java.util.List;

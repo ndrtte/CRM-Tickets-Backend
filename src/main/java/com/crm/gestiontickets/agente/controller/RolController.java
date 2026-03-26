@@ -1,3 +1,4 @@
+/*Patron: estructural: Facade, permite manejar olas operaciones relaiconadas con los roles */
 package com.crm.gestiontickets.agente.controller;
 
 import java.util.List;

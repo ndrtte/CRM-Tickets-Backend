@@ -1,3 +1,5 @@
+/*Patron: estructural: Facade, delega la logica de negocios al service,
+command:Cada metodo es una operacion especifica del sistema */
 package com.crm.gestiontickets.agente.service;
 
 import java.time.LocalDateTime;

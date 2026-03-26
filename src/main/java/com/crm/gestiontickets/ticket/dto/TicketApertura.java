@@ -1,3 +1,5 @@
+/* Patrón: creacional: DTO, para futuras modificaciones en el archivo*/
+
 package com.crm.gestiontickets.ticket.dto;
 
 import lombok.AllArgsConstructor;

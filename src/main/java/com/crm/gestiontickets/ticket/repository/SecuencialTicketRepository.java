@@ -1,3 +1,5 @@
+/*Patron:  estructural: Template, genrea los Ids de los tickets*/
+
 package com.crm.gestiontickets.ticket.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;

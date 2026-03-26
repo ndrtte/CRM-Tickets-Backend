@@ -1,3 +1,4 @@
+/*Patron: Estructural: Composite, representa un flujo de trabajo */
 package com.crm.gestiontickets.ticket.entity;
 
 import java.time.LocalDateTime;

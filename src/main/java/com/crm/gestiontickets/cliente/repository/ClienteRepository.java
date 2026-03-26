@@ -1,3 +1,5 @@
+/* Patrón: estructural: Facade, interactua con la base de datos */
+
 package com.crm.gestiontickets.cliente.repository;
 
 import java.util.List;
