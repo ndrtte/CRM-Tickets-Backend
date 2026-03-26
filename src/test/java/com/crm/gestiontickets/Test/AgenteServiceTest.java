@@ -13,14 +13,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.crm.gestiontickets.dto.agente.AgenteDetalle;
-import com.crm.gestiontickets.entity.Agente;
-import com.crm.gestiontickets.entity.Departamento;
-import com.crm.gestiontickets.entity.Rol;
-import com.crm.gestiontickets.repository.AgenteRepository;
-import com.crm.gestiontickets.repository.DepartamentoRepository;
-import com.crm.gestiontickets.repository.RolRepository;
-import com.crm.gestiontickets.service.Agente.AgenteService;
+import com.crm.gestiontickets.agente.dto.AgenteDetalle;
+import com.crm.gestiontickets.agente.entity.Agente;
+import com.crm.gestiontickets.agente.entity.Departamento;
+import com.crm.gestiontickets.agente.entity.Rol;
+import com.crm.gestiontickets.agente.repository.AgenteRepository;
+import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
+import com.crm.gestiontickets.agente.repository.RolRepository;
+import com.crm.gestiontickets.agente.service.AgenteService;
 
 @ExtendWith(MockitoExtension.class)
 public class AgenteServiceTest {
