@@ -1,7 +1,7 @@
-/*Patron: Creacional: Builder,  construccion de un ticket completo */
 package com.crm.gestiontickets.ticket.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,13 @@ import com.crm.gestiontickets.shared.dto.Respuesta;
 import com.crm.gestiontickets.ticket.dto.TicketApertura;
 import com.crm.gestiontickets.ticket.dto.TicketCreacion;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
+import com.crm.gestiontickets.ticket.dto.evento.TicketCreadoEvent;
 import com.crm.gestiontickets.ticket.entity.Categoria;
 import com.crm.gestiontickets.ticket.entity.EstadoTicket;
 import com.crm.gestiontickets.ticket.entity.Flujo;
-import com.crm.gestiontickets.ticket.entity.HistoricoTicket;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
+import com.crm.gestiontickets.ticket.interfaces.ITicketCreadoObserver;
 import com.crm.gestiontickets.ticket.repository.CategoriaRepository;
 import com.crm.gestiontickets.ticket.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.ticket.repository.FlujoRepository;
@@ -30,7 +31,6 @@ import com.crm.gestiontickets.ticket.repository.TicketRepository;
 @Service
 public class TicketAperturaService {
 
-    
     @Autowired
     private TicketRepository ticketRepository;
 
@@ -56,10 +56,7 @@ public class TicketAperturaService {
     private FlujoRepository flujoRepository;
 
     @Autowired
-    private HistoricoTicketService historicoTicketService;
-
-    @Autowired
-    private NotaService notaService;
+    private List<ITicketCreadoObserver> observers;
 
     public Respuesta<TicketPasoResponse> aperturaTicket(TicketApertura dto) {
 
@@ -93,33 +90,26 @@ public class TicketAperturaService {
         EstadoTicket estadoProceso = estadoTicketRepository
                 .findByEstadoTicket("En Proceso");
 
-
         ticket.setCategoria(categoria);
         ticket.setPasoActual(primerPaso);
         ticket.setEstado(estadoProceso);
         ticket.setFechaActualizacion(LocalDateTime.now());
         ticket.setAgenteAsignado(null);
 
-        HistoricoTicket historico = historicoTicketService.registrarHistorico(
-                ticket,
-                agenteOrigen,
-                ticket.getAgenteAsignado(),
-                pasoAnterior,
-                primerPaso
-        );
+        TicketCreadoEvent evento = new TicketCreadoEvent(ticket, dto, pasoAnterior, primerPaso, agenteOrigen);
 
-        notaService.registrarNota(dto.getNota(), historico);
+        for (ITicketCreadoObserver observer : observers) {
+            observer.enTicketCreado(evento);
+        }
 
         ticketRepository.save(ticket);
 
         String idTicket = ticket.getIdTicket();
         Integer idPaso = ticket.getPasoActual().getIdPasosFlujo();
 
-
         return new Respuesta<>(true, "Ticket creado correctamente", new TicketPasoResponse(idTicket, idPaso));
     }
 
-        // Metodos auxiliares
     private Ticket crearTicketBase(String idTicket, Cliente cliente, Agente agente, EstadoTicket estado, PasoFlujo paso) {
         Ticket ticket = new Ticket();
         ticket.setIdTicket(idTicket);
