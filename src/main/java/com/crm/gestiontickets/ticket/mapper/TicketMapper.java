@@ -1,24 +1,24 @@
 /*Patron: comportamental: Mapper, convierte entidades en DTOs */
 package com.crm.gestiontickets.ticket.mapper;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.crm.gestiontickets.agente.entity.Agente;
-import com.crm.gestiontickets.cliente.entity.Cliente;
-import com.crm.gestiontickets.ticket.dto.EtapaTicket;
 import com.crm.gestiontickets.ticket.dto.TicketDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaAgenteDetalle;
-import com.crm.gestiontickets.ticket.dto.TicketEtapaDetalle;
-import com.crm.gestiontickets.ticket.entity.Categoria;
-import com.crm.gestiontickets.ticket.entity.EstadoTicket;
+import com.crm.gestiontickets.ticket.dto.builder.TicketDetalleBuilder;
+import com.crm.gestiontickets.ticket.dto.builder.TicketEtapaAgenteDetalleBuilder;
 import com.crm.gestiontickets.ticket.entity.HistoricoTicket;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
-import com.crm.gestiontickets.ticket.enums.EstadoEtapaTicketEnum;
-import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
+import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
+import com.crm.gestiontickets.ticket.repository.TicketRepository;
 
 @Component
 public class TicketMapper {
@@ -26,143 +26,85 @@ public class TicketMapper {
     @Autowired
     private PasoFlujoMapper pasoFlujoMapper;
 
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
+    private HistoricoTicketRepository historicoRepository;
+
     public TicketDetalle mapearTicketADetalle(Ticket ticket) {
-        TicketDetalle detalle = new TicketDetalle();
-
-        detalle.setIdTicket(ticket.getIdTicket());
-        detalle.setFechaCreacion(ticket.getFechaCreacion());
-
-        Cliente cliente = ticket.getCliente();
-        if (cliente != null) {
-            detalle.setIdCliente(cliente.getIdCliente());
-            detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
-        }
-
-        Categoria categoria = ticket.getCategoria();
-        if (categoria != null) {
-            detalle.setIdCategoria(categoria.getIdCategoria());
-            detalle.setCategoria(categoria.getNombreCategoria());
-        }
-
-        PasoFlujo pasoActual = ticket.getPasoActual();
-        if (pasoActual != null) {
-            detalle.setIdDepartamento(pasoActual.getIdDepartamento() != null
-                    ? pasoActual.getIdDepartamento().getIdDepartamento()
-                    : null);
-            detalle.setDepartamento(pasoActual.getIdDepartamento() != null
-                    ? pasoActual.getIdDepartamento().getNombreDepartamento()
-                    : "Sin asignar");
-        }
-
-        Agente agente = ticket.getAgenteAsignado();
-        if (agente != null) {
-            detalle.setIdAgente(agente.getIdAgente());
-            detalle.setNombreAgente(agente.getNombre() + " " + agente.getApellido());
-        }
-
-        EstadoTicket estado = ticket.getEstado();
-        if (estado != null) {
-            detalle.setIdEstado(estado.getIdEstadoTicket());
-            detalle.setEstadoTicket(estado.getEstadoTicket());
-        }
-
-        detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(categoria, pasoActual));
-
-        return detalle;
+        return new TicketDetalleBuilder()
+                .conTicket(ticket)
+                .conCliente(ticket.getCliente())
+                .conCategoria(ticket.getCategoria())
+                .conAgente(ticket.getAgenteAsignado())
+                .conDepartamento(ticket.getPasoActual())
+                .conEstado(ticket.getEstado())
+                .conListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), ticket.getPasoActual()))
+                .build();
     }
 
-    public TicketEtapaAgenteDetalle mapearTicketAEtapaDetalle(Ticket ticket, HistoricoTicket historico, FiltroTicketsAgenteEnum filtro) {
-        TicketEtapaAgenteDetalle detalle = new TicketEtapaAgenteDetalle();
+    public List<TicketEtapaAgenteDetalle> mapearEnProceso(Agente agente) {
+        List<Ticket> tickets = ticketRepository.findByAgenteAsignado(agente);
 
-        detalle.setIdTicket(ticket.getIdTicket());
+        return tickets.stream()
+                .map(ticket -> {
+                    PasoFlujo paso = ticket.getPasoActual();
+                    String estadoEtapa = (ticket.getEstado() != null && "Cerrado".equalsIgnoreCase(ticket.getEstado().getEstadoTicket()))
+                            ? "Finalizado" : "En proceso";
 
-        Cliente cliente = ticket.getCliente();
-        if (cliente != null) {
-            detalle.setIdCliente(cliente.getIdCliente());
-            detalle.setNombreCliente(cliente.getNombre() + " " + cliente.getApellido());
-        }
-
-        Categoria categoria = ticket.getCategoria();
-        if (categoria != null) {
-            detalle.setIdCategoria(categoria.getIdCategoria());
-            detalle.setCategoria(categoria.getNombreCategoria());
-        }
-
-        PasoFlujo paso;
-
-        if (historico != null) {
-            paso = historico.getPasoDestino();
-            detalle.setEstadoEtapa("Finalizado");
-        } else {
-            paso = ticket.getPasoActual();
-
-            if (ticket.getEstado() != null && "Cerrado".equalsIgnoreCase(ticket.getEstado().getEstadoTicket())) {
-                detalle.setEstadoEtapa("Finalizado");
-            } else {
-                detalle.setEstadoEtapa("En proceso");
-            }
-        }
-        if (paso != null && paso.getIdDepartamento() != null) {
-            detalle.setIdDepartamento(paso.getIdDepartamento().getIdDepartamento());
-            detalle.setDepartamento(paso.getIdDepartamento().getNombreDepartamento());
-        } else {
-            detalle.setDepartamento("Sin asignar");
-        }
-
-        Agente agente = ticket.getAgenteAsignado();
-        if (agente != null) {
-            detalle.setIdAgente(agente.getIdAgente());
-            detalle.setNombreAgente(agente.getNombre() + " " + agente.getApellido());
-        }
-
-        EstadoTicket estado = ticket.getEstado();
-        if (estado != null) {
-            detalle.setIdEstado(estado.getIdEstadoTicket());
-            detalle.setEstadoTicket(estado.getEstadoTicket());
-        }
-
-        detalle.setFechaCreacion(ticket.getFechaCreacion());
-        detalle.setListaEtapas(pasoFlujoMapper.mapearEtapas(categoria, ticket.getPasoActual()));
-
-        return detalle;
+                    return new TicketEtapaAgenteDetalleBuilder()
+                            .conIdTicket(ticket.getIdTicket())
+                            .conCliente(ticket.getCliente())
+                            .conCategoria(ticket.getCategoria())
+                            .conAgente(ticket.getAgenteAsignado())
+                            .conDepartamento(paso)
+                            .conEstadoEtapa(estadoEtapa)
+                            .conFechaCreacion(ticket.getFechaCreacion())
+                            .conListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), paso))
+                            .build();
+                })
+                .toList();
     }
 
-    public TicketEtapaDetalle mapearATicketEtapaDetalle(Ticket ticket, PasoFlujo paso, EstadoEtapaTicketEnum estado, String nota, List<EtapaTicket> etapas, HistoricoTicket historico) {
-        TicketEtapaDetalle detalle = new TicketEtapaDetalle();
+    public List<TicketEtapaAgenteDetalle> mapearTodos(Agente agente) {
+        List<TicketEtapaAgenteDetalle> enProceso = mapearEnProceso(agente);
+        List<TicketEtapaAgenteDetalle> finalizados = mapearFinalizados(agente);
 
-        Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
-        String departamento = idDepartamento != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
+        Map<String, TicketEtapaAgenteDetalle> ticketsMap = new LinkedHashMap<>();
 
-        Agente agente = historico != null ? historico.getAgenteOrigen() : ticket.getAgenteAsignado();
-        Integer idAgente = agente != null ? agente.getIdAgente() : null;
-        String nombreAgente = agente != null ? agente.getNombre() + " " + agente.getApellido() : "Sin asignar";
+        for (TicketEtapaAgenteDetalle t : enProceso) {
+            ticketsMap.put(t.getIdTicket(), t);
+        }
 
-        Integer idCategoria = ticket.getCategoria() != null ? ticket.getCategoria().getIdCategoria() : null;
-        String categoria = idCategoria != null ? ticket.getCategoria().getNombreCategoria() : null;
+        for (TicketEtapaAgenteDetalle t : finalizados) {
+            ticketsMap.putIfAbsent(t.getIdTicket(), t);
+        }
 
-        Long idCliente = ticket.getCliente().getIdCliente();
-        String nombreCliente = ticket.getCliente().getNombre();
+        return new ArrayList<>(ticketsMap.values());
+    }
 
-        detalle.setIdTicket(ticket.getIdTicket());
+    public List<TicketEtapaAgenteDetalle> mapearFinalizados(Agente agente) {
+        List<HistoricoTicket> historicos = historicoRepository.findHistoricoTicketByAgenteOrigen(agente);
 
-        detalle.setIdCategoria(idCategoria);
-        detalle.setCategoria(categoria);
+        return historicos.stream()
+                .map(historico -> {
+                    Ticket ticket = historico.getTicket();
+                    PasoFlujo paso = historico.getPasoDestino();
+                    String estadoEtapa = "Finalizado";
 
-        detalle.setIdCliente(idCliente);
-        detalle.setNombreCliente(nombreCliente);
-
-        detalle.setIdDepartamento(idDepartamento);
-        detalle.setDepartamento(departamento);
-
-        detalle.setIdAgente(idAgente);
-        detalle.setNombreAgente(nombreAgente);
-
-        detalle.setListaEtapas(etapas);
-        detalle.setNota(nota);
-        detalle.setPasoActual(paso.getDescripcion());
-        detalle.setEstadoEtapa(estado);
-
-        return detalle;
+                    return new TicketEtapaAgenteDetalleBuilder()
+                            .conIdTicket(ticket.getIdTicket())
+                            .conCliente(ticket.getCliente())
+                            .conCategoria(ticket.getCategoria())
+                            .conAgente(historico.getAgenteOrigen())
+                            .conDepartamento(paso)
+                            .conEstadoEtapa(estadoEtapa)
+                            .conFechaCreacion(ticket.getFechaCreacion())
+                            .conListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), ticket.getPasoActual()))
+                            .build();
+                })
+                .toList();
     }
 
 }
