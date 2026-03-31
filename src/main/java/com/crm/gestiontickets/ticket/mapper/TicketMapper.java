@@ -2,9 +2,9 @@
 package com.crm.gestiontickets.ticket.mapper;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -68,60 +68,23 @@ public class TicketMapper {
     }
 
     public List<TicketEtapaAgenteDetalle> mapearTodos(Agente agente) {
-        List<Ticket> enProceso = ticketRepository.findByAgenteAsignado(agente);
-        List<HistoricoTicket> historicos = historicoRepository.findHistoricoTicketByAgenteOrigen(agente);
+        List<TicketEtapaAgenteDetalle> enProceso = mapearEnProceso(agente);
+        List<TicketEtapaAgenteDetalle> finalizados = mapearFinalizados(agente);
 
-        List<TicketEtapaAgenteDetalle> responseEnProceso = enProceso.stream()
-                .map(ticket -> {
-                    PasoFlujo paso = ticket.getPasoActual();
-                    String estadoEtapa = (ticket.getEstado() != null && "Cerrado".equalsIgnoreCase(ticket.getEstado().getEstadoTicket()))
-                            ? "Finalizado" : "En proceso";
+        Map<String, TicketEtapaAgenteDetalle> ticketsMap = new LinkedHashMap<>();
 
-                    return new TicketEtapaAgenteDetalleBuilder()
-                            .conIdTicket(ticket.getIdTicket())
-                            .conCliente(ticket.getCliente())
-                            .conCategoria(ticket.getCategoria())
-                            .conAgente(ticket.getAgenteAsignado())
-                            .conDepartamento(paso)
-                            .conEstadoEtapa(estadoEtapa)
-                            .conFechaCreacion(ticket.getFechaCreacion())
-                            .conListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), paso))
-                            .build();
-                })
-                .toList();
+        for (TicketEtapaAgenteDetalle t : enProceso) {
+            ticketsMap.put(t.getIdTicket(), t);
+        }
 
-        Set<String> idsEnProceso = enProceso.stream()
-                .map(Ticket::getIdTicket)
-                .collect(Collectors.toSet());
+        for (TicketEtapaAgenteDetalle t : finalizados) {
+            ticketsMap.putIfAbsent(t.getIdTicket(), t);
+        }
 
-        List<TicketEtapaAgenteDetalle> responseFinalizados = historicos.stream()
-                .filter(h -> !idsEnProceso.contains(h.getTicket().getIdTicket()))
-                .map(historico -> {
-                    Ticket ticket = historico.getTicket();
-                    PasoFlujo paso = historico.getPasoDestino();
-                    String estadoEtapa = "Finalizado";
-
-                    return new TicketEtapaAgenteDetalleBuilder()
-                            .conIdTicket(ticket.getIdTicket())
-                            .conCliente(ticket.getCliente())
-                            .conCategoria(ticket.getCategoria())
-                            .conAgente(historico.getAgenteOrigen())
-                            .conDepartamento(paso)
-                            .conEstadoEtapa(estadoEtapa)
-                            .conFechaCreacion(ticket.getFechaCreacion())
-                            .conListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), ticket.getPasoActual()))
-                            .build();
-                })
-                .toList();
-
-        List<TicketEtapaAgenteDetalle> resultado = new ArrayList<>();
-        resultado.addAll(responseEnProceso);
-        resultado.addAll(responseFinalizados);
-
-        return resultado;
+        return new ArrayList<>(ticketsMap.values());
     }
 
-    public  List<TicketEtapaAgenteDetalle> mapearFinalizados(Agente agente) {
+    public List<TicketEtapaAgenteDetalle> mapearFinalizados(Agente agente) {
         List<HistoricoTicket> historicos = historicoRepository.findHistoricoTicketByAgenteOrigen(agente);
 
         return historicos.stream()
