@@ -8,23 +8,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import com.crm.gestiontickets.shared.dto.Respuesta;
 import com.crm.gestiontickets.ticket.dto.TicketAvanzarEtapa;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
+import com.crm.gestiontickets.ticket.dto.event.TicketAvanzadoEvent;
 import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
 import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
-import com.crm.gestiontickets.ticket.service.HistoricoTicketService;
-import com.crm.gestiontickets.ticket.service.NotaService;
 import com.crm.gestiontickets.ticket.service.TicketFlujoService;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,10 +39,7 @@ class TicketFlujoServiceTest {
     private PasoFlujoRepository pasoFlujoRepository;
 
     @Mock
-    private HistoricoTicketService historialTicketService;
-
-    @Mock
-    private NotaService notaService;
+    private ApplicationEventPublisher eventPublisher;
 
     @Test
     void testAvanzarEtapa_exitoso() {
@@ -91,7 +87,6 @@ class TicketFlujoServiceTest {
 
         // Verificaciones
         verify(ticketRepository).save(ticket);
-        verify(historialTicketService).registrarHistorico(any(), any(), any(), any(), any());
-        verify(notaService).registrarNota(eq("Avanzando etapa"), any());
+        verify(eventPublisher).publishEvent(any(TicketAvanzadoEvent.class));
     }
 }
