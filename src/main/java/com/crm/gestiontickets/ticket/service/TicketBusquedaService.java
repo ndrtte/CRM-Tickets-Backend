@@ -150,10 +150,7 @@ public class TicketBusquedaService {
                 .toList();
     }
 
-    // ---------------------------
-    // FILTROS (CORREGIDOS)
-    // ---------------------------
-
+   
     private boolean filtrarPorEstado(Ticket ticket, FiltroTicketsAgenteEnum estado) {
 
         if (estado == null || estado == FiltroTicketsAgenteEnum.TODOS) {
@@ -181,6 +178,50 @@ public class TicketBusquedaService {
 
     return fechaCreacion.toLocalDate().isEqual(fecha);
 }
-    
+
+//Buscar tickets por departamento y fecha de creacion
+    public List<TicketDetalle> obtenerTicketsPorDepartamentoFiltro(
+        Integer idDepartamento,
+        String estado,
+        TipoFechaEnum fechaOp,
+        LocalDate fecha
+) {
+
+    return ticketRepository.findByDepartamento_IdDepartamento(idDepartamento)
+            .stream()
+            .filter(t -> filtrarPorEstado(t, estado))
+            .filter(t -> filtrarPorFecha(t.getFechaCreacion(), fechaOp, fecha))
+            .map(ticketMapper::mapearTicketADetalle)
+            .toList();
+}
+
+private boolean filtrarPorEstado(Ticket ticket, String estado) {
+
+    if (estado == null || estado.isBlank()) {
+        return true;
+    }
+
+    // "No asignado"
+    if ("No asignado".equalsIgnoreCase(estado)) {
+        return ticket.getAgenteAsignado() == null;
+    }
+
+    return ticket.getEstado().getEstadoTicket().equalsIgnoreCase(estado);
+}
+
+private boolean filtrarPorFecha(LocalDateTime fechaCreacion, TipoFechaEnum op, LocalDate fecha) {
+
+    if (fecha == null || op == null) {
+        return true;
+    }
+
+    LocalDate fechaTicket = fechaCreacion.toLocalDate();
+
+    return switch (op) {
+        case MENOR -> fechaTicket.isBefore(fecha);
+        case IGUAL -> fechaTicket.isEqual(fecha);
+        case MAYOR -> fechaTicket.isAfter(fecha);
+    };
+}
 
 }
