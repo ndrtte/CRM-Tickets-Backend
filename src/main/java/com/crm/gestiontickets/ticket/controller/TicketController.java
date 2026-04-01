@@ -4,6 +4,7 @@
 
 package com.crm.gestiontickets.ticket.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import com.crm.gestiontickets.ticket.dto.TicketDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaAgenteDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
+import com.crm.gestiontickets.ticket.entity.EstadoTicket;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
 import com.crm.gestiontickets.ticket.service.HistoricoTicketDepartamentoService;
 import com.crm.gestiontickets.ticket.service.TicketAgenteService;
@@ -155,4 +157,18 @@ public Page<TicketDetalle> obtenerHistoricoAgente(
         PageRequest.of(page, size)
     );
 }
+
+//paginacion para historico ticket cliente
+@GetMapping("/obtener-tickets-cliente-filtro")
+public List<TicketDetalle> obtenerTicketsClienteFiltro(
+        @RequestParam Long idCliente,
+        @RequestParam(required = false) FiltroTicketsAgenteEnum estado,
+        @RequestParam(required = false)
+        @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
+        LocalDate fecha
+) {
+    return ticketBusquedaService.obtenerTicketsClienteFiltro(idCliente, estado, fecha);
+}
+
+
 }

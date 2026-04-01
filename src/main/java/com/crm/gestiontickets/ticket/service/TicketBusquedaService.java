@@ -1,6 +1,8 @@
 /*Patron: estructural: facade, obtine la informacion de un ticket y sus etapas */
 package com.crm.gestiontickets.ticket.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,5 +134,53 @@ public class TicketBusquedaService {
 
         return new Respuesta<>(true, "Ok", detalle);
     }
+
+    //filtrar busqueda de tickets por cliente, estado y fecha
+    public List<TicketDetalle> obtenerTicketsClienteFiltro(
+            Long idCliente,
+            FiltroTicketsAgenteEnum estado,
+            LocalDate fecha
+    ) {
+
+        return ticketRepository.findAll().stream()
+                .filter(t -> t.getCliente().getIdCliente().equals(idCliente))
+                .filter(t -> filtrarPorEstado(t, estado))
+                .filter(t -> filtrarPorFecha(t.getFechaCreacion(), fecha))
+                .map(ticketMapper::mapearTicketADetalle)
+                .toList();
+    }
+
+    // ---------------------------
+    // FILTROS (CORREGIDOS)
+    // ---------------------------
+
+    private boolean filtrarPorEstado(Ticket ticket, FiltroTicketsAgenteEnum estado) {
+
+        if (estado == null || estado == FiltroTicketsAgenteEnum.TODOS) {
+            return true;
+        }
+
+        String estadoTicket = ticket.getEstado().getEstadoTicket();
+
+        return switch (estado) {
+            case EN_PROCESO -> "En Proceso".equalsIgnoreCase(estadoTicket);
+            case FINALIZADOS -> "Finalizado".equalsIgnoreCase(estadoTicket);
+            default -> true;
+        };
+    }
+
+    private boolean filtrarPorFecha(LocalDateTime fechaCreacion, LocalDate fecha) {
+
+    if (fecha == null) {
+        return true;
+    }
+
+    if (fechaCreacion == null) {
+        return false;
+    }
+
+    return fechaCreacion.toLocalDate().isEqual(fecha);
+}
+    
 
 }

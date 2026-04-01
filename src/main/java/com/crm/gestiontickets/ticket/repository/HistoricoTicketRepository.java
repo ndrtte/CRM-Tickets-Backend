@@ -5,7 +5,6 @@ package com.crm.gestiontickets.ticket.repository;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.boot.data.autoconfigure.web.DataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
