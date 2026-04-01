@@ -11,6 +11,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,6 +36,7 @@ import com.crm.gestiontickets.ticket.dto.TicketEtapaDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
 import com.crm.gestiontickets.ticket.entity.EstadoTicket;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
+import com.crm.gestiontickets.ticket.enums.TipoFechaEnum;
 import com.crm.gestiontickets.ticket.service.HistoricoTicketDepartamentoService;
 import com.crm.gestiontickets.ticket.service.TicketAgenteService;
 import com.crm.gestiontickets.ticket.service.TicketAperturaService;
@@ -170,5 +172,18 @@ public List<TicketDetalle> obtenerTicketsClienteFiltro(
     return ticketBusquedaService.obtenerTicketsClienteFiltro(idCliente, estado, fecha);
 }
 
-
+//filtrar ticket por departametno
+@GetMapping("/tickets-departamento")
+public List<TicketDetalle> obtenerTicketsPorDepartamento(
+        @RequestParam Integer idDepartamento,
+        @RequestParam(required = false) String estado,
+        @RequestParam(required = false) TipoFechaEnum fechaOp,
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        LocalDate fecha
+) {
+    return ticketBusquedaService.obtenerTicketsPorDepartamentoFiltro(
+            idDepartamento, estado, fechaOp, fecha
+    );
+}
 }

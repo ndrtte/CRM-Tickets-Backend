@@ -23,6 +23,7 @@ import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
 import com.crm.gestiontickets.ticket.enums.EstadoEtapaTicketEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
+import com.crm.gestiontickets.ticket.enums.TipoFechaEnum;
 import com.crm.gestiontickets.ticket.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.ticket.mapper.TicketMapper;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;

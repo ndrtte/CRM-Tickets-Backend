@@ -31,5 +31,10 @@ public class EstadoTicket {
     private String estadoTicket;
 
     private String descripcion;
+
+    public boolean isActivo() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isActivo'");
+    }
 }
 

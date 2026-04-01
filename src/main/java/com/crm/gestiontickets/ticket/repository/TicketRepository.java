@@ -21,7 +21,7 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
         """)
     List<Ticket> findTicketsByDepartamento(Integer idDepartamento);
 
-    List<Ticket> findByAgenteAsignado(Agente agenteAsignado);
+    List<Ticket> findByAgenteAsignado(Integer idAgente);
 
     List<Ticket> findByAgenteAsignadoAndEstado(Agente agenteAsignado, EstadoTicket estado);
 

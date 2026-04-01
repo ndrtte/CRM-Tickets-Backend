@@ -15,4 +15,7 @@ public enum FiltroTicketsAgenteEnum {
     TODOS("Todos");
 
     private final String descripcion;
+
+    
 }
+
