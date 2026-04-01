@@ -4,9 +4,12 @@
 
 package com.crm.gestiontickets.ticket.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.agente.dto.IdAgente;
+import com.crm.gestiontickets.agente.service.HistoricoTicketAgenteService;
 import com.crm.gestiontickets.shared.dto.Respuesta;
 import com.crm.gestiontickets.ticket.dto.IdTicket;
 import com.crm.gestiontickets.ticket.dto.TicketApertura;
@@ -29,6 +33,7 @@ import com.crm.gestiontickets.ticket.dto.TicketEtapaAgenteDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
+import com.crm.gestiontickets.ticket.service.HistoricoTicketDepartamentoService;
 import com.crm.gestiontickets.ticket.service.TicketAgenteService;
 import com.crm.gestiontickets.ticket.service.TicketAperturaService;
 import com.crm.gestiontickets.ticket.service.TicketBusquedaService;
@@ -50,6 +55,13 @@ public class TicketController {
 
     @Autowired
     private TicketAgenteService ticketAgenteService;
+
+    //paginacion
+    @Autowired
+    private HistoricoTicketDepartamentoService historicoTicketDepartamentoService;
+
+    @Autowired
+private HistoricoTicketAgenteService historicoTicketAgenteService;
 
     @PostMapping("/apertura")
     public Respuesta<TicketPasoResponse> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
@@ -100,4 +112,47 @@ public class TicketController {
     public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, FiltroTicketsAgenteEnum filtroEstado) {
         return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtroEstado);
     }
+
+    //paginacion
+    @GetMapping("/historico-departamento")
+    public Page<TicketDetalle> obtenerHistoricoDepartamento(
+        @RequestParam Integer idDepartamento,
+        @RequestParam(required = false) String estadoTicket,
+        @RequestParam(required = false) Integer idAgente,
+        @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaInicio,
+        @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "10") int size
+) {
+    return historicoTicketDepartamentoService.filtrarHistoricoDepartamento(
+            idDepartamento,
+            estadoTicket,
+            idAgente,
+            fechaInicio,
+            fechaFin,
+            PageRequest.of(page, size)
+    );
+}
+
+@GetMapping("/historico-agente")
+public Page<TicketDetalle> obtenerHistoricoAgente(
+    @RequestParam Integer idAgente,
+    @RequestParam(required = false) String estadoTicket,
+    @RequestParam(required = false)
+    @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME)
+    LocalDateTime fechaInicio,
+    @RequestParam(required = false)
+    @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME)
+    LocalDateTime fechaFin,
+    @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size
+) {
+    return historicoTicketAgenteService.filtrarHistoricoAgente(
+        idAgente,
+        estadoTicket,
+        fechaInicio,
+        fechaFin,
+        PageRequest.of(page, size)
+    );
+}
 }

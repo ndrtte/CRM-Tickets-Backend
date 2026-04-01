@@ -5,6 +5,8 @@ package com.crm.gestiontickets.cliente.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.crm.gestiontickets.cliente.dto.ClienteDetalle;
 import com.crm.gestiontickets.cliente.dto.IdCliente;
 import com.crm.gestiontickets.cliente.dto.NuevoCliente;
+import com.crm.gestiontickets.cliente.entity.Cliente;
 import com.crm.gestiontickets.cliente.service.ClienteService;
 
 
@@ -48,6 +51,14 @@ public class ClienteController {
     public IdCliente crearCliente(@RequestBody NuevoCliente nvoClienteDTO) {
         return clienteService.crearCliente(nvoClienteDTO);
     }
-    
+
+    //paginacion
+    @GetMapping("/paginado")
+     public Page<Cliente> listarClientes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return clienteService.listarClientes(PageRequest.of(page, size));    
+    }
 
 }

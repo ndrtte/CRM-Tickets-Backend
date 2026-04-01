@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import com.crm.gestiontickets.cliente.dto.ClienteDetalle;
 import com.crm.gestiontickets.cliente.dto.IdCliente;
@@ -16,6 +17,8 @@ import com.crm.gestiontickets.cliente.dto.NuevoCliente;
 import com.crm.gestiontickets.cliente.entity.Cliente;
 import com.crm.gestiontickets.cliente.exception.ClienteNotFoundException;
 import com.crm.gestiontickets.cliente.repository.ClienteRepository;
+
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class ClienteService {
@@ -92,5 +95,11 @@ public class ClienteService {
 
         return idCliente;
     }
+
+    //pajinacion
+
+    public Page<Cliente> listarClientes(Pageable pageable) {
+    return clienteRepository.findAll(pageable);
+}
 
 }
