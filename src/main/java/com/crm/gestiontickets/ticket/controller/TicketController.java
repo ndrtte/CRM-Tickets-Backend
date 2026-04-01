@@ -4,9 +4,11 @@
 
 package com.crm.gestiontickets.ticket.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -28,6 +30,8 @@ import com.crm.gestiontickets.ticket.dto.TicketDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaAgenteDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
+import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
+import com.crm.gestiontickets.ticket.enums.FiltroTicketEstadoEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
 import com.crm.gestiontickets.ticket.service.TicketAgenteService;
 import com.crm.gestiontickets.ticket.service.TicketAperturaService;
@@ -52,12 +56,12 @@ public class TicketController {
     private TicketAgenteService ticketAgenteService;
 
     @PostMapping("/apertura")
-    public Respuesta<TicketPasoResponse> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
+    public Respuesta<TicketPasoResponse> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO) {
         return ticketCreacionService.aperturaTicket(ticketAperturaDTO);
     }
 
     @PutMapping("/crear-ticket")
-    public Respuesta<TicketPasoResponse> creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO){
+    public Respuesta<TicketPasoResponse> creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO) {
         return ticketCreacionService.crearTicket(ticketDetalleDTO);
     }
 
@@ -65,22 +69,30 @@ public class TicketController {
     public TicketDetalle obtenerTicket(@RequestParam String idTicket) {
         return ticketBusquedaService.obtenerTicketDTO(idTicket);
     }
-    
+
     @GetMapping("/obtener-tickets-cliente")
-    public List<TicketDetalle> obtenerTicketsCliente(@RequestParam Long idCliente){
-        return ticketBusquedaService.obtenerTicketsCliente(idCliente);
+    public Page<TicketDetalle> obtenerTicketsCliente(
+            @RequestParam Long idCliente,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) FiltroTicketEstadoEnum estado,
+            @RequestParam(required = false) FiltroFechaTicketEnum fechaOp,
+            @RequestParam(required = false) LocalDate fecha) {
+        return ticketBusquedaService.obtenerTicketsCliente(
+                idCliente, page, pageSize, estado, fechaOp, fecha);
     }
 
     @GetMapping("/filtrar-ticket-etapa")
-    public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(@RequestParam String idTicket, @RequestParam Integer idPaso) {
+    public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(@RequestParam String idTicket,
+            @RequestParam Integer idPaso) {
         return ticketBusquedaService.obtenerEstadoTicketEtapa(idTicket, idPaso);
     }
-    
+
     @GetMapping("/otener-tickets-departamento")
     public List<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento) {
         return ticketBusquedaService.obtenerTicketsDepartamento(idDepartamento);
     }
-    
+
     @PutMapping("/avanzar-etapa")
     public Respuesta<TicketPasoResponse> avanzarEtapa(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
         return ticketFlujoService.avanzarEtapa(ticketNvoEtapa);
@@ -92,12 +104,13 @@ public class TicketController {
     }
 
     @PatchMapping("{idTicket}/asignar-agente")
-    public Respuesta<IdTicket> asignarAgenteATicket(@PathVariable String idTicket, @RequestBody IdAgente idAgente){
+    public Respuesta<IdTicket> asignarAgenteATicket(@PathVariable String idTicket, @RequestBody IdAgente idAgente) {
         return ticketAgenteService.asignarAgenteATicket(idTicket, idAgente);
     }
 
     @GetMapping("/obtener-tickets-agente")
-    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, FiltroTicketsAgenteEnum filtroEstado) {
+    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente,
+            FiltroTicketsAgenteEnum filtroEstado) {
         return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtroEstado);
     }
 }
