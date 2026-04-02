@@ -32,6 +32,7 @@ public class TicketMapper {
     @Autowired
     private HistoricoTicketRepository historicoRepository;
 
+    
     public TicketDetalle mapearTicketADetalle(Ticket ticket) {
         return new TicketDetalleBuilder()
                 .conTicket(ticket)
