@@ -18,6 +18,7 @@ import com.crm.gestiontickets.agente.dto.AgenteDetalle;
 import com.crm.gestiontickets.agente.entity.Agente;
 import com.crm.gestiontickets.agente.entity.Departamento;
 import com.crm.gestiontickets.agente.entity.Rol;
+import com.crm.gestiontickets.agente.mapper.AgenteMapper;
 import com.crm.gestiontickets.agente.repository.AgenteRepository;
 import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
 import com.crm.gestiontickets.agente.repository.RolRepository;
@@ -37,6 +38,9 @@ public class AgenteServiceTest {
 
     @Mock
     private RolRepository rolRepository;
+
+    @Mock
+        private AgenteMapper agenteMapper;
 
     @Test
     void testCrearAgente_exitoso() {
