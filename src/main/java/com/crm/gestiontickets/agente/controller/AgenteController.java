@@ -49,8 +49,8 @@ public class AgenteController {
 
     //endpoint para buscar agentes por nombre, usuario o id_agente
     @GetMapping("/buscar")
-    public List<AgenteDetalle> buscarAgentes(@RequestParam("criterio") String criterio) {
-    return agenteService.buscarAgentes(criterio);
+    public Page<AgenteDetalle> buscarAgentes(@RequestParam("criterio") String criterio, @RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="10") int pageSize) {
+    return agenteBusquedaService.buscarAgentes(criterio, page, pageSize);
     }
 
     //ennpoint para editar un agente
@@ -66,7 +66,7 @@ public class AgenteController {
     }
 
     @GetMapping("/obtener/agente-departamento")
-    public List<AgenteDepartamento> getMethodName(@RequestParam Integer idDepartamento) {
+    public List<AgenteDepartamento> agentePorDepartamentos(@RequestParam Integer idDepartamento) {
         return agenteBusquedaService.agentePorDepartamento(idDepartamento);
     }
     

@@ -1,5 +1,6 @@
 package com.crm.gestiontickets.Test;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,6 +18,7 @@ import com.crm.gestiontickets.agente.dto.AgenteDetalle;
 import com.crm.gestiontickets.agente.entity.Agente;
 import com.crm.gestiontickets.agente.entity.Departamento;
 import com.crm.gestiontickets.agente.entity.Rol;
+import com.crm.gestiontickets.agente.mapper.AgenteMapper;
 import com.crm.gestiontickets.agente.repository.AgenteRepository;
 import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
 import com.crm.gestiontickets.agente.repository.RolRepository;
@@ -36,6 +38,9 @@ public class AgenteServiceTest {
 
     @Mock
     private RolRepository rolRepository;
+
+    @Mock
+    private AgenteMapper agenteMapper;
 
     @Test
     void testCrearAgente_exitoso() {
@@ -65,6 +70,7 @@ public class AgenteServiceTest {
         agenteGuardado.setActivo("S");
         agenteGuardado.setDepartamento(departamento);
         agenteGuardado.setRol(rol);
+        agenteGuardado.setFechaCreacion(LocalDateTime.now());
 
         when(departamentoRepository.findById(1))
                 .thenReturn(Optional.of(departamento));
@@ -73,7 +79,26 @@ public class AgenteServiceTest {
                 .thenReturn(Optional.of(rol));
 
         when(agenteRepository.save(any(Agente.class)))
-                .thenReturn(agenteGuardado);
+                .thenAnswer(invocation -> {
+                    Agente a = invocation.getArgument(0);
+                    a.setIdAgente(10); // simula el ID generado por la BD
+                    return a;
+                });
+
+        when(agenteMapper.mapearAgenteADetalle(any(Agente.class)))
+                .thenAnswer(invocation -> {
+                    Agente a = invocation.getArgument(0);
+                    AgenteDetalle agenteDTO = new AgenteDetalle();
+                    agenteDTO.setIdAgente(a.getIdAgente());
+                    agenteDTO.setNombre(a.getNombre());
+                    agenteDTO.setApellido(a.getApellido());
+                    agenteDTO.setUsuario(a.getUsuario());
+                    agenteDTO.setContrasenia(a.getContrasenia());
+                    agenteDTO.setActivo(a.getActivo());
+                    agenteDTO.setIdDepartamento(a.getDepartamento().getIdDepartamento());
+                    agenteDTO.setIdRol(a.getRol().getIdRol());
+                    return agenteDTO;
+                });
 
         // Act
         AgenteDetalle resultado = agenteService.crearAgente(dto);
@@ -86,6 +111,7 @@ public class AgenteServiceTest {
         assertEquals("S", resultado.getActivo());
         assertEquals(1, resultado.getIdDepartamento());
         assertEquals(2, resultado.getIdRol());
+        assertNotNull(resultado.getIdAgente());
 
         verify(departamentoRepository).findById(1);
         verify(rolRepository).findById(2);

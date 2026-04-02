@@ -3,8 +3,6 @@ command: los metodos representan una accion especifica del sistema*/
 package com.crm.gestiontickets.agente.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +11,7 @@ import com.crm.gestiontickets.agente.dto.AgenteDetalle;
 import com.crm.gestiontickets.agente.entity.Agente;
 import com.crm.gestiontickets.agente.entity.Departamento;
 import com.crm.gestiontickets.agente.entity.Rol;
+import com.crm.gestiontickets.agente.mapper.AgenteMapper;
 import com.crm.gestiontickets.agente.repository.AgenteRepository;
 import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
 import com.crm.gestiontickets.agente.repository.RolRepository;
@@ -29,7 +28,10 @@ public class AgenteService {
     @Autowired
     private RolRepository rolRepository;
 
-    public AgenteDetalle crearAgente(AgenteDetalle agenteDTO){
+    @Autowired
+    private AgenteMapper agenteMapper;
+
+    public AgenteDetalle crearAgente(AgenteDetalle agenteDTO) {
 
         // valida que el departamento exista
         Departamento departamento = departamentoRepository.findById(agenteDTO.getIdDepartamento())
@@ -54,16 +56,8 @@ public class AgenteService {
         agenteRepository.save(agente);
 
         // Devolver DTO con datos guardados
-        return convertirADTO(agente);
+        return agenteMapper.mapearAgenteADetalle(agente);
     }
-
-
-    public List<AgenteDetalle> buscarAgentes(String criterio) {
-    List<Agente> agentes = agenteRepository.buscarPorCriterio(criterio);
-    return agentes.stream()
-                  .map(this::convertirADTO)
-                  .collect(Collectors.toList());
-}
 
     public AgenteDetalle editarAgente(Integer idAgente, AgenteDetalle agenteDTO) {
         // Validar ID
@@ -107,19 +101,6 @@ public class AgenteService {
         return actualizado;
     }
 
-    private AgenteDetalle convertirADTO(Agente agente) {
-        AgenteDetalle dto = new AgenteDetalle();
-        dto.setIdAgente(agente.getIdAgente());
-        dto.setNombre(agente.getNombre());
-        dto.setApellido(agente.getApellido());
-        dto.setUsuario(agente.getUsuario());
-        dto.setContrasenia(agente.getContrasenia());
-        dto.setActivo(agente.getActivo());
-        dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
-        dto.setIdRol(agente.getRol().getIdRol());
-        return dto;
-    }
-
     public AgenteDetalle bloquearAgente(Integer idAgente) {
         // Validar ID
         if (idAgente == null) {
@@ -132,9 +113,9 @@ public class AgenteService {
 
         // Bloquear el agente
         if ("S".equals(agente.getActivo())) {
-         agente.setActivo("N"); 
+            agente.setActivo("N");
         } else {
-        agente.setActivo("S"); 
+            agente.setActivo("S");
         }
         agente.setFechaActualizacion(LocalDateTime.now());
 
@@ -150,8 +131,7 @@ public class AgenteService {
         dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
         dto.setIdRol(agente.getRol().getIdRol());
 
-
-        return convertirADTO(agente);
+        return agenteMapper.mapearAgenteADetalle(agente);
     }
 
     

@@ -3,6 +3,8 @@ package com.crm.gestiontickets.agente.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -29,7 +31,7 @@ public interface AgenteRepository extends JpaRepository<Agente, Integer>{
            "   OR a.apellido LIKE %:valor% " +
            "   OR a.usuario LIKE %:valor%" +
            "   OR CAST(a.idAgente as string) LIKE CONCAT('%', :valor, '%')")
-    List<Agente> buscarPorCriterio(@Param("valor") String valor);
+    Page<Agente> buscarPorCriterio(@Param("valor") String valor, Pageable pageable);
 
     public List<Agente> findByDepartamentoAndActivo(Departamento departamento, String activo);
 }
