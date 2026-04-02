@@ -4,10 +4,11 @@
 package com.crm.gestiontickets.cliente.service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 
@@ -15,7 +16,7 @@ import com.crm.gestiontickets.cliente.dto.ClienteDetalle;
 import com.crm.gestiontickets.cliente.dto.IdCliente;
 import com.crm.gestiontickets.cliente.dto.NuevoCliente;
 import com.crm.gestiontickets.cliente.entity.Cliente;
-import com.crm.gestiontickets.cliente.exception.ClienteNotFoundException;
+import com.crm.gestiontickets.cliente.mapper.ClienteMapper;
 import com.crm.gestiontickets.cliente.repository.ClienteRepository;
 
 import org.springframework.data.domain.Pageable;
@@ -26,38 +27,23 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public List<ClienteDetalle> obtenerClientes(String valorBusqueda) {
+    @Autowired
+    private ClienteMapper clienteMapper;
 
-        List<Cliente> listaClientes = clienteRepository.buscarPorCualquierCampo(valorBusqueda);
+    public Page<ClienteDetalle> obtenerClientes(String valorBusqueda, int page, int pageSize) {
 
-        List<ClienteDetalle> listaClientesDTO = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page, pageSize);
 
-        for (Cliente cliente : listaClientes) {
-            ClienteDetalle clienteDTO = new ClienteDetalle();
-            clienteDTO.setIdCliente(cliente.getIdCliente());
-            clienteDTO.setNombre(cliente.getNombre());
-            clienteDTO.setApellido(cliente.getApellido());
-            clienteDTO.setCelular(cliente.getCelular());
-            clienteDTO.setCorreo(cliente.getCorreo());
-            clienteDTO.setNumeroIdentidad(cliente.getNumeroIdentidad());
+        Page<Cliente> clientesPaginados = clienteRepository.buscarPorCualquierCampo(valorBusqueda, pageable);
 
-            listaClientesDTO.add(clienteDTO);
-        }
-
-        return listaClientesDTO;
+        return clientesPaginados.map(clienteMapper::mapearClienteADetalle);
     }
 
     public ClienteDetalle obtenerCliente(Long idCliente) {
 
-        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new ClienteNotFoundException(idCliente));
+        Cliente cliente = clienteRepository.findById(idCliente).get();
 
-        ClienteDetalle clienteDTO = new ClienteDetalle();
-        clienteDTO.setIdCliente(cliente.getIdCliente());
-        clienteDTO.setNombre(cliente.getNombre());
-        clienteDTO.setApellido(cliente.getApellido());
-        clienteDTO.setCelular(cliente.getCelular());
-        clienteDTO.setCorreo(cliente.getCorreo());
-        clienteDTO.setNumeroIdentidad(cliente.getNumeroIdentidad());
+        ClienteDetalle clienteDTO = clienteMapper.mapearClienteADetalle(cliente);
 
         return clienteDTO;
     }

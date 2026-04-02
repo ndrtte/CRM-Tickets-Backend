@@ -68,12 +68,12 @@ public class TicketController {
 private HistoricoTicketAgenteService historicoTicketAgenteService;
 
     @PostMapping("/apertura")
-    public Respuesta<TicketPasoResponse> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO){
+    public Respuesta<TicketPasoResponse> aperturaTicket(@RequestBody TicketApertura ticketAperturaDTO) {
         return ticketCreacionService.aperturaTicket(ticketAperturaDTO);
     }
 
     @PutMapping("/crear-ticket")
-    public Respuesta<TicketPasoResponse> creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO){
+    public Respuesta<TicketPasoResponse> creacionTicket(@RequestBody TicketCreacion ticketDetalleDTO) {
         return ticketCreacionService.crearTicket(ticketDetalleDTO);
     }
 
@@ -81,22 +81,30 @@ private HistoricoTicketAgenteService historicoTicketAgenteService;
     public TicketDetalle obtenerTicket(@RequestParam String idTicket) {
         return ticketBusquedaService.obtenerTicketDTO(idTicket);
     }
-    
+
     @GetMapping("/obtener-tickets-cliente")
-    public List<TicketDetalle> obtenerTicketsCliente(@RequestParam Long idCliente){
-        return ticketBusquedaService.obtenerTicketsCliente(idCliente);
+    public Page<TicketDetalle> obtenerTicketsCliente(
+            @RequestParam Long idCliente,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) FiltroTicketEstadoEnum estado,
+            @RequestParam(required = false) FiltroFechaTicketEnum fechaOp,
+            @RequestParam(required = false) LocalDate fecha) {
+        return ticketBusquedaService.obtenerTicketsCliente(
+                idCliente, page, pageSize, estado, fechaOp, fecha);
     }
 
     @GetMapping("/filtrar-ticket-etapa")
-    public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(@RequestParam String idTicket, @RequestParam Integer idPaso) {
+    public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(@RequestParam String idTicket,
+            @RequestParam Integer idPaso) {
         return ticketBusquedaService.obtenerEstadoTicketEtapa(idTicket, idPaso);
     }
-    
+
     @GetMapping("/otener-tickets-departamento")
     public List<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento) {
         return ticketBusquedaService.obtenerTicketsDepartamento(idDepartamento);
     }
-    
+
     @PutMapping("/avanzar-etapa")
     public Respuesta<TicketPasoResponse> avanzarEtapa(@RequestBody TicketAvanzarEtapa ticketNvoEtapa) {
         return ticketFlujoService.avanzarEtapa(ticketNvoEtapa);
@@ -108,12 +116,13 @@ private HistoricoTicketAgenteService historicoTicketAgenteService;
     }
 
     @PatchMapping("{idTicket}/asignar-agente")
-    public Respuesta<IdTicket> asignarAgenteATicket(@PathVariable String idTicket, @RequestBody IdAgente idAgente){
+    public Respuesta<IdTicket> asignarAgenteATicket(@PathVariable String idTicket, @RequestBody IdAgente idAgente) {
         return ticketAgenteService.asignarAgenteATicket(idTicket, idAgente);
     }
 
     @GetMapping("/obtener-tickets-agente")
-    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente, FiltroTicketsAgenteEnum filtroEstado) {
+    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente,
+            FiltroTicketsAgenteEnum filtroEstado) {
         return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtroEstado);
     }
 

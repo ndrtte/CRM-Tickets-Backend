@@ -6,6 +6,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.entity.Agente;
@@ -22,6 +26,8 @@ import com.crm.gestiontickets.ticket.entity.HistoricoTicket;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
 import com.crm.gestiontickets.ticket.enums.EstadoEtapaTicketEnum;
+import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
+import com.crm.gestiontickets.ticket.enums.FiltroTicketEstadoEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
 import com.crm.gestiontickets.ticket.enums.TipoFechaEnum;
 import com.crm.gestiontickets.ticket.mapper.PasoFlujoMapper;
@@ -66,13 +72,34 @@ public class TicketBusquedaService {
         return ticketMapper.mapearTicketADetalle(ticket);
     }
 
-    public List<TicketDetalle> obtenerTicketsCliente(Long idCliente) {
-        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow();
+    public Page<TicketDetalle> obtenerTicketsCliente(Long idCliente, int page, int pageSize, FiltroTicketEstadoEnum estado, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
+        Cliente cliente = clienteRepository.findById(idCliente).get();
 
-        return ticketRepository.findByCliente(cliente)
-                .stream()
-                .map(ticketMapper::mapearTicketADetalle)
-                .toList();
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("fechaCreacion").descending());
+
+        String estadoStr = estado != null ? estado.name() : null;
+
+        LocalDateTime fechaInicio = null;
+        LocalDateTime fechaFin = null;
+
+        if (fecha != null && fechaOp != null) {
+            switch (fechaOp) {
+                case MAYOR ->
+                    fechaInicio = fecha.atStartOfDay();
+                case MENOR ->
+                    fechaFin = fecha.atStartOfDay();
+                case IGUAL -> {
+                    fechaInicio = fecha.atStartOfDay();
+                    fechaFin = fecha.atTime(23, 59, 59);
+                }
+            }
+        }
+
+        Page<Ticket> ticketsPaginados = ticketRepository.findByClienteConFiltros(
+                cliente, estadoStr, fechaInicio, fechaFin, pageable
+        );
+
+        return ticketsPaginados.map(ticketMapper::mapearTicketADetalle);
     }
 
     public List<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento) {

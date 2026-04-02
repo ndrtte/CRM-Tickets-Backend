@@ -2,8 +2,6 @@
    delega la lógica de negocio al service */
 package com.crm.gestiontickets.cliente.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,8 +31,8 @@ public class ClienteController {
     private ClienteService clienteService;
     
     @GetMapping("/obtener-cliente")
-    public List<ClienteDetalle> obtenerClientes(@RequestParam String valorBusqueda) {
-        return clienteService.obtenerClientes(valorBusqueda);
+    public Page<ClienteDetalle> obtenerClientes(@RequestParam String valorBusqueda, @RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="10") int pageSize) {
+        return clienteService.obtenerClientes(valorBusqueda, page, pageSize);
     }
 
     @GetMapping("/obtener-cliente-por-id")
