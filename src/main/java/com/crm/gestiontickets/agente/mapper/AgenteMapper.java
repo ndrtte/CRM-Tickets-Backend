@@ -4,6 +4,7 @@ package com.crm.gestiontickets.agente.mapper;
 import org.springframework.stereotype.Component;
 
 import com.crm.gestiontickets.agente.dto.AgenteDepartamento;
+import com.crm.gestiontickets.agente.dto.AgenteDetalle;
 import com.crm.gestiontickets.agente.entity.Agente;
 
 @Component
@@ -29,6 +30,19 @@ public class AgenteMapper {
         detalle.setCantidadTickets(cantidadTickets);
 
         return detalle;
+    }
+
+    public AgenteDetalle mapearAgenteADetalle(Agente agente) {
+        AgenteDetalle dto = new AgenteDetalle();
+        dto.setIdAgente(agente.getIdAgente());
+        dto.setNombre(agente.getNombre());
+        dto.setApellido(agente.getApellido());
+        dto.setUsuario(agente.getUsuario());
+        dto.setContrasenia(agente.getContrasenia());
+        dto.setActivo(agente.getActivo());
+        dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
+        dto.setIdRol(agente.getRol().getIdRol());
+        return dto;
     }
 
 }
