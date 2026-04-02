@@ -1,5 +1,6 @@
 package com.crm.gestiontickets.Test;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,7 +40,7 @@ public class AgenteServiceTest {
 
     @Test
     void testCrearAgente_exitoso() {
-
+        
         // Arrange
         AgenteDetalle dto = new AgenteDetalle();
         dto.setNombre("Carlos");
@@ -65,13 +66,12 @@ public class AgenteServiceTest {
         agenteGuardado.setActivo("S");
         agenteGuardado.setDepartamento(departamento);
         agenteGuardado.setRol(rol);
+        agenteGuardado.setFechaCreacion(LocalDateTime.now());
 
         when(departamentoRepository.findById(1))
                 .thenReturn(Optional.of(departamento));
-
         when(rolRepository.findById(2))
                 .thenReturn(Optional.of(rol));
-
         when(agenteRepository.save(any(Agente.class)))
                 .thenReturn(agenteGuardado);
 
@@ -80,6 +80,7 @@ public class AgenteServiceTest {
 
         // Assert
         assertNotNull(resultado);
+        assertEquals(10, resultado.getIdAgente());
         assertEquals("Carlos", resultado.getNombre());
         assertEquals("Ramirez", resultado.getApellido());
         assertEquals("car01", resultado.getUsuario());
