@@ -2,8 +2,8 @@
 
 package com.crm.gestiontickets.cliente.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,5 +17,5 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
             "   OR c.correo LIKE %:valor% " +
             "   OR c.celular LIKE %:valor% " +
             "   OR c.numeroIdentidad LIKE %:valor%")
-    List<Cliente> buscarPorCualquierCampo(String valor);
+    Page<Cliente> buscarPorCualquierCampo(String valor, Pageable pageable);
 }
