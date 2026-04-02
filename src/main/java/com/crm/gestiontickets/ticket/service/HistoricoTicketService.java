@@ -12,6 +12,7 @@ import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
 
 @Service
 public class HistoricoTicketService {
+    
 
     @Autowired
     private HistoricoTicketRepository historicoTicketRepository;
@@ -28,8 +29,9 @@ public class HistoricoTicketService {
         historicoTicketRepository.save(historico);
 
         return historico;
+
+     
     }
 
-
-
+ 
 }

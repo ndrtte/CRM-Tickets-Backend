@@ -36,7 +36,23 @@ public interface TicketRepository extends JpaRepository<Ticket, String>, JpaSpec
         """)
     List<Ticket> findTicketsByDepartamento(Integer idDepartamento);
 
-    List<Ticket> findByAgenteAsignado(Agente agenteAsignado);
+    List<Ticket> findByAgenteAsignado(Integer idAgente);
 
     List<Ticket> findByAgenteAsignadoAndEstado(Agente agenteAsignado, EstadoTicket estado);
+
+    public List<Ticket> findByAgenteAsignado(Agente agente);
+
+    List<Ticket> findByPasoActual_IdDepartamento_IdDepartamento(Integer idDepartamento);
+
+    @Query("""
+    SELECT t FROM Ticket t
+    WHERE t.pasoActual.idDepartamento.idDepartamento = :idDepartamento
+    AND (:estado IS NULL OR t.estado.estadoTicket = :estado)
+    """)
+    List<Ticket> buscarTicketsFiltrados(
+        @Param("idDepartamento") Integer idDepartamento,
+        @Param("estado") String estado
+    );
+
 }
+

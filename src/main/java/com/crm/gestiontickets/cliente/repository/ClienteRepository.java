@@ -19,3 +19,4 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
             "   OR c.numeroIdentidad LIKE %:valor%")
     Page<Cliente> buscarPorCualquierCampo(String valor, Pageable pageable);
 }
+

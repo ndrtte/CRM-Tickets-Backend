@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Page;
 
 import com.crm.gestiontickets.cliente.dto.ClienteDetalle;
 import com.crm.gestiontickets.cliente.dto.IdCliente;
@@ -17,6 +18,8 @@ import com.crm.gestiontickets.cliente.dto.NuevoCliente;
 import com.crm.gestiontickets.cliente.entity.Cliente;
 import com.crm.gestiontickets.cliente.mapper.ClienteMapper;
 import com.crm.gestiontickets.cliente.repository.ClienteRepository;
+
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class ClienteService {
@@ -78,5 +81,11 @@ public class ClienteService {
 
         return idCliente;
     }
+
+    //pajinacion
+
+    public Page<Cliente> listarClientes(Pageable pageable) {
+    return clienteRepository.findAll(pageable);
+}
 
 }

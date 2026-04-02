@@ -29,6 +29,7 @@ import com.crm.gestiontickets.ticket.enums.EstadoEtapaTicketEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketEstadoEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
+import com.crm.gestiontickets.ticket.enums.TipoFechaEnum;
 import com.crm.gestiontickets.ticket.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.ticket.mapper.TicketMapper;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
@@ -65,8 +66,9 @@ public class TicketBusquedaService {
     @Autowired
     private EstadoEtapaService estadoEtapaService;
 
+
     public TicketDetalle obtenerTicketDTO(String idTicket) {
-        Ticket ticket = ticketRepository.findById(idTicket).get();
+        Ticket ticket = ticketRepository.findById(idTicket).orElseThrow();
         return ticketMapper.mapearTicketADetalle(ticket);
     }
 
@@ -101,9 +103,8 @@ public class TicketBusquedaService {
     }
 
     public List<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento) {
-        List<Ticket> listaTickets = ticketRepository.findTicketsByDepartamento(idDepartamento);
-
-        return listaTickets.stream()
+        return ticketRepository.findTicketsByDepartamento(idDepartamento)
+                .stream()
                 .map(ticketMapper::mapearTicketADetalle)
                 .toList();
     }
@@ -115,35 +116,35 @@ public class TicketBusquedaService {
         Agente agente = agenteRepository.findById(idAgente).orElseThrow();
 
         return switch (filtro) {
-            case EN_PROCESO ->
-                ticketMapper.mapearEnProceso(agente);
-            case FINALIZADOS ->
-                ticketMapper.mapearFinalizados(agente);
-            case TODOS ->
-                ticketMapper.mapearTodos(agente);
+            case EN_PROCESO -> ticketMapper.mapearEnProceso(agente);
+            case FINALIZADOS -> ticketMapper.mapearFinalizados(agente);
+            case TODOS -> ticketMapper.mapearTodos(agente);
         };
     }
 
     public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(String idTicket, Integer idPaso) {
 
-        Ticket ticket = ticketRepository.findById(idTicket).get();
+        Ticket ticket = ticketRepository.findById(idTicket).orElseThrow();
         PasoFlujo pasoActual = ticket.getPasoActual();
 
         boolean ticketCerrado = ticket.getEstado().getEstadoTicket().equals("Cerrado");
 
         List<EtapaTicket> etapas = pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), pasoActual);
+
         boolean pasoValido = etapas.stream().anyMatch(e -> e.getIdPaso().equals(idPaso));
 
         if (!pasoValido) {
             return new Respuesta<>(false, "El paso no pertenece al flujo del ticket", null);
         }
 
-        PasoFlujo paso = pasoFlujoRepository.findById(idPaso).get();
+        PasoFlujo paso = pasoFlujoRepository.findById(idPaso).orElseThrow();
 
-        EstadoEtapaTicketEnum estado = estadoEtapaService.obtenerEstado(ticket, paso, pasoActual, ticketCerrado);
+        EstadoEtapaTicketEnum estado = estadoEtapaService.obtenerEstado(
+                ticket, paso, pasoActual, ticketCerrado);
 
         HistoricoTicket historico = historicoRepository
                 .findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(ticket, paso);
+
         String nota = historico != null ? notaService.obtenerNotaHistorico(historico) : null;
 
         TicketEtapaDetalle detalle = new TicketEtapaDetalleBuilder()
@@ -161,4 +162,68 @@ public class TicketBusquedaService {
         return new Respuesta<>(true, "Ok", detalle);
     }
 
+    public List<TicketDetalle> obtenerTicketsClienteFiltro(
+            Long idCliente,
+            FiltroTicketsAgenteEnum estado,
+            LocalDate fecha) {
+
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow();
+
+        return ticketRepository.findByCliente(cliente)
+                .stream()
+                .filter(t -> filtrarPorEstado(t, estado))
+                .filter(t -> filtrarPorFecha(t.getFechaCreacion(), fecha))
+                .map(ticketMapper::mapearTicketADetalle)
+                .toList();
+    }
+
+    private boolean filtrarPorEstado(Ticket ticket, FiltroTicketsAgenteEnum estado) {
+
+        if (ticket.getEstado() == null) return false;
+
+        String estadoTicket = ticket.getEstado().getEstadoTicket();
+
+        return switch (estado) {
+            case EN_PROCESO -> "En Proceso".equalsIgnoreCase(estadoTicket);
+            case FINALIZADOS -> "Finalizado".equalsIgnoreCase(estadoTicket);
+            default -> true;
+        };
+    }
+
+    private boolean filtrarPorFecha(LocalDateTime fechaCreacion, LocalDate fecha) {
+
+        if (fecha == null) return true;
+        if (fechaCreacion == null) return false;
+
+        return fechaCreacion.toLocalDate().isEqual(fecha);
+    }
+
+
+
+    public List<TicketDetalle> obtenerTicketsPorDepartamentoFiltro(
+            Integer idDepartamento,
+            String estado,
+            TipoFechaEnum fechaOp,
+            LocalDate fecha) {
+
+        List<Ticket> tickets = ticketRepository.buscarTicketsFiltrados(idDepartamento, estado);
+
+        return tickets.stream()
+                .filter(t -> filtrarPorFecha(t.getFechaCreacion(), fechaOp, fecha))
+                .map(ticketMapper::mapearTicketADetalle)
+                .toList();
+    }
+
+    private boolean filtrarPorFecha(LocalDateTime fechaCreacion, TipoFechaEnum op, LocalDate fecha) {
+
+        if (fecha == null || op == null) return true;
+
+        LocalDate fechaTicket = fechaCreacion.toLocalDate();
+
+        return switch (op) {
+            case MENOR -> fechaTicket.isBefore(fecha);
+            case IGUAL -> fechaTicket.isEqual(fecha);
+            case MAYOR -> fechaTicket.isAfter(fecha);
+        };
+    }
 }

@@ -2,10 +2,11 @@
 delega la logica de negocios al service */
 package com.crm.gestiontickets.agente.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,11 @@ import com.crm.gestiontickets.agente.dto.AgenteDepartamento;
 import com.crm.gestiontickets.agente.dto.AgenteDetalle;
 import com.crm.gestiontickets.agente.service.AgenteBusquedaService;
 import com.crm.gestiontickets.agente.service.AgenteService;
+import com.crm.gestiontickets.agente.service.TicketBusquedaService;
+import com.crm.gestiontickets.ticket.dto.TicketDetalle;
+import com.crm.gestiontickets.ticket.enums.TipoFechaEnum;
 
+import com.crm.gestiontickets.agente.enums.EstadoTicketAgenteEnum;
 
 
 @CrossOrigin("*")
@@ -33,6 +38,9 @@ public class AgenteController {
     
     @Autowired
     private AgenteBusquedaService agenteBusquedaService;
+    
+    @Autowired
+    private TicketBusquedaService ticketBusquedaService;
 
     @PostMapping("/crear-agente")
     public AgenteDetalle crearAgente(@RequestBody AgenteDetalle agente) {
@@ -62,5 +70,21 @@ public class AgenteController {
         return agenteBusquedaService.agentePorDepartamento(idDepartamento);
     }
     
+    @GetMapping("/obtener-tickets-agente")
+public List<TicketDetalle> obtenerTicketsPorAgente(
+        @RequestParam Integer idAgente,
+        @RequestParam(required = false) EstadoTicketAgenteEnum filtroEstado,
+        @RequestParam(required = false) TipoFechaEnum fechaOp,
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        LocalDate fecha
+) {
+    return ticketBusquedaService.obtenerTicketsPorAgente(
+            idAgente,
+            filtroEstado,
+            fechaOp,
+            fecha
+    );
+}
 
 }
