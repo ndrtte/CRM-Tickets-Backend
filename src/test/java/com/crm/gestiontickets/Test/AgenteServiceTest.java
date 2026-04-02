@@ -40,7 +40,7 @@ public class AgenteServiceTest {
     private RolRepository rolRepository;
 
     @Mock
-        private AgenteMapper agenteMapper;
+    private AgenteMapper agenteMapper;
 
     @Test
     void testCrearAgente_exitoso() {
@@ -83,6 +83,21 @@ public class AgenteServiceTest {
                     Agente a = invocation.getArgument(0);
                     a.setIdAgente(10); // simula el ID generado por la BD
                     return a;
+                });
+
+        when(agenteMapper.mapearAgenteADetalle(any(Agente.class)))
+                .thenAnswer(invocation -> {
+                    Agente a = invocation.getArgument(0);
+                    AgenteDetalle agenteDTO = new AgenteDetalle();
+                    agenteDTO.setIdAgente(a.getIdAgente());
+                    agenteDTO.setNombre(a.getNombre());
+                    agenteDTO.setApellido(a.getApellido());
+                    agenteDTO.setUsuario(a.getUsuario());
+                    agenteDTO.setContrasenia(a.getContrasenia());
+                    agenteDTO.setActivo(a.getActivo());
+                    agenteDTO.setIdDepartamento(a.getDepartamento().getIdDepartamento());
+                    agenteDTO.setIdRol(a.getRol().getIdRol());
+                    return agenteDTO;
                 });
 
         // Act
