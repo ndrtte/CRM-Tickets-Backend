@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.util.Streamable;
 
 import com.crm.gestiontickets.agente.entity.Agente;
 import com.crm.gestiontickets.cliente.entity.Cliente;
@@ -54,5 +56,6 @@ public interface TicketRepository extends JpaRepository<Ticket, String>, JpaSpec
         @Param("estado") String estado
     );
 
-}
+    List<Ticket> findByCliente(Cliente cliente);
+    }
 

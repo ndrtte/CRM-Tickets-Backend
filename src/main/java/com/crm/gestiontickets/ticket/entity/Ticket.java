@@ -1,5 +1,6 @@
 package com.crm.gestiontickets.ticket.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.crm.gestiontickets.agente.entity.Agente;
@@ -59,4 +60,9 @@ public class Ticket {
 
     @Column(name = "fecha_asignacion")
     private LocalDateTime fechaAsignacion;
+
+    public LocalDate toLocalDate() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'toLocalDate'");
+    }
 }

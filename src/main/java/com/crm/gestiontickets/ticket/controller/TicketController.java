@@ -34,7 +34,8 @@ import com.crm.gestiontickets.ticket.dto.TicketDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaAgenteDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
-import com.crm.gestiontickets.ticket.entity.EstadoTicket;
+import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
+import com.crm.gestiontickets.ticket.enums.FiltroTicketEstadoEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
 import com.crm.gestiontickets.ticket.enums.TipoFechaEnum;
 import com.crm.gestiontickets.ticket.service.HistoricoTicketDepartamentoService;
@@ -101,8 +102,17 @@ private HistoricoTicketAgenteService historicoTicketAgenteService;
     }
 
     @GetMapping("/otener-tickets-departamento")
-    public List<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento) {
-        return ticketBusquedaService.obtenerTicketsDepartamento(idDepartamento);
+    public List<TicketDetalle> obtenerTicketsDepartamento(
+        @RequestParam Integer idDepartamento,
+        @RequestParam(required = false) String estado,
+        @RequestParam(required = false) TipoFechaEnum fechaOp,
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        LocalDate fecha
+    ) {
+    return ticketBusquedaService.obtenerTicketsPorDepartamentoFiltro(
+            idDepartamento, estado, fechaOp, fecha
+    );
     }
 
     @PutMapping("/avanzar-etapa")
@@ -121,9 +131,17 @@ private HistoricoTicketAgenteService historicoTicketAgenteService;
     }
 
     @GetMapping("/obtener-tickets-agente")
-    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente,
-            FiltroTicketsAgenteEnum filtroEstado) {
-        return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtroEstado);
+public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(
+        @RequestParam Integer idAgente,
+        @RequestParam(required = false) FiltroTicketsAgenteEnum filtroEstado,
+        @RequestParam(required = false) TipoFechaEnum fechaOp,
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        LocalDate fecha
+    ) {
+    return ticketBusquedaService.obtenerTicketsAgenteFiltro(
+            idAgente, filtroEstado, fechaOp, fecha
+    );
     }
 
     //paginacion
@@ -136,7 +154,7 @@ private HistoricoTicketAgenteService historicoTicketAgenteService;
         @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) LocalDateTime fechaFin,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size
-) {
+    ) {
     return historicoTicketDepartamentoService.filtrarHistoricoDepartamento(
             idDepartamento,
             estadoTicket,
@@ -145,10 +163,10 @@ private HistoricoTicketAgenteService historicoTicketAgenteService;
             fechaFin,
             PageRequest.of(page, size)
     );
-}
+    }
 
-@GetMapping("/historico-agente")
-public Page<TicketDetalle> obtenerHistoricoAgente(
+    @GetMapping("/historico-agente")
+    public Page<TicketDetalle> obtenerHistoricoAgente(
     @RequestParam Integer idAgente,
     @RequestParam(required = false) String estadoTicket,
     @RequestParam(required = false)
@@ -159,7 +177,7 @@ public Page<TicketDetalle> obtenerHistoricoAgente(
     LocalDateTime fechaFin,
     @RequestParam(defaultValue = "0") int page,
     @RequestParam(defaultValue = "10") int size
-) {
+    ) {
     return historicoTicketAgenteService.filtrarHistoricoAgente(
         idAgente,
         estadoTicket,
@@ -167,32 +185,32 @@ public Page<TicketDetalle> obtenerHistoricoAgente(
         fechaFin,
         PageRequest.of(page, size)
     );
-}
+    }
 
-//paginacion para historico ticket cliente
-@GetMapping("/obtener-tickets-cliente-filtro")
-public List<TicketDetalle> obtenerTicketsClienteFiltro(
+    //paginacion para historico ticket cliente
+    @GetMapping("/obtener-tickets-cliente-filtro")
+    public List<TicketDetalle> obtenerTicketsClienteFiltro(
         @RequestParam Long idCliente,
         @RequestParam(required = false) FiltroTicketsAgenteEnum estado,
         @RequestParam(required = false)
         @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
         LocalDate fecha
-) {
+    ) {
     return ticketBusquedaService.obtenerTicketsClienteFiltro(idCliente, estado, fecha);
-}
+    }
 
 //filtrar ticket por departametno
-@GetMapping("/tickets-departamento")
-public List<TicketDetalle> obtenerTicketsPorDepartamento(
+    @GetMapping("/tickets-departamento")
+    public List<TicketDetalle> obtenerTicketsPorDepartamento(
         @RequestParam Integer idDepartamento,
         @RequestParam(required = false) String estado,
         @RequestParam(required = false) TipoFechaEnum fechaOp,
         @RequestParam(required = false)
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         LocalDate fecha
-) {
+    ) {
     return ticketBusquedaService.obtenerTicketsPorDepartamentoFiltro(
             idDepartamento, estado, fechaOp, fecha
     );
-}
-}
+    }
+    }

@@ -163,56 +163,72 @@ public class TicketBusquedaService {
     }
 
     public List<TicketDetalle> obtenerTicketsClienteFiltro(
-            Long idCliente,
-            FiltroTicketsAgenteEnum estado,
-            LocalDate fecha) {
+        Long idCliente,
+        FiltroTicketsAgenteEnum estado,
+        LocalDate fecha) {
 
-        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow();
+    Cliente cliente = clienteRepository.findById(idCliente)
+            .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
-        return ticketRepository.findByCliente(cliente)
-                .stream()
-                .filter(t -> filtrarPorEstado(t, estado))
-                .filter(t -> filtrarPorFecha(t.getFechaCreacion(), fecha))
-                .map(ticketMapper::mapearTicketADetalle)
-                .toList();
-    }
+    return ticketRepository.findByCliente(cliente)
+            .stream()
+            .filter(t -> filtrarPorEstado(t, estado)) // 🔥 FIX
+            .filter(t -> filtrarPorFecha(t.getFechaCreacion(), fecha))
+            .map(ticketMapper::mapearTicketADetalle)
+            .toList();
+}
 
     private boolean filtrarPorEstado(Ticket ticket, FiltroTicketsAgenteEnum estado) {
 
-        if (ticket.getEstado() == null) return false;
+    if (estado == null) return true;
+    if (ticket.getEstado() == null) return false;
 
-        String estadoTicket = ticket.getEstado().getEstadoTicket();
+    String estadoTicket = ticket.getEstado().getEstadoTicket();
 
-        return switch (estado) {
-            case EN_PROCESO -> "En Proceso".equalsIgnoreCase(estadoTicket);
-            case FINALIZADOS -> "Finalizado".equalsIgnoreCase(estadoTicket);
-            default -> true;
-        };
+    return switch (estado) {
+        case EN_PROCESO -> "En Proceso".equalsIgnoreCase(estadoTicket);
+        case FINALIZADOS -> 
+            "Finalizado".equalsIgnoreCase(estadoTicket)
+            || "Cerrado".equalsIgnoreCase(estadoTicket); // 🔥 FIX
+        case TODOS -> true;
+    };
     }
 
     private boolean filtrarPorFecha(LocalDateTime fechaCreacion, LocalDate fecha) {
 
-        if (fecha == null) return true;
-        if (fechaCreacion == null) return false;
+    if (fecha == null) return true;
 
-        return fechaCreacion.toLocalDate().isEqual(fecha);
+    if (fechaCreacion == null) return false;
+
+    return fechaCreacion.toLocalDate().isEqual(fecha);
     }
-
-
 
     public List<TicketDetalle> obtenerTicketsPorDepartamentoFiltro(
-            Integer idDepartamento,
-            String estado,
-            TipoFechaEnum fechaOp,
-            LocalDate fecha) {
+        Integer idDepartamento,
+        String estado,
+        TipoFechaEnum fechaOp,
+        LocalDate fecha) {
 
-        List<Ticket> tickets = ticketRepository.buscarTicketsFiltrados(idDepartamento, estado);
+    List<Ticket> tickets = ticketRepository.buscarTicketsFiltrados(idDepartamento, null);
 
-        return tickets.stream()
-                .filter(t -> filtrarPorFecha(t.getFechaCreacion(), fechaOp, fecha))
-                .map(ticketMapper::mapearTicketADetalle)
-                .toList();
+    return tickets.stream()
+            .filter(t -> filtrarPorEstadoDepartamento(t, estado))
+            .filter(t -> filtrarPorFecha(t.getFechaCreacion(), fechaOp, fecha))
+            .map(ticketMapper::mapearTicketADetalle)
+            .toList();
+}
+  private boolean filtrarPorEstadoDepartamento(Ticket ticket, String estado) {
+
+    if (estado == null) return true;
+
+    if ("No asignado".equalsIgnoreCase(estado)) {
+        return ticket.getAgenteAsignado() == null;
     }
+
+    if (ticket.getEstado() == null) return false;
+
+    return ticket.getEstado().getEstadoTicket().equalsIgnoreCase(estado);
+}
 
     private boolean filtrarPorFecha(LocalDateTime fechaCreacion, TipoFechaEnum op, LocalDate fecha) {
 
@@ -226,4 +242,41 @@ public class TicketBusquedaService {
             case MAYOR -> fechaTicket.isAfter(fecha);
         };
     }
+
+    //obtener tickets de un agente
+    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgenteFiltro(
+        Integer idAgente,
+        FiltroTicketsAgenteEnum filtro,
+        TipoFechaEnum fechaOp,
+        LocalDate fecha) {
+
+    Agente agente = agenteRepository.findById(idAgente)
+            .orElseThrow(() -> new RuntimeException("Agente no encontrado"));
+
+    List<TicketEtapaAgenteDetalle> tickets = switch (filtro != null ? filtro : FiltroTicketsAgenteEnum.TODOS) {
+        case EN_PROCESO -> ticketMapper.mapearEnProceso(agente);
+        case FINALIZADOS -> ticketMapper.mapearFinalizados(agente);
+        case TODOS -> ticketMapper.mapearTodos(agente);
+    };
+
+    return tickets.stream()
+            .filter(t -> filtrarPorFechaAgente(t.getFechaCreacion(), fechaOp, fecha))
+            .toList();
+    }
+
+    private boolean filtrarPorFechaAgente(LocalDateTime fechaCreacion, TipoFechaEnum op, LocalDate fecha) {
+
+    if (fecha == null || op == null) return true;
+    if (fechaCreacion == null) return false;
+
+    LocalDate fechaTicket = fechaCreacion.toLocalDate();
+
+    return switch (op) {
+        case MENOR -> fechaTicket.isBefore(fecha);
+        case IGUAL -> fechaTicket.isEqual(fecha);
+        case MAYOR -> fechaTicket.isAfter(fecha);
+    };
+    }
+    
+   
 }
