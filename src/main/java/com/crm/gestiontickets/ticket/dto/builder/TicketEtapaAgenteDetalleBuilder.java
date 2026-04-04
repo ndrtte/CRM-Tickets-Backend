@@ -8,6 +8,7 @@ import com.crm.gestiontickets.cliente.entity.Cliente;
 import com.crm.gestiontickets.ticket.dto.EtapaTicket;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaAgenteDetalle;
 import com.crm.gestiontickets.ticket.entity.Categoria;
+import com.crm.gestiontickets.ticket.entity.EstadoTicket;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 
 public class TicketEtapaAgenteDetalleBuilder {
@@ -52,6 +53,14 @@ public class TicketEtapaAgenteDetalleBuilder {
 
     public TicketEtapaAgenteDetalleBuilder conEstadoEtapa(String estadoEtapa) {
         detalle.setEstadoEtapa(estadoEtapa);
+        return this;
+    }
+
+    public TicketEtapaAgenteDetalleBuilder conEstado(EstadoTicket estado) {
+        if (estado != null) {
+            detalle.setIdEstado(estado.getIdEstadoTicket());
+            detalle.setEstadoTicket(estado.getEstadoTicket());
+        }
         return this;
     }
 
