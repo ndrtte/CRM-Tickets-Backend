@@ -96,7 +96,7 @@ DB_PASSWORD=ContraseñaSegura1234.
 ```
 #### 3.2 Para trabajar con el docker, utilizar:
 ```
-DB_URL=jdbc:sqlserver://sqlserver:1433;database=CRM_DB;encrypt=true;trustServerCertificate=true
+DB_URL=jdbc:sqlserver://sqlserver:1433;database=NOMBRE_DB;encrypt=true;trustServerCertificate=true
 DB_PORT=1434
 DB_USER=Usuario123
 DB_PASSWORD=ContraseñaSegura1234.
