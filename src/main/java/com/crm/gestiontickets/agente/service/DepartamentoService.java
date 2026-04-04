@@ -3,8 +3,6 @@ command:Cada metodo es una operacion especifica del sistema */
 package com.crm.gestiontickets.agente.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
