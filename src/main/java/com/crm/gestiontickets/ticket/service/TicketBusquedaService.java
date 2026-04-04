@@ -85,7 +85,7 @@ public class TicketBusquedaService {
                 case MAYOR ->
                     fechaInicio = fecha.atStartOfDay();
                 case MENOR ->
-                    fechaFin = fecha.atStartOfDay();
+                    fechaFin = fecha.atTime(23, 59, 59);
                 case IGUAL -> {
                     fechaInicio = fecha.atStartOfDay();
                     fechaFin = fecha.atTime(23, 59, 59);

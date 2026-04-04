@@ -20,7 +20,8 @@ public interface TicketRepository extends JpaRepository<Ticket, String>, JpaSpec
     @Query("SELECT t FROM Ticket t "
             + "WHERE t.cliente = :cliente "
             + "AND (:estado IS NULL OR t.estado.estadoTicket = :estado) "
-            + "AND (:fechaInicio IS NULL OR :fechaFin IS NULL OR t.fechaCreacion BETWEEN :fechaInicio AND :fechaFin)")
+            + "AND (:fechaInicio IS NULL OR t.fechaCreacion >= :fechaInicio) "
+            + "AND (:fechaFin IS NULL OR t.fechaCreacion <= :fechaFin)")
     Page<Ticket> findByClienteConFiltros(
             @Param("cliente") Cliente cliente,
             @Param("estado") String estado,
