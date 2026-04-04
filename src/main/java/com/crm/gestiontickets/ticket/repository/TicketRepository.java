@@ -27,15 +27,17 @@ public interface TicketRepository extends JpaRepository<Ticket, String>, JpaSpec
             @Param("estado") String estado,
             @Param("fechaInicio") LocalDateTime fechaInicio,
             @Param("fechaFin") LocalDateTime fechaFin,
-            Pageable pageable
-    );
+            Pageable pageable);
 
     @Query("""
-        SELECT t 
-        FROM Ticket t
-        WHERE t.pasoActual.idDepartamento.idDepartamento = :idDepartamento
-        """)
-    List<Ticket> findTicketsByDepartamento(Integer idDepartamento);
+                SELECT t
+                FROM Ticket t
+                WHERE t.pasoActual.idDepartamento.idDepartamento = :idDepartamento
+                AND (:asignado IS NULL
+                     OR (:asignado = true AND t.agenteAsignado IS NOT NULL)
+                     OR (:asignado = false AND t.agenteAsignado IS NULL))
+            """)
+    Page<Ticket> findTicketsByDepartamento(Integer idDepartamento, Boolean asignado, Pageable pageable);
 
     List<Ticket> findByAgenteAsignado(Agente agenteAsignado);
 

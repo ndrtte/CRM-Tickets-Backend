@@ -27,8 +27,9 @@ import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
 import com.crm.gestiontickets.ticket.enums.EstadoEtapaTicketEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
+import com.crm.gestiontickets.ticket.enums.FiltroTicketAsignadosEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketEstadoEnum;
-import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
+import com.crm.gestiontickets.ticket.enums.FiltroTicketsEnum;
 import com.crm.gestiontickets.ticket.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.ticket.mapper.TicketMapper;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
@@ -100,17 +101,18 @@ public class TicketBusquedaService {
         return ticketsPaginados.map(ticketMapper::mapearTicketADetalle);
     }
 
-    public List<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento) {
-        List<Ticket> listaTickets = ticketRepository.findTicketsByDepartamento(idDepartamento);
+    public Page<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento, int page, int pageSize,  FiltroTicketAsignadosEnum asignacion) {
 
-        return listaTickets.stream()
-                .map(ticketMapper::mapearTicketADetalle)
-                .toList();
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Boolean asignado = asignacion != null ? asignacion == FiltroTicketAsignadosEnum.ASIGNADOS : null;
+        Page<Ticket> ticketsPaginados = ticketRepository.findTicketsByDepartamento(idDepartamento, asignado, pageable);
+
+        return ticketsPaginados.map(ticketMapper::mapearTicketADetalle);
     }
 
     public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(
             Integer idAgente,
-            FiltroTicketsAgenteEnum filtro) {
+            FiltroTicketsEnum filtro) {
 
         Agente agente = agenteRepository.findById(idAgente).orElseThrow();
 
