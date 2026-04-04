@@ -33,7 +33,7 @@ services:
     networks:
       - crm_bd_network
     env_file:
-      - .env.docker
+      - .env
     ports:
       - "8080:8080"
 
