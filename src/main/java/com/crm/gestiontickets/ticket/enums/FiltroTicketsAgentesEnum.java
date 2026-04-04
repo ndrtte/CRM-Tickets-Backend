@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum FiltroTicketsEnum {
+public enum FiltroTicketsAgentesEnum {
     EN_PROCESO("En Proceso"),
     FINALIZADOS("Finalizado"),
     TODOS("Todos");

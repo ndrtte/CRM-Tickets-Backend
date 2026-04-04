@@ -29,7 +29,7 @@ import com.crm.gestiontickets.ticket.enums.EstadoEtapaTicketEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketAsignadosEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketEstadoEnum;
-import com.crm.gestiontickets.ticket.enums.FiltroTicketsEnum;
+import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgentesEnum;
 import com.crm.gestiontickets.ticket.mapper.PasoFlujoMapper;
 import com.crm.gestiontickets.ticket.mapper.TicketMapper;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
@@ -71,7 +71,8 @@ public class TicketBusquedaService {
         return ticketMapper.mapearTicketADetalle(ticket);
     }
 
-    public Page<TicketDetalle> obtenerTicketsCliente(Long idCliente, int page, int pageSize, FiltroTicketEstadoEnum estado, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
+    public Page<TicketDetalle> obtenerTicketsCliente(Long idCliente, int page, int pageSize,
+            FiltroTicketEstadoEnum estado, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
         Cliente cliente = clienteRepository.findById(idCliente).get();
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("fechaCreacion").descending());
@@ -95,13 +96,13 @@ public class TicketBusquedaService {
         }
 
         Page<Ticket> ticketsPaginados = ticketRepository.findByClienteConFiltros(
-                cliente, estadoStr, fechaInicio, fechaFin, pageable
-        );
+                cliente, estadoStr, fechaInicio, fechaFin, pageable);
 
         return ticketsPaginados.map(ticketMapper::mapearTicketADetalle);
     }
 
-    public Page<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento, int page, int pageSize,  FiltroTicketAsignadosEnum asignacion) {
+    public Page<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento, int page, int pageSize,
+            FiltroTicketAsignadosEnum asignacion) {
 
         Pageable pageable = PageRequest.of(page, pageSize);
         Boolean asignado = asignacion != null ? asignacion == FiltroTicketAsignadosEnum.ASIGNADOS : null;
@@ -110,19 +111,16 @@ public class TicketBusquedaService {
         return ticketsPaginados.map(ticketMapper::mapearTicketADetalle);
     }
 
-    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(
-            Integer idAgente,
-            FiltroTicketsEnum filtro) {
+    public Page<TicketEtapaAgenteDetalle> obtenerTicketsAgente(Integer idAgente, int page, int pageSize,FiltroTicketsAgentesEnum filtro, FiltroFechaTicketEnum fechaOp,LocalDate fecha) {
 
-        Agente agente = agenteRepository.findById(idAgente).orElseThrow();
+        Agente agente = agenteRepository.findById(idAgente).get();
+
+        Pageable pageable = PageRequest.of(page, pageSize);
 
         return switch (filtro) {
-            case EN_PROCESO ->
-                ticketMapper.mapearEnProceso(agente);
-            case FINALIZADOS ->
-                ticketMapper.mapearFinalizados(agente);
-            case TODOS ->
-                ticketMapper.mapearTodos(agente);
+            case EN_PROCESO -> ticketMapper.mapearTicketsEnProceso(agente, pageable, fechaOp, fecha);
+            case FINALIZADOS -> ticketMapper.mapearTicketsFinalizados(agente, pageable, fechaOp, fecha);
+            case TODOS -> ticketMapper.mapearTicketsTodos(agente, pageable, fechaOp, fecha);
         };
     }
 
