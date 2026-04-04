@@ -75,7 +75,7 @@ public class TicketBusquedaService {
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("fechaCreacion").descending());
 
-        String estadoStr = estado != null ? estado.name() : null;
+        String estadoStr = estado != null ? estado.getEstado() : null;
 
         LocalDateTime fechaInicio = null;
         LocalDateTime fechaFin = null;
@@ -85,7 +85,7 @@ public class TicketBusquedaService {
                 case MAYOR ->
                     fechaInicio = fecha.atStartOfDay();
                 case MENOR ->
-                    fechaFin = fecha.atStartOfDay();
+                    fechaFin = fecha.atTime(23, 59, 59);
                 case IGUAL -> {
                     fechaInicio = fecha.atStartOfDay();
                     fechaFin = fecha.atTime(23, 59, 59);
