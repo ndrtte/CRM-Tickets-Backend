@@ -75,7 +75,7 @@ public class TicketBusquedaService {
 
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("fechaCreacion").descending());
 
-        String estadoStr = estado != null ? estado.name() : null;
+        String estadoStr = estado != null ? estado.getEstado() : null;
 
         LocalDateTime fechaInicio = null;
         LocalDateTime fechaFin = null;
