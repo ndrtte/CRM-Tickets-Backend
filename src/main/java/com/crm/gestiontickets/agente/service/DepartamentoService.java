@@ -3,10 +3,11 @@ command:Cada metodo es una operacion especifica del sistema */
 package com.crm.gestiontickets.agente.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.dto.DepartamentoDetalle;
@@ -20,7 +21,7 @@ public class DepartamentoService {
     @Autowired
     private DepartamentoRepository departamentoRepository;
 
-    public DepartamentoDetalle crearDepartamento(DepartamentoDetalle departamentoDTO){
+    public DepartamentoDetalle crearDepartamento(DepartamentoDetalle departamentoDTO) {
 
         Departamento departamento = new Departamento();
 
@@ -28,7 +29,7 @@ public class DepartamentoService {
         departamento.setDescripcion(departamentoDTO.getDescripcion());
         departamento.setFechaCreacion(LocalDateTime.now());
         departamento.setActivo("S");
-        
+
         departamentoRepository.save(departamento);
 
         DepartamentoDetalle nuevoDepartamento = new DepartamentoDetalle();
@@ -40,8 +41,8 @@ public class DepartamentoService {
         return nuevoDepartamento;
     }
 
-     // Actualizar un departamento
-      public DepartamentoDetalle actualizarDepartamento(DepartamentoDetalle departamentoDTO) {
+    // Actualizar un departamento
+    public DepartamentoDetalle actualizarDepartamento(DepartamentoDetalle departamentoDTO) {
 
         Departamento departamento = departamentoRepository.findById(departamentoDTO.getIdDepartamento())
                 .orElseThrow(() -> new DepartamentoNotFoundException(departamentoDTO.getIdDepartamento()));
@@ -62,7 +63,7 @@ public class DepartamentoService {
         return dto;
     }
 
-    //eliminar un departamento
+    // eliminar un departamento
     public void eliminarDepartamento(Integer idDepartamento) {
         Departamento departamento = departamentoRepository.findById(idDepartamento)
                 .orElseThrow(() -> new DepartamentoNotFoundException(idDepartamento));
@@ -70,28 +71,27 @@ public class DepartamentoService {
         departamentoRepository.delete(departamento);
     }
 
-        public Departamento bloquearDepartamento(Integer idDepartamento) {
+    public Departamento bloquearDepartamento(Integer idDepartamento) {
 
-    Departamento departamento = departamentoRepository.findById(idDepartamento)
-            .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+        Departamento departamento = departamentoRepository.findById(idDepartamento)
+                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
 
-    if ("S".equals(departamento.getActivo())) {
-        departamento.setActivo("N"); // bloquear
-    } else {
-        departamento.setActivo("S"); // desbloquear
+        if ("S".equals(departamento.getActivo())) {
+            departamento.setActivo("N"); // bloquear
+        } else {
+            departamento.setActivo("S"); // desbloquear
+        }
+
+        departamento.setFechaActualizacion(LocalDateTime.now());
+
+        return departamentoRepository.save(departamento);
     }
 
-    departamento.setFechaActualizacion(LocalDateTime.now());
-
-    return departamentoRepository.save(departamento);
-    }
-
-    //buscar departamento 
-     public List<DepartamentoDetalle> buscarDepartamentos(String valor) {
-        List<Departamento> departamentos = departamentoRepository.buscarPorCriterio(valor);
-        return departamentos.stream()
-                .map(this::convertirADTO)
-                .collect(Collectors.toList());
+    // buscar departamento
+    public Page<DepartamentoDetalle> buscarDepartamentos(String valor, int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Departamento> departamentosPaginados = departamentoRepository.buscarPorCriterio(valor, pageable);
+        return departamentosPaginados.map(this::convertirADTO);
     }
 
     private DepartamentoDetalle convertirADTO(Departamento dep) {
@@ -102,16 +102,12 @@ public class DepartamentoService {
         dto.setActivo(dep.getActivo());
         return dto;
     }
-    
-    //obtener los  departamentos
-    public List<DepartamentoDetalle> obtenerDepartamentosActivos() {
-    List<Departamento> lista = departamentoRepository.findByActivo("S");
-    return lista.stream()
-                .map(this::convertirADTO)
-                .collect(Collectors.toList());
-}
 
-    
+    // obtener los departamentos
+    public Page<DepartamentoDetalle> obtenerDepartamentosActivos(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Departamento> departamentosPaginados = departamentoRepository.findByActivo("S", pageable);
+        return departamentosPaginados.map(this::convertirADTO);
+    }
 
 }
-
