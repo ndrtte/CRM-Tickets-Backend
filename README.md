@@ -86,33 +86,29 @@ Este archivo es únicamente una plantilla del archivo real que utilizaremos para
 2. Renombra la copia a `.env`.
 3. Abre el archivo `.env` y completa las variables con tus valores correspondientes. Por ejemplo:
 
+### 3. Dependiendo de donde quieran ejecutarlo, hacer lo siguiente:
+
+#### 3.1 Si el backend se ejecuta directamente en la máquina local, se deben utilizar valores similares a los siguientes:
 ```
-DB_HOST=localhost
-DB_PORT=1433
-DB_NAME=NOMBRE_BASE_DE_DATOS
+DB_URL=jdbc:sqlserver://localhost:1433;database=NOMBRE_DB;encrypt=true;trustServerCertificate=true
 DB_USER=Usuario123
 DB_PASSWORD=ContraseñaSegura1234.
 ```
-### 3. Crear el archivo `.env.docker`
-
-1. Copia el archivo `env.template`.
-2. Renombra la copia a `.env.docker`.
-3. Abre el archivo `.env.docker` y completa las variables con tus valores correspondientes. Por ejemplo:
-
+#### 3.2 Para trabajar con el docker, utilizar:
 ```
-DB_HOST=sqlserver
-DB_PORT=1433
-DB_NAME=NOMBRE_BASE_DE_DATOS
+DB_URL=jdbc:sqlserver://localhost:1433;database=NOMBRE_DB;encrypt=true;trustServerCertificate=true
+DB_PORT=1434
 DB_USER=Usuario123
 DB_PASSWORD=ContraseñaSegura1234.
 ```
 
 ### Notas importantes
 
-- El puerto `1433` es el puerto interno estándar de SQL Server.
-- Cuando se ejecuta dentro de Docker, no se debe usar `localhost` como host de la base de datos.
-- Cuando se ejecuta fuera de Docker, no se debe usar el nombre del servicio (`sqlserver`).
+- El puerto `1433` corresponde al puerto interno estándar de SQL Server.
+- Cuando la aplicación se ejecuta dentro de Docker, no se debe usar `localhost` como host de la base de datos; en su lugar se debe utilizar el nombre del servicio definido en docker-compose (`sqlserver`).
+- Cuando la aplicación se ejecuta local, no se debe usar el nombre del servicio (`sqlserver`), sino localhost.
 - Asegúrate de que las credenciales y el nombre de la base de datos sean correctos antes de ejecutar el proyecto.
+- Reemplaza `NOMBRE_DB` por el nombre real de la base de datos que se utilizará en tu máquina.
 
 ### 3. Crear la carpeta `.vscode`
 
@@ -156,7 +152,6 @@ Abre el archivo `.gitignore` y agrega lo siguiente:
 ```
 .vscode/
 .env
-.env.docker
 ```
 
 Después de esto, estos archivos deberían mostrarse en un tono más gris en el panel de control de cambios, indicando que Git ya no los incluirá en los commits.
@@ -172,7 +167,7 @@ Si todo está correctamente configurado, la aplicación debería iniciar sin inc
 
 # Configuración con Docker: Backend y SQL Server
 
-Este apartado describe el proceso para construir y ejecutar el backend desarrollado en Spring Boot junto con una instancia de SQL Server utilizando Docker.
+Este apartado describe el proceso necesario para construir y ejecutar el backend desarrollado con Spring Boot junto con una instancia de SQL Server utilizando Docker.
 
 ## 1. Requisitos previos
 
@@ -198,35 +193,20 @@ https://www.docker.com/products/docker-desktop/
 4. Reinicia el equipo si el instalador lo solicita.
 5. Verifica que Docker Desktop esté en ejecución.
 
-## 3. Preparación de la aplicación
-
-Antes de levantar los contenedores, es necesario generar el archivo `.jar` del proyecto.
-
-Ejecuta el siguiente comando en la raíz del proyecto:
-
-```bash
-./mvnw clean package -DskipTests
-```
-Esto generará el archivo:
-
-`target/gestiontickets-0.0.1-SNAPSHOT.jar`
-
-Este archivo es necesario para construir la imagen del backend.
-
-## 4. Construcción y ejecución de contenedores
+## 3. Construcción y ejecución de contenedores
 
 Ubicado en la raíz del proyecto, ejecuta:
 
 ```bash
-docker compose up -d --build
+docker compose down
 ```
 
-Este comando realiza lo siguiente:
+```bash
+docker compose up --build
+```
 
-- Construye la imagen del backend a partir del Dockerfile
-- Descarga la imagen de SQL Server si no existe localmente
-- Crea y ejecuta los contenedores definidos en docker-compose.yaml
-- Ejecuta los contenedores en segundo plano
+El primer comando detiene y elimina contenedores existentes. El segundo comando construye la imagen del backend a partir del Dockerfile, 
+descarga la imagen de SQL Server si no está disponible localmente y levanta los contenedores definidos en el archivo docker-compose.yaml
 
 ## 5. Verificación de contenedores
 
@@ -243,12 +223,15 @@ Deberías visualizar al menos:
 
 También puedes validarlo desde Docker Desktop en la sección de contenedores.
 
+Cuando el contenedor del backend se inicia correctamente, la aplicación debería ejecutarse 
+de la misma forma que cuando se corre en un entorno local.
+
 ## 6. Notas importantes
 Asegúrate de que Docker Desktop esté en ejecución antes de levantar los contenedores.
 Si realizas cambios en el Dockerfile o en el docker-compose.yaml, debes reconstruir las imágenes con:
 
 ```bash
-docker compose up -d --build
+docker compose up --build
 ```
 
 ## 7. Recomendaciones
@@ -258,7 +241,7 @@ Se recomienda instalar las siguientes extensiones en Visual Studio Code:
 - Docker
 - Container Tools
 
-## 8. Orden de ejecución
+## 8. Orden de ejecución para usar Docker
 
 Para ejecutar correctamente el proyecto, sigue este orden:
 
