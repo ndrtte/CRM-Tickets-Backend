@@ -10,6 +10,7 @@ import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
 import com.crm.gestiontickets.flujos.dto.CrearFlujoDTO;
 import com.crm.gestiontickets.flujos.entity.Flujo;
 import com.crm.gestiontickets.flujos.entity.PasoFlujo;
+import com.crm.gestiontickets.flujos.repository.FlujoRepository;
 
 @Service
 public class FlujoService {
@@ -56,4 +57,16 @@ public class FlujoService {
 
         flujoRepository.save(flujo);
     }
+
+    //deshabilitar un flujo
+    @Transactional
+public void deshabilitarFlujo(Integer idFlujo) {
+
+    Flujo flujo = flujoRepository.findById(idFlujo)
+            .orElseThrow(() -> new RuntimeException("Flujo no encontrado"));
+
+    flujo.setEstado(false);
+
+    flujoRepository.save(flujo);
+}
 }

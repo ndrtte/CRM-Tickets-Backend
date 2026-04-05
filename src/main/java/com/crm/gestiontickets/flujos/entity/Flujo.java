@@ -55,8 +55,7 @@ public class Flujo {
         throw new UnsupportedOperationException("Unimplemented method 'setDescripcion'");
     }
 
-    public void setCategoria(Departamento categoria2) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setCategoria'");
-    }
+    @Column(name = "estado")
+    private Boolean estado = true;
+
 }

@@ -2,7 +2,9 @@ package com.crm.gestiontickets.flujos.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,4 +26,12 @@ public class FlujoController {
 
         return ResponseEntity.ok("Flujo creado correctamente");
     }
+
+    @PutMapping("/deshabilitar/{idFlujo}")
+    public ResponseEntity<String> deshabilitarFlujo(@PathVariable Integer idFlujo) {
+
+    flujoService.deshabilitarFlujo(idFlujo);
+
+    return ResponseEntity.ok("Flujo deshabilitado correctamente");
+}
 }
