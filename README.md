@@ -106,7 +106,7 @@ DB_PASSWORD=ContraseñaSegura1234.
 
 - El puerto `1433` corresponde al puerto interno estándar de SQL Server.
 - Cuando la aplicación se ejecuta dentro de Docker, no se debe usar `localhost` como host de la base de datos; en su lugar se debe utilizar el nombre del servicio definido en docker-compose (`sqlserver`).
-- Cuando la aplicación se ejecuta local, no se debe usar el nombre del servicio (`sqlserver`), sino localhost.
+- Cuando la aplicación se ejecuta local, no se debe usar el nombre del servicio (`sqlserver`), sino `localhost`.
 - Asegúrate de que las credenciales y el nombre de la base de datos sean correctos antes de ejecutar el proyecto.
 - Reemplaza `NOMBRE_DB` por el nombre real de la base de datos que se utilizará en tu máquina.
 
