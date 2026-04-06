@@ -63,4 +63,33 @@ public class PasoFlujo {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setIdDepartamento'");
     }
+
+    //deshabilitar / habilitar un flujo
+    @Column(name = "estado")
+    private Boolean estado = true;
+
+    public Integer getIdPaso() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getIdPaso'");
+    }
+
+    public Boolean getEstado() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getEstado'");
+    }
+
+    public void setEstado(boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setEstado'");
+    }
+
+    public Object getDepartamento() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDepartamento'");
+    }
+
+    public void setDepartamento(Departamento departamento2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDepartamento'");
+    }
 }

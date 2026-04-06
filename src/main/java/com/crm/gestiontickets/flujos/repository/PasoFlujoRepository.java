@@ -20,4 +20,10 @@ public interface PasoFlujoRepository extends JpaRepository<PasoFlujo, Integer> {
     @Modifying
     @Query("UPDATE Flujo f SET f.estado = false WHERE f.idFlujo = :idFlujo")
     void deshabilitarFlujo(@Param("idFlujo") Integer idFlujo);
+
+    //deshabilitar / habilitar un flujo
+
+    @Modifying
+    @Query("UPDATE PasoFlujo p SET p.estado = :estado WHERE p.idPaso = :idPaso")
+    void actualizarEstadoPaso(@Param("idPaso") Integer idPaso, @Param("estado") Boolean estado);
 }

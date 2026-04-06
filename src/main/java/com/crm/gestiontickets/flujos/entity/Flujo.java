@@ -1,6 +1,7 @@
 package com.crm.gestiontickets.flujos.entity;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 import com.crm.gestiontickets.agente.entity.Departamento;
@@ -57,5 +58,20 @@ public class Flujo {
 
     @Column(name = "estado")
     private Boolean estado = true;
+
+    public void setEstado(boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setEstado'");
+    }
+
+    public Collection<com.crm.gestiontickets.flujos.entity.PasoFlujo> getPasos() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPasos'");
+    }
+
+    public Object getEstado() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getEstado'");
+    }
 
 }

@@ -6,7 +6,6 @@ public class EtapaDTO {
     private Integer idDepartamento;
     private Integer orden;
 
-    // Getters y Setters
     public String getDescripcion() {
         return descripcion;
     }
@@ -15,11 +14,11 @@ public class EtapaDTO {
         this.descripcion = descripcion;
     }
 
-    public Integer getIdDepartamento() {
+    public Integer getIdDepartamento() { 
         return idDepartamento;
     }
 
-    public void setIdDepartamento(Integer idDepartamento) {
+    public void setIdDepartamento(Integer idDepartamento) { 
         this.idDepartamento = idDepartamento;
     }
 
@@ -29,5 +28,10 @@ public class EtapaDTO {
 
     public void setOrden(Integer orden) {
         this.orden = orden;
+    }
+
+    public Integer getDepartamento() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDepartamento'");
     }
 }
