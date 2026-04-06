@@ -1,6 +1,5 @@
 package com.crm.gestiontickets.ticket.repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
@@ -13,7 +12,6 @@ import org.springframework.data.repository.query.Param;
 import com.crm.gestiontickets.agente.entity.Agente;
 import com.crm.gestiontickets.cliente.entity.Cliente;
 import com.crm.gestiontickets.ticket.entity.Ticket;
-import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
 
 public interface TicketRepository extends JpaRepository<Ticket, String>, JpaSpecificationExecutor<Ticket> {
 
@@ -41,11 +39,16 @@ public interface TicketRepository extends JpaRepository<Ticket, String>, JpaSpec
 
         @Query("SELECT t FROM Ticket t " +
                         "WHERE t.agenteAsignado = :agente " +
-                        "AND (t.estado IS NULL OR t.estado.estadoTicket <> 'Cerrado') " +
-                        "AND (:fecha IS NULL OR " +
-                        "(:fechaOp = 'MENOR' AND t.fechaCreacion < :fecha) OR " +
-                        "(:fechaOp = 'IGUAL' AND t.fechaCreacion = :fecha) OR " +
-                        "(:fechaOp = 'MAYOR' AND t.fechaCreacion > :fecha))")
-        Page<Ticket> findTicketsEnProceso(Agente agente, FiltroFechaTicketEnum fechaOp, LocalDate fecha, Pageable pageable);
+                        "AND (:cerrado IS NULL " +
+                        "     OR (:cerrado = TRUE AND t.estado.estadoTicket = 'Cerrado') " +
+                        "     OR (:cerrado = FALSE AND (t.estado IS NULL OR t.estado.estadoTicket <> 'Cerrado'))) " +
+                        "AND (:inicio IS NULL OR t.fechaCreacion >= :inicio) " +
+                        "AND (:fin IS NULL OR t.fechaCreacion < :fin)")
+        Page<Ticket> findTicketsByEstado(
+                        Agente agente,
+                        Boolean cerrado,
+                        LocalDateTime inicio,
+                        LocalDateTime fin,
+                        Pageable pageable);
 
 }

@@ -35,6 +35,7 @@ import com.crm.gestiontickets.ticket.mapper.TicketMapper;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
 import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
+import com.crm.gestiontickets.ticket.util.FechaUtils;
 
 @Service
 public class TicketBusquedaService {
@@ -66,6 +67,9 @@ public class TicketBusquedaService {
     @Autowired
     private EstadoEtapaService estadoEtapaService;
 
+    @Autowired
+    private FechaUtils fechaUtils;
+
     public TicketDetalle obtenerTicketDTO(String idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
         return ticketMapper.mapearTicketADetalle(ticket);
@@ -73,36 +77,21 @@ public class TicketBusquedaService {
 
     public Page<TicketDetalle> obtenerTicketsCliente(Long idCliente, int page, int pageSize,
             FiltroTicketEstadoEnum estado, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
+
         Cliente cliente = clienteRepository.findById(idCliente).get();
-
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("fechaCreacion").descending());
-
         String estadoStr = estado != null ? estado.getEstado() : null;
 
-        LocalDateTime fechaInicio = null;
-        LocalDateTime fechaFin = null;
+        LocalDateTime[] rango = fechaUtils.calcularRangoFecha(fecha, fechaOp);
+        LocalDateTime fechaInicio = rango[0];
+        LocalDateTime fechaFin = rango[1];
 
-        if (fecha != null && fechaOp != null) {
-            switch (fechaOp) {
-                case MAYOR ->
-                    fechaInicio = fecha.atStartOfDay();
-                case MENOR ->
-                    fechaFin = fecha.atTime(23, 59, 59);
-                case IGUAL -> {
-                    fechaInicio = fecha.atStartOfDay();
-                    fechaFin = fecha.atTime(23, 59, 59);
-                }
-            }
-        }
-
-        Page<Ticket> ticketsPaginados = ticketRepository.findByClienteConFiltros(
-                cliente, estadoStr, fechaInicio, fechaFin, pageable);
+        Page<Ticket> ticketsPaginados = ticketRepository.findByClienteConFiltros(cliente, estadoStr, fechaInicio, fechaFin, pageable);
 
         return ticketsPaginados.map(ticketMapper::mapearTicketADetalle);
     }
 
-    public Page<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento, int page, int pageSize,
-            FiltroTicketAsignadosEnum asignacion) {
+    public Page<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento, int page, int pageSize, FiltroTicketAsignadosEnum asignacion) {
 
         Pageable pageable = PageRequest.of(page, pageSize);
         Boolean asignado = asignacion != null ? asignacion == FiltroTicketAsignadosEnum.ASIGNADOS : null;
@@ -111,16 +100,20 @@ public class TicketBusquedaService {
         return ticketsPaginados.map(ticketMapper::mapearTicketADetalle);
     }
 
-    public Page<TicketEtapaAgenteDetalle> obtenerTicketsAgente(Integer idAgente, int page, int pageSize,FiltroTicketsAgentesEnum filtro, FiltroFechaTicketEnum fechaOp,LocalDate fecha) {
+    public Page<TicketEtapaAgenteDetalle> obtenerTicketsAgente(Integer idAgente, int page, int pageSize,
+            FiltroTicketsAgentesEnum filtro, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
 
         Agente agente = agenteRepository.findById(idAgente).get();
 
         Pageable pageable = PageRequest.of(page, pageSize);
 
         return switch (filtro) {
-            case EN_PROCESO -> ticketMapper.mapearTicketsEnProceso(agente, pageable, fechaOp, fecha);
-            case FINALIZADOS -> ticketMapper.mapearTicketsFinalizados(agente, pageable, fechaOp, fecha);
-            case TODOS -> ticketMapper.mapearTicketsTodos(agente, pageable, fechaOp, fecha);
+            case EN_PROCESO ->
+                ticketMapper.mapearTicketsEnProceso(agente, pageable, fechaOp, fecha);
+            case FINALIZADOS ->
+                ticketMapper.mapearTicketsFinalizados(agente, pageable, fechaOp, fecha);
+            case TODOS ->
+                ticketMapper.mapearTicketsTodos(agente, pageable, fechaOp, fecha);
         };
     }
 
