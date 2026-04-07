@@ -31,11 +31,16 @@ public interface TicketRepository extends JpaRepository<Ticket, String>, JpaSpec
     );
 
     @Query("""
-        SELECT t 
-        FROM Ticket t
-        WHERE t.pasoActual.idDepartamento.idDepartamento = :idDepartamento
-        """)
-    List<Ticket> findTicketsByDepartamento(Integer idDepartamento);
+    SELECT t 
+    FROM Ticket t
+    WHERE t.pasoActual.idDepartamento.idDepartamento = :idDepartamento
+    AND (:activo IS NULL OR t.activo = :activo)
+    """)
+    Page<Ticket> findTicketsByDepartamento(
+        @Param("idDepartamento") Integer idDepartamento,
+        @Param("activo") Boolean activo,
+        Pageable pageable
+    );
 
     List<Ticket> findByAgenteAsignado(Agente agenteAsignado);
 
