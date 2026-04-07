@@ -5,7 +5,6 @@
 package com.crm.gestiontickets.ticket.controller;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -31,8 +30,9 @@ import com.crm.gestiontickets.ticket.dto.TicketEtapaAgenteDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketEtapaDetalle;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
 import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
+import com.crm.gestiontickets.ticket.enums.FiltroTicketAsignadosEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketEstadoEnum;
-import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgenteEnum;
+import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgentesEnum;
 import com.crm.gestiontickets.ticket.service.TicketAgenteService;
 import com.crm.gestiontickets.ticket.service.TicketAperturaService;
 import com.crm.gestiontickets.ticket.service.TicketBusquedaService;
@@ -89,8 +89,11 @@ public class TicketController {
     }
 
     @GetMapping("/otener-tickets-departamento")
-    public List<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento) {
-        return ticketBusquedaService.obtenerTicketsDepartamento(idDepartamento);
+    public Page<TicketDetalle> obtenerTicketsDepartamento(@RequestParam Integer idDepartamento,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) FiltroTicketAsignadosEnum asignacion) {
+        return ticketBusquedaService.obtenerTicketsDepartamento(idDepartamento, page, pageSize, asignacion);
     }
 
     @PutMapping("/avanzar-etapa")
@@ -109,8 +112,12 @@ public class TicketController {
     }
 
     @GetMapping("/obtener-tickets-agente")
-    public List<TicketEtapaAgenteDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente,
-            FiltroTicketsAgenteEnum filtroEstado) {
-        return ticketBusquedaService.obtenerTicketsAgente(idAgente, filtroEstado);
+    public Page<TicketEtapaAgenteDetalle> obtenerTicketsAgente(@RequestParam Integer idAgente,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) FiltroTicketsAgentesEnum filtroEstado,
+            @RequestParam(required = false) FiltroFechaTicketEnum fechaOp,
+            @RequestParam(required = false) LocalDate fecha) {
+        return ticketBusquedaService.obtenerTicketsAgente(idAgente, page, pageSize, filtroEstado, fechaOp, fecha);
     }
 }

@@ -6,13 +6,12 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.crm.gestiontickets.agente.entity.Agente;
 import com.crm.gestiontickets.cliente.entity.Cliente;
-import com.crm.gestiontickets.ticket.entity.EstadoTicket;
+import com.crm.gestiontickets.reportes.dto.ReporteTicketDTO;
 import com.crm.gestiontickets.ticket.entity.Ticket;
 
 public interface TicketRepository extends JpaRepository<Ticket, String>, JpaSpecificationExecutor<Ticket> {

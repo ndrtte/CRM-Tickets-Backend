@@ -1,12 +1,18 @@
 /*Patron: comportamental: Mapper, convierte entidades en DTOs */
 package com.crm.gestiontickets.ticket.mapper;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.crm.gestiontickets.agente.entity.Agente;
@@ -17,8 +23,10 @@ import com.crm.gestiontickets.ticket.dto.builder.TicketEtapaAgenteDetalleBuilder
 import com.crm.gestiontickets.ticket.entity.HistoricoTicket;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
+import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
+import com.crm.gestiontickets.ticket.util.FechaUtils;
 
 @Component
 public class TicketMapper {
@@ -32,6 +40,9 @@ public class TicketMapper {
     @Autowired
     private HistoricoTicketRepository historicoRepository;
 
+    @Autowired
+    private FechaUtils fechaUtils;
+
     public TicketDetalle mapearTicketADetalle(Ticket ticket) {
         return new TicketDetalleBuilder()
                 .conTicket(ticket)
@@ -44,35 +55,77 @@ public class TicketMapper {
                 .build();
     }
 
-    public List<TicketEtapaAgenteDetalle> mapearEnProceso(Agente agente) {
-        List<Ticket> tickets = ticketRepository.findByAgenteAsignado(agente);
+    public Page<TicketEtapaAgenteDetalle> mapearTicketsEnProceso(
+            Agente agente, Pageable pageable, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
 
-        return tickets.stream()
-                .map(ticket -> {
-                    PasoFlujo paso = ticket.getPasoActual();
-                    String estadoEtapa = (ticket.getEstado() != null && "Cerrado".equalsIgnoreCase(ticket.getEstado().getEstadoTicket()))
-                            ? "Finalizado" : "En proceso";
+        LocalDateTime[] rango = fechaUtils.calcularRangoFecha(fecha, fechaOp);
+        LocalDateTime fechaInicio = rango[0];
+        LocalDateTime fechaFin = rango[1];
 
-                    return new TicketEtapaAgenteDetalleBuilder()
-                            .conIdTicket(ticket.getIdTicket())
-                            .conCliente(ticket.getCliente())
-                            .conCategoria(ticket.getCategoria())
-                            .conAgente(ticket.getAgenteAsignado())
-                            .conDepartamento(paso)
-                            .conEstadoEtapa(estadoEtapa)
-                            .conFechaCreacion(ticket.getFechaCreacion())
-                            .conListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), paso))
-                            .build();
-                })
-                .toList();
+        Page<Ticket> tickets = ticketRepository.findTicketsByEstado(
+                agente,
+                false,
+                fechaInicio,
+                fechaFin,
+                pageable);
+
+        return tickets.map(ticket -> {
+            PasoFlujo paso = ticket.getPasoActual();
+            String estadoEtapa = (ticket.getEstado() != null
+                    && "Cerrado".equalsIgnoreCase(ticket.getEstado().getEstadoTicket()))
+                            ? "Finalizado"
+                            : "En Proceso";
+
+            return new TicketEtapaAgenteDetalleBuilder()
+                    .conIdTicket(ticket.getIdTicket())
+                    .conCliente(ticket.getCliente())
+                    .conCategoria(ticket.getCategoria())
+                    .conAgente(ticket.getAgenteAsignado())
+                    .conDepartamento(paso)
+                    .conEstadoEtapa(estadoEtapa)
+                    .conFechaCreacion(ticket.getFechaCreacion())
+                    .conListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), paso))
+                    .conEstado(ticket.getEstado())
+                    .build();
+        });
     }
 
-    public List<TicketEtapaAgenteDetalle> mapearTodos(Agente agente) {
-        List<TicketEtapaAgenteDetalle> enProceso = mapearEnProceso(agente);
-        List<TicketEtapaAgenteDetalle> finalizados = mapearFinalizados(agente);
+    public Page<TicketEtapaAgenteDetalle> mapearTicketsFinalizados(
+            Agente agente, Pageable pageable, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
+
+        LocalDateTime[] rango = fechaUtils.calcularRangoFecha(fecha, fechaOp);
+        LocalDateTime fechaInicio = rango[0];
+        LocalDateTime fechaFin = rango[1];
+
+        Page<HistoricoTicket> historicos = historicoRepository.findHistoricoTicketByAgenteOrigen(
+                agente, fechaInicio, fechaFin, pageable);
+
+        return historicos.map(historico -> {
+            Ticket ticket = historico.getTicket();
+            PasoFlujo pasoDestino = historico.getPasoDestino();
+
+            return new TicketEtapaAgenteDetalleBuilder()
+                    .conIdTicket(ticket.getIdTicket())
+                    .conCliente(ticket.getCliente())
+                    .conCategoria(ticket.getCategoria())
+                    .conAgente(historico.getAgenteOrigen())
+                    .conDepartamento(pasoDestino)
+                    .conEstadoEtapa("Finalizado")
+                    .conFechaCreacion(ticket.getFechaCreacion())
+                    .conEstado(ticket.getEstado())
+                    .conListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), ticket.getPasoActual()))
+                    .build();
+        });
+    }
+
+    public Page<TicketEtapaAgenteDetalle> mapearTicketsTodos(Agente agente, Pageable pageable, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
+
+        List<TicketEtapaAgenteDetalle> enProceso = mapearTicketsEnProceso(agente, Pageable.unpaged(), fechaOp, fecha).getContent();
+
+        List<TicketEtapaAgenteDetalle> finalizados = mapearTicketsFinalizados(agente, Pageable.unpaged(), fechaOp, fecha).getContent();
 
         Map<String, TicketEtapaAgenteDetalle> ticketsMap = new LinkedHashMap<>();
-
+        
         for (TicketEtapaAgenteDetalle t : enProceso) {
             ticketsMap.put(t.getIdTicket(), t);
         }
@@ -81,30 +134,13 @@ public class TicketMapper {
             ticketsMap.putIfAbsent(t.getIdTicket(), t);
         }
 
-        return new ArrayList<>(ticketsMap.values());
-    }
+        List<TicketEtapaAgenteDetalle> todos = new ArrayList<>(ticketsMap.values());
 
-    public List<TicketEtapaAgenteDetalle> mapearFinalizados(Agente agente) {
-        List<HistoricoTicket> historicos = historicoRepository.findHistoricoTicketByAgenteOrigen(agente);
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), todos.size());
+        List<TicketEtapaAgenteDetalle> sublist = start >= end ? Collections.emptyList() : todos.subList(start, end);
 
-        return historicos.stream()
-                .map(historico -> {
-                    Ticket ticket = historico.getTicket();
-                    PasoFlujo paso = historico.getPasoDestino();
-                    String estadoEtapa = "Finalizado";
-
-                    return new TicketEtapaAgenteDetalleBuilder()
-                            .conIdTicket(ticket.getIdTicket())
-                            .conCliente(ticket.getCliente())
-                            .conCategoria(ticket.getCategoria())
-                            .conAgente(historico.getAgenteOrigen())
-                            .conDepartamento(paso)
-                            .conEstadoEtapa(estadoEtapa)
-                            .conFechaCreacion(ticket.getFechaCreacion())
-                            .conListaEtapas(pasoFlujoMapper.mapearEtapas(ticket.getCategoria(), ticket.getPasoActual()))
-                            .build();
-                })
-                .toList();
+        return new PageImpl<>(sublist, pageable, todos.size());
     }
 
 }

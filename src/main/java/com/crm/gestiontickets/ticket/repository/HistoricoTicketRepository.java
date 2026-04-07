@@ -1,10 +1,12 @@
 /*Patron:  Arquitectonico, encapsula CRUD de datos desacopla la logica de negocios de lapersistencia*/
-
 package com.crm.gestiontickets.ticket.repository;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.crm.gestiontickets.agente.entity.Agente;
 import com.crm.gestiontickets.ticket.entity.HistoricoTicket;
@@ -18,5 +20,15 @@ public interface HistoricoTicketRepository extends JpaRepository<HistoricoTicket
     public HistoricoTicket findTopByTicketAndPasoOrigenOrderByIdHistoricoTicketsDesc(Ticket ticket, PasoFlujo paso);
 
     public HistoricoTicket findTopByTicketOrderByFechaHistoricoDesc(Ticket ticket);
-    public List<HistoricoTicket> findHistoricoTicketByAgenteOrigen (Agente agente);
+
+    @Query("SELECT h FROM HistoricoTicket h " +
+            "WHERE h.agenteOrigen = :agente " +
+            "AND h.pasoDestino IS NOT NULL " +
+            "AND (:inicio IS NULL OR h.ticket.fechaCreacion >= :inicio) " +
+            "AND (:fin IS NULL OR h.ticket.fechaCreacion < :fin)")
+    Page<HistoricoTicket> findHistoricoTicketByAgenteOrigen(
+            Agente agente,
+            LocalDateTime inicio,
+            LocalDateTime fin,
+            Pageable pageable);
 }
