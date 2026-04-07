@@ -1,0 +1,44 @@
+package com.crm.gestiontickets.reportes.controller;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.crm.gestiontickets.reportes.dto.ReporteTicketDTO;
+import com.crm.gestiontickets.reportes.service.ReporteTicketService;
+
+@RestController
+@RequestMapping("/api/reportes")
+@CrossOrigin("*")
+public class ReporteTicketController {
+
+    @Autowired
+    private ReporteTicketService reporteService;
+
+    @GetMapping("/resumen")
+    public ResponseEntity<Map<String, Object>> resumen() {
+        return ResponseEntity.ok(reporteService.resumenGeneral());
+    }
+
+    @GetMapping("/por-agente")
+    public ResponseEntity<List<ReporteTicketDTO>> porAgente() {
+        return ResponseEntity.ok(reporteService.estadisticasPorAgente());
+    }
+
+    @GetMapping("/por-estado")
+    public ResponseEntity<Map<String, Long>> porEstado() {
+        return ResponseEntity.ok(reporteService.conteoPorEstado());
+    }
+
+    @GetMapping("/por-mes")
+    public ResponseEntity<Map<String, Long>> porMes() {
+        return ResponseEntity.ok(reporteService.ticketsPorMes());
+    }
+
+}
