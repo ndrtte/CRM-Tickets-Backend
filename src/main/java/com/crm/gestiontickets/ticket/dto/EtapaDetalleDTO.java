@@ -35,15 +35,16 @@ public class EtapaDetalleDTO {
         return estado;
     }
 
-    public void setEstado(Boolean estado) {
-        this.estado = estado;
-    }
-
     public String getNombreDepartamento() {
         return nombreDepartamento;
     }
 
     public void setNombreDepartamento(String nombreDepartamento) {
         this.nombreDepartamento = nombreDepartamento;
+    }
+
+    public void setEstado(Object estado2) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setEstado'");
     }
 }

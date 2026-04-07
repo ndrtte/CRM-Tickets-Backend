@@ -54,13 +54,13 @@ class TicketFlujoServiceTest {
         PasoFlujo pasoActual = new PasoFlujo();
         pasoActual.setIdPasosFlujo(1);
         pasoActual.setOrden(1);
-        pasoActual.setIdFlujo(flujo);
+        pasoActual.setFlujo(flujo);
 
         // Siguiente paso
         PasoFlujo siguientePaso = new PasoFlujo();
         siguientePaso.setIdPasosFlujo(2);
         siguientePaso.setOrden(2);
-        siguientePaso.setIdFlujo(flujo);
+        siguientePaso.setFlujo(flujo);
 
         // Ticket
         Ticket ticket = new Ticket();
@@ -73,7 +73,7 @@ class TicketFlujoServiceTest {
 
         // Mocks
         when(ticketRepository.findById(idTicket)).thenReturn(Optional.of(ticket));
-        when(pasoFlujoRepository.findByIdFlujoAndOrden(flujo, 2)).thenReturn(siguientePaso);
+        when(pasoFlujoRepository.findByFlujoAndOrden(flujo, 2)).thenReturn(siguientePaso);
 
         // Act
         Respuesta<TicketPasoResponse> respuesta = ticketFlujoService.avanzarEtapa(dto);

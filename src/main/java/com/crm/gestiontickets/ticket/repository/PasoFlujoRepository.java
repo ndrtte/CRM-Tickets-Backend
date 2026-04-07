@@ -21,7 +21,7 @@ public interface PasoFlujoRepository extends JpaRepository<PasoFlujo, Integer> {
     PasoFlujo findFirstByFlujoOrderByOrdenAsc(Flujo flujo);
 
     // Buscar por descripción
-    Optional<PasoFlujo> findByDescripcion(String descripcion);
+    PasoFlujo findByDescripcion(String descripcion);
 
   
     List<PasoFlujo> findByFlujo_IdFlujoOrderByOrdenAsc(Integer idFlujo);

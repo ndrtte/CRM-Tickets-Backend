@@ -1,4 +1,4 @@
-package com.crm.gestiontickets.Ticket.service;
+package com.crm.gestiontickets.ticket.service;
 
 import java.util.List;
 
@@ -8,13 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.crm.gestiontickets.agente.entity.Departamento;
 import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
-import com.crm.gestiontickets.flujos.dto.CrearFlujoDTO;
-import com.crm.gestiontickets.flujos.dto.EtapaDTO;
-import com.crm.gestiontickets.flujos.dto.EtapaDetalleDTO;
-import com.crm.gestiontickets.flujos.entity.Flujo;
-import com.crm.gestiontickets.flujos.entity.PasoFlujo;
-import com.crm.gestiontickets.flujos.repository.FlujoRepository;
-import com.crm.gestiontickets.flujos.repository.PasoFlujoRepository;
+import com.crm.gestiontickets.ticket.dto.CrearFlujoDTO;
+import com.crm.gestiontickets.ticket.dto.EtapaDTO;
+import com.crm.gestiontickets.ticket.dto.EtapaDetalleDTO;
+import com.crm.gestiontickets.ticket.entity.Flujo;
+import com.crm.gestiontickets.ticket.entity.PasoFlujo;
+import com.crm.gestiontickets.ticket.repository.FlujoRepository;
+import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
 
 @Service
 public class FlujoService {
@@ -94,13 +94,13 @@ public class FlujoService {
             .orElseThrow(() -> new RuntimeException("Flujo no encontrado"));
 
     return flujo.getPasos().stream()
-            .filter(paso -> paso.getEstado() != null && paso.getEstado()) // opcional: solo activas
+            .filter(paso -> paso.getEstado() != null && Boolean.TRUE.equals(paso.getEstado())) // opcional: solo activas
             .sorted((a, b) -> ((Integer) a.getOrden()).compareTo((Integer) b.getOrden()))
             .map(paso -> {
 
                 EtapaDetalleDTO dto = new EtapaDetalleDTO();
 
-                dto.setIdPaso(paso.getIdPaso());
+                dto.setIdPaso(paso.getIdPasosFlujo());
                 dto.setDescripcion(paso.getDescripcion());
                 dto.setOrden(paso.getOrden());
                 dto.setEstado(paso.getEstado());

@@ -2,6 +2,7 @@
 package com.crm.gestiontickets.ticket.entity;
 
 import com.crm.gestiontickets.agente.entity.Departamento;
+import com.crm.gestiontickets.ticket.dto.BaseTicketDetalle;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,4 +45,19 @@ public class PasoFlujo {
     @ManyToOne
     @JoinColumn(name = "id_departamento")
     private Departamento departamento;
+
+    public BaseTicketDetalle getIdDepartamento() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getIdDepartamento'");
+    }
+
+    public void setEstado(boolean b) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setEstado'");
+    }
+
+    public Object getEstado() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getEstado'");
+    }
 }

@@ -88,7 +88,7 @@ public class TicketAperturaService {
         Flujo flujo = flujoRepository.findByCategoria(categoria);
 
         PasoFlujo primerPaso = pasoFlujoRepository
-                .findFirstByIdFlujoOrderByOrdenAsc(flujo);
+                .findFirstByFlujoOrderByOrdenAsc(flujo);
 
         EstadoTicket estadoProceso = estadoTicketRepository
                 .findByEstadoTicket("En Proceso");

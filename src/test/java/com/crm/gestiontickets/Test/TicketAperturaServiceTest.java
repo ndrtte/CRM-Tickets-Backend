@@ -88,7 +88,7 @@ class TicketAperturaServiceTest {
         when(ticketRepository.findById(idTicket)).thenReturn(Optional.of(ticket));
         when(categoriaRepository.findById(1)).thenReturn(Optional.of(categoria));
         when(flujoRepository.findByCategoria(categoria)).thenReturn(flujo);
-        when(pasoFlujoRepository.findFirstByIdFlujoOrderByOrdenAsc(flujo)).thenReturn(pasoInicial);
+        when(pasoFlujoRepository.findFirstByFlujoOrderByOrdenAsc(flujo)).thenReturn(pasoInicial);
         when(estadoTicketRepository.findByEstadoTicket("En Proceso")).thenReturn(estado);
 
         // Act
