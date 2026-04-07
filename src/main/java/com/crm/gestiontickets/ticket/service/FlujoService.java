@@ -1,4 +1,4 @@
-package com.crm.gestiontickets.flujos.service;
+package com.crm.gestiontickets.Ticket.service;
 
 import java.util.List;
 

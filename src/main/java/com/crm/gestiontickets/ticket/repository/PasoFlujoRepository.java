@@ -1,23 +1,28 @@
-/*Patron:  Arquitectonico, encapsula CRUD de datos desacopla la logica de negocios de lapersistencia*/
-
 package com.crm.gestiontickets.ticket.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 
+@Repository
+public interface PasoFlujoRepository extends JpaRepository<PasoFlujo, Integer> {
 
-public interface PasoFlujoRepository extends JpaRepository<PasoFlujo, Integer>{
-    
-    public PasoFlujo findByIdFlujoAndOrden(Flujo idFlujo, Integer orden);
+    // Buscar paso por flujo y orden
+    PasoFlujo findByFlujoAndOrden(Flujo flujo, Integer orden);
 
-    public List<PasoFlujo> findByIdFlujoOrderByOrdenAsc (Flujo idFlujo);
+    // Mostrar las etapas de un flujo 
+    List<PasoFlujo> findByFlujoOrderByOrdenAsc(Flujo flujo);
 
-    public PasoFlujo findFirstByIdFlujoOrderByOrdenAsc(Flujo flujo);
+    PasoFlujo findFirstByFlujoOrderByOrdenAsc(Flujo flujo);
 
-    public PasoFlujo findByDescripcion(String descripcion);
+    // Buscar por descripción
+    Optional<PasoFlujo> findByDescripcion(String descripcion);
 
+  
+    List<PasoFlujo> findByFlujo_IdFlujoOrderByOrdenAsc(Integer idFlujo);
 }

@@ -1,4 +1,4 @@
-package com.crm.gestiontickets.flujos.controller;
+package com.crm.gestiontickets.ticket.controller;
 
 import java.util.List;
 
@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.crm.gestiontickets.flujos.dto.CrearFlujoDTO;
-import com.crm.gestiontickets.flujos.dto.EtapaDTO;
-import com.crm.gestiontickets.flujos.dto.EtapaDetalleDTO;
-import com.crm.gestiontickets.flujos.service.FlujoService;
+import com.crm.gestiontickets.ticket.dto.CrearFlujoDTO;
+import com.crm.gestiontickets.ticket.dto.EtapaDTO;
+import com.crm.gestiontickets.ticket.dto.EtapaDetalleDTO;
+import com.crm.gestiontickets.ticket.service.FlujoService;
 
 @RestController
 @RequestMapping("/flujo")
