@@ -41,8 +41,8 @@ public class ReporteController {
     }
 
     @GetMapping("/por-estado")
-    public ResponseEntity<Map<String, Long>> porEstado() {
-        return ResponseEntity.ok(reporteService.conteoPorEstado());
+    public ResponseEntity<Map<String, Long>> porEstado(@RequestParam(required=false) Integer idCategoria) {
+        return ResponseEntity.ok(reporteService.conteoPorEstado(idCategoria));
     }
 
     @GetMapping("/por-mes")

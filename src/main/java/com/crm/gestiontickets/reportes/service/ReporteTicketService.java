@@ -35,9 +35,9 @@ public class ReporteTicketService {
         return ticketRepository.estadisticasPorAgente(idDepartamento, pageable);
     }
 
-    public Map<String, Long> conteoPorEstado() {
+    public Map<String, Long> conteoPorEstado(Integer idCategoria) {
         Map<String, Long> resultado = new LinkedHashMap<>();
-        for (Object[] row : ticketRepository.conteoPorEstado()) {
+        for (Object[] row : ticketRepository.conteoPorEstado(idCategoria)) {
             resultado.put((String) row[0], ((Number) row[1]).longValue());
         }
         return resultado;

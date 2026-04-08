@@ -16,110 +16,110 @@ import com.crm.gestiontickets.ticket.entity.Ticket;
 
 public interface TicketRepository extends JpaRepository<Ticket, String> {
 
-        @Query("SELECT t FROM Ticket t "
-                        + "WHERE t.cliente = :cliente "
-                        + "AND (:estado IS NULL OR t.estado.estadoTicket = :estado) "
-                        + "AND (:fechaInicio IS NULL OR t.fechaCreacion >= :fechaInicio) "
-                        + "AND (:fechaFin IS NULL OR t.fechaCreacion <= :fechaFin)")
-        Page<Ticket> findByClienteConFiltros(
-                        @Param("cliente") Cliente cliente,
-                        @Param("estado") String estado,
-                        @Param("fechaInicio") LocalDateTime fechaInicio,
-                        @Param("fechaFin") LocalDateTime fechaFin,
-                        Pageable pageable);
+  @Query("SELECT t FROM Ticket t "
+      + "WHERE t.cliente = :cliente "
+      + "AND (:estado IS NULL OR t.estado.estadoTicket = :estado) "
+      + "AND (:fechaInicio IS NULL OR t.fechaCreacion >= :fechaInicio) "
+      + "AND (:fechaFin IS NULL OR t.fechaCreacion <= :fechaFin)")
+  Page<Ticket> findByClienteConFiltros(
+      @Param("cliente") Cliente cliente,
+      @Param("estado") String estado,
+      @Param("fechaInicio") LocalDateTime fechaInicio,
+      @Param("fechaFin") LocalDateTime fechaFin,
+      Pageable pageable);
 
-        @Query("""
-                            SELECT t
-                            FROM Ticket t
-                            WHERE t.pasoActual.idDepartamento.idDepartamento = :idDepartamento
-                            AND (:asignado IS NULL
-                                 OR (:asignado = true AND t.agenteAsignado IS NOT NULL)
-                                 OR (:asignado = false AND t.agenteAsignado IS NULL))
-                        """)
-        Page<Ticket> findTicketsByDepartamento(Integer idDepartamento, Boolean asignado, Pageable pageable);
+  @Query("""
+          SELECT t
+          FROM Ticket t
+          WHERE t.pasoActual.idDepartamento.idDepartamento = :idDepartamento
+          AND (:asignado IS NULL
+               OR (:asignado = true AND t.agenteAsignado IS NOT NULL)
+               OR (:asignado = false AND t.agenteAsignado IS NULL))
+      """)
+  Page<Ticket> findTicketsByDepartamento(Integer idDepartamento, Boolean asignado, Pageable pageable);
 
-        @Query("SELECT t FROM Ticket t "
-                        + "WHERE t.agenteAsignado = :agente "
-                        + "AND (:cerrado IS NULL "
-                        + "     OR (:cerrado = TRUE AND t.estado.estadoTicket = 'Cerrado') "
-                        + "     OR (:cerrado = FALSE AND (t.estado IS NULL OR t.estado.estadoTicket <> 'Cerrado'))) "
-                        + "AND (:inicio IS NULL OR t.fechaCreacion >= :inicio) "
-                        + "AND (:fin IS NULL OR t.fechaCreacion < :fin)")
-        Page<Ticket> findTicketsByEstado(Agente agente, Boolean cerrado, LocalDateTime inicio, LocalDateTime fin,
-                        Pageable pageable);
+  @Query("SELECT t FROM Ticket t "
+      + "WHERE t.agenteAsignado = :agente "
+      + "AND (:cerrado IS NULL "
+      + "     OR (:cerrado = TRUE AND t.estado.estadoTicket = 'Cerrado') "
+      + "     OR (:cerrado = FALSE AND (t.estado IS NULL OR t.estado.estadoTicket <> 'Cerrado'))) "
+      + "AND (:inicio IS NULL OR t.fechaCreacion >= :inicio) "
+      + "AND (:fin IS NULL OR t.fechaCreacion < :fin)")
+  Page<Ticket> findTicketsByEstado(Agente agente, Boolean cerrado, LocalDateTime inicio, LocalDateTime fin,
+      Pageable pageable);
 
-        @Query(value = """
-                        SELECT AVG(
-                        CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_actualizacion) AS
-                        FLOAT) / 60.0
-                        )
-                        FROM TBL_TICKETS t
-                        INNER JOIN TBL_ESTADOS_TICKET e ON t.id_estado_actual =
-                        e.id_estado_ticket
-                        WHERE t.fecha_actualizacion IS NOT NULL
-                        AND e.estado_ticket IN ('Cerrado', 'Resuelto')
-                        """, nativeQuery = true)
-        Double promedioResolucionGlobalHoras();
+  @Query(value = """
+      SELECT AVG(
+      CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_actualizacion) AS
+      FLOAT) / 60.0
+      )
+      FROM TBL_TICKETS t
+      INNER JOIN TBL_ESTADOS_TICKET e ON t.id_estado_actual =
+      e.id_estado_ticket
+      WHERE t.fecha_actualizacion IS NOT NULL
+      AND e.estado_ticket IN ('Cerrado', 'Resuelto')
+      """, nativeQuery = true)
+  Double promedioResolucionGlobalHoras();
 
-        @Query(value = """
-                        SELECT AVG(
-                        CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_asignacion) AS
-                        FLOAT) / 60.0
-                        )
-                        FROM TBL_TICKETS t
-                        WHERE t.fecha_asignacion IS NOT NULL
-                        """, nativeQuery = true)
-        Double promedioPrimeraRespuestaHoras();
+  @Query(value = """
+      SELECT AVG(
+      CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_asignacion) AS
+      FLOAT) / 60.0
+      )
+      FROM TBL_TICKETS t
+      WHERE t.fecha_asignacion IS NOT NULL
+      """, nativeQuery = true)
+  Double promedioPrimeraRespuestaHoras();
 
-        @Query(value = """
-                        SELECT AVG(
-                        CAST(DATEDIFF(MINUTE, t.fecha_creacion, SYSDATETIME()) AS FLOAT) /
-                        60.0
-                        )
-                        FROM TBL_TICKETS t
-                        INNER JOIN TBL_ESTADOS_TICKET e ON t.id_estado_actual =
-                        e.id_estado_ticket
-                        WHERE e.estado_ticket NOT IN ('Cerrado', 'Resuelto')
-                        AND t.activo = 'S'
-                        """, nativeQuery = true)
-        Double promedioTiempoAbiertoHoras();
+  @Query(value = """
+      SELECT AVG(
+      CAST(DATEDIFF(MINUTE, t.fecha_creacion, SYSDATETIME()) AS FLOAT) /
+      60.0
+      )
+      FROM TBL_TICKETS t
+      INNER JOIN TBL_ESTADOS_TICKET e ON t.id_estado_actual =
+      e.id_estado_ticket
+      WHERE e.estado_ticket NOT IN ('Cerrado', 'Resuelto')
+      AND t.activo = 'S'
+      """, nativeQuery = true)
+  Double promedioTiempoAbiertoHoras();
 
-        @Query(value = """
-                        SELECT
-                            CONCAT(a.nombre, ' ', a.apellido) AS agenteNombre,
-                            AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_actualizacion) AS FLOAT) / 60.0) AS promedioResolucionHoras,
-                            AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_asignacion) AS FLOAT) / 60.0) AS promedioPrimeraRespuestaHoras,
-                            AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, SYSDATETIME()) AS FLOAT) / 60.0) AS promedioTiempoAbiertoHoras,
-                            CAST(COUNT(t.id_ticket) AS BIGINT) AS totalTickets
-                        FROM TBL_TICKETS t
-                        INNER JOIN TBL_AGENTES a ON t.id_agente_asignado = a.id_agente
-                        WHERE t.id_agente_asignado IS NOT NULL
-                          AND (:idDepartamento IS NULL OR a.id_departamento = :idDepartamento)
-                        GROUP BY a.id_agente, a.nombre, a.apellido
-                        ORDER BY promedioResolucionHoras ASC
-                        """, nativeQuery = true)
-        Page<ReporteTicketDTO> estadisticasPorAgente(@Param("idDepartamento") Integer idDepartamento,Pageable pageable);
+  @Query(value = """
+      SELECT
+          CONCAT(a.nombre, ' ', a.apellido) AS agenteNombre,
+          AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_actualizacion) AS FLOAT) / 60.0) AS promedioResolucionHoras,
+          AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_asignacion) AS FLOAT) / 60.0) AS promedioPrimeraRespuestaHoras,
+          AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, SYSDATETIME()) AS FLOAT) / 60.0) AS promedioTiempoAbiertoHoras,
+          CAST(COUNT(t.id_ticket) AS BIGINT) AS totalTickets
+      FROM TBL_TICKETS t
+      INNER JOIN TBL_AGENTES a ON t.id_agente_asignado = a.id_agente
+      WHERE t.id_agente_asignado IS NOT NULL
+        AND (:idDepartamento IS NULL OR a.id_departamento = :idDepartamento)
+      GROUP BY a.id_agente, a.nombre, a.apellido
+      ORDER BY promedioResolucionHoras ASC
+      """, nativeQuery = true)
+  Page<ReporteTicketDTO> estadisticasPorAgente(@Param("idDepartamento") Integer idDepartamento, Pageable pageable);
 
-        @Query(value = """
-                        SELECT
-                        e.estado_ticket AS estadoTicket,
-                        COUNT(t.id_ticket) AS total
-                        FROM TBL_TICKETS t
-                        INNER JOIN TBL_ESTADOS_TICKET e ON t.id_estado_actual =
-                        e.id_estado_ticket
-                        GROUP BY e.estado_ticket
-                        """, nativeQuery = true)
-        List<Object[]> conteoPorEstado();
+  @Query(value = """
+          SELECT
+              e.estado_ticket AS estadoTicket,
+              COUNT(t.id_ticket) AS total
+          FROM TBL_TICKETS t
+          INNER JOIN TBL_ESTADOS_TICKET e ON t.id_estado_actual = e.id_estado_ticket
+          WHERE (:idCategoria IS NULL OR t.id_categoria = :idCategoria)
+          GROUP BY e.estado_ticket
+      """, nativeQuery = true)
+  List<Object[]> conteoPorEstado(@Param("idCategoria") Integer idCategoria);
 
-        @Query(value = """
-                        SELECT
-                        FORMAT(fecha_creacion, 'yyyy-MM') AS mes,
-                        COUNT(*) AS total
-                        FROM TBL_TICKETS
-                        WHERE fecha_creacion >= DATEADD(MONTH, -6, SYSDATETIME())
-                        GROUP BY FORMAT(fecha_creacion, 'yyyy-MM')
-                        ORDER BY mes ASC
-                        """, nativeQuery = true)
-        List<Object[]> ticketsPorMes();
+  @Query(value = """
+      SELECT
+      FORMAT(fecha_creacion, 'yyyy-MM') AS mes,
+      COUNT(*) AS total
+      FROM TBL_TICKETS
+      WHERE fecha_creacion >= DATEADD(MONTH, -6, SYSDATETIME())
+      GROUP BY FORMAT(fecha_creacion, 'yyyy-MM')
+      ORDER BY mes ASC
+      """, nativeQuery = true)
+  List<Object[]> ticketsPorMes();
 
 }
