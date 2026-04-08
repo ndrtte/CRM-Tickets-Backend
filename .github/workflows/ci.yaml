@@ -2,7 +2,7 @@ name: PR Tests
 
 on:
   pull_request:
-    branches: [ "main" ]  # o la rama que uses (develop, etc.)
+    branches: [ "main" ]
 
 jobs:
   test:
