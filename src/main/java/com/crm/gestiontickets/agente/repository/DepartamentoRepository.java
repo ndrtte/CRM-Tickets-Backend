@@ -24,6 +24,8 @@ public interface DepartamentoRepository extends JpaRepository<Departamento, Inte
 
     Page<Departamento> findByActivo(String string, Pageable page);
 
+    List<Departamento> findAllByActivo(String activo);
+
     List<Departamento> findByNombreDepartamentoContainingIgnoreCaseAndActivo(String nombre, String activo);
 
     public long countByActivo(String activo);

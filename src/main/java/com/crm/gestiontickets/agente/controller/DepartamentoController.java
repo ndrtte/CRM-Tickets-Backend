@@ -1,6 +1,8 @@
 /*Patron: estructural: Facade, expone los endpoint REST, delega la logica de negocios al service */
 package com.crm.gestiontickets.agente.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -66,5 +68,11 @@ public class DepartamentoController {
     public Page<DepartamentoDetalle> obtenerDepartamentosActivos(@RequestParam(defaultValue="0") int page, @RequestParam(defaultValue="10") int pageSize) {
         return departamentoService.obtenerDepartamentosActivos(page, pageSize);
     }
+
+    @GetMapping("/lista-departamentos")
+    public List<DepartamentoDetalle> obtenerListaDepartamentos() {
+        return departamentoService.obtenerListaDepartamentos();
+    }
+    
 
 }

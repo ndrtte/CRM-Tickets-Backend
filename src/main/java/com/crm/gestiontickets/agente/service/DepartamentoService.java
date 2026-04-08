@@ -3,6 +3,8 @@ command:Cada metodo es una operacion especifica del sistema */
 package com.crm.gestiontickets.agente.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -108,6 +110,17 @@ public class DepartamentoService {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<Departamento> departamentosPaginados = departamentoRepository.findByActivo("S", pageable);
         return departamentosPaginados.map(this::convertirADTO);
+    }
+
+    public List<DepartamentoDetalle> obtenerListaDepartamentos(){
+        List<Departamento> listaDepartamentos = departamentoRepository.findAllByActivo("S");
+        List<DepartamentoDetalle> listaDepartamentosDTO = new ArrayList<>();
+        
+        for (Departamento dep : listaDepartamentos) {
+            DepartamentoDetalle depDTO = convertirADTO(dep);
+            listaDepartamentosDTO.add(depDTO);
+        }
+        return listaDepartamentosDTO;
     }
 
 }
