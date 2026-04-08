@@ -26,4 +26,5 @@ public interface DepartamentoRepository extends JpaRepository<Departamento, Inte
 
     List<Departamento> findByNombreDepartamentoContainingIgnoreCaseAndActivo(String nombre, String activo);
 
+    public long countByActivo(String activo);
 }

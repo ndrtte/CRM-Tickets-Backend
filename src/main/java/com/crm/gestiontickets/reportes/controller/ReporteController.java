@@ -10,16 +10,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.crm.gestiontickets.reportes.dto.AdminDashboardDTO;
 import com.crm.gestiontickets.reportes.dto.ReporteTicketDTO;
+import com.crm.gestiontickets.reportes.service.AdminDashboardService;
 import com.crm.gestiontickets.reportes.service.ReporteTicketService;
+
 
 @RestController
 @RequestMapping("/api/reportes")
 @CrossOrigin("*")
-public class ReporteTicketController {
+public class ReporteController {
 
     @Autowired
     private ReporteTicketService reporteService;
+
+    @Autowired
+    private AdminDashboardService dashboardService;
 
     @GetMapping("/resumen")
     public ResponseEntity<Map<String, Object>> resumen() {
@@ -40,5 +46,11 @@ public class ReporteTicketController {
     public ResponseEntity<Map<String, Long>> porMes() {
         return ResponseEntity.ok(reporteService.ticketsPorMes());
     }
+
+    @GetMapping("/dashboard-admin")
+    public ResponseEntity<AdminDashboardDTO> obtenerDashboardAdmin() {
+        return ResponseEntity.ok(dashboardService.obtenerDashboardAdmin());
+    }
+    
 
 }

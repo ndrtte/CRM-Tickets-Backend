@@ -34,4 +34,6 @@ public interface AgenteRepository extends JpaRepository<Agente, Integer>{
     Page<Agente> buscarPorCriterio(@Param("valor") String valor, Pageable pageable);
 
     public List<Agente> findByDepartamentoAndActivo(Departamento departamento, String activo);
+
+    public long countByActivo(String activo);
 }
