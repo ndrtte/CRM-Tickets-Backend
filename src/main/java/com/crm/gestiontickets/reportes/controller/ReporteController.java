@@ -1,20 +1,20 @@
 package com.crm.gestiontickets.reportes.controller;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.reportes.dto.AdminDashboardDTO;
 import com.crm.gestiontickets.reportes.dto.ReporteTicketDTO;
 import com.crm.gestiontickets.reportes.service.AdminDashboardService;
 import com.crm.gestiontickets.reportes.service.ReporteTicketService;
-
 
 @RestController
 @RequestMapping("/api/reportes")
@@ -33,13 +33,16 @@ public class ReporteController {
     }
 
     @GetMapping("/por-agente")
-    public ResponseEntity<List<ReporteTicketDTO>> porAgente() {
-        return ResponseEntity.ok(reporteService.estadisticasPorAgente());
+    public ResponseEntity<Page<ReporteTicketDTO>> porAgente(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize, 
+            @RequestParam(required = false) Integer idDepartamento) {
+        return ResponseEntity.ok(reporteService.estadisticasPorAgente(page, pageSize, idDepartamento));
     }
 
     @GetMapping("/por-estado")
-    public ResponseEntity<Map<String, Long>> porEstado() {
-        return ResponseEntity.ok(reporteService.conteoPorEstado());
+    public ResponseEntity<Map<String, Long>> porEstado(@RequestParam(required=false) Integer idCategoria) {
+        return ResponseEntity.ok(reporteService.conteoPorEstado(idCategoria));
     }
 
     @GetMapping("/por-mes")
@@ -51,6 +54,5 @@ public class ReporteController {
     public ResponseEntity<AdminDashboardDTO> obtenerDashboardAdmin() {
         return ResponseEntity.ok(dashboardService.obtenerDashboardAdmin());
     }
-    
 
 }
