@@ -30,7 +30,7 @@ public class AuthService {
             return new Respuesta<>(false, "Usuario o contraseña inválidos", null);
         }
 
-        if(agente.getActivo().equals('N')){
+        if(agente.getActivo().equals("N")){
             return new Respuesta<>(false, "Usuario desactivado", null);
         }
 
