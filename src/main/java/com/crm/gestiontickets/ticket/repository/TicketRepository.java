@@ -86,18 +86,19 @@ public interface TicketRepository extends JpaRepository<Ticket, String> {
 
         @Query(value = """
                         SELECT
-                        CONCAT(a.nombre, ' ', a.apellido) AS agenteNombre,
-                        AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_actualizacion) AS FLOAT) / 60.0) AS promedioResolucionHoras,
-                        AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_asignacion) AS FLOAT) / 60.0) AS promedioPrimeraRespuestaHoras,
-                        AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, SYSDATETIME()) AS FLOAT) / 60.0) AS promedioTiempoAbiertoHoras,
-                        CAST(COUNT(t.id_ticket) AS BIGINT) AS totalTickets
+                            CONCAT(a.nombre, ' ', a.apellido) AS agenteNombre,
+                            AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_actualizacion) AS FLOAT) / 60.0) AS promedioResolucionHoras,
+                            AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, t.fecha_asignacion) AS FLOAT) / 60.0) AS promedioPrimeraRespuestaHoras,
+                            AVG(CAST(DATEDIFF(MINUTE, t.fecha_creacion, SYSDATETIME()) AS FLOAT) / 60.0) AS promedioTiempoAbiertoHoras,
+                            CAST(COUNT(t.id_ticket) AS BIGINT) AS totalTickets
                         FROM TBL_TICKETS t
                         INNER JOIN TBL_AGENTES a ON t.id_agente_asignado = a.id_agente
                         WHERE t.id_agente_asignado IS NOT NULL
+                          AND (:idDepartamento IS NULL OR a.id_departamento = :idDepartamento)
                         GROUP BY a.id_agente, a.nombre, a.apellido
                         ORDER BY promedioResolucionHoras ASC
                         """, nativeQuery = true)
-        List<ReporteTicketDTO> estadisticasPorAgente();
+        Page<ReporteTicketDTO> estadisticasPorAgente(@Param("idDepartamento") Integer idDepartamento,Pageable pageable);
 
         @Query(value = """
                         SELECT

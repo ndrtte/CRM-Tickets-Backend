@@ -1,10 +1,12 @@
 package com.crm.gestiontickets.reportes.service;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.reportes.dto.ReporteTicketDTO;
@@ -28,8 +30,9 @@ public class ReporteTicketService {
         return res;
     }
 
-    public List<ReporteTicketDTO> estadisticasPorAgente() {
-        return ticketRepository.estadisticasPorAgente();
+    public Page<ReporteTicketDTO> estadisticasPorAgente(int page, int pageSize, Integer idDepartamento) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return ticketRepository.estadisticasPorAgente(idDepartamento, pageable);
     }
 
     public Map<String, Long> conteoPorEstado() {
