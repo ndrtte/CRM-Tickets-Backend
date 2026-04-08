@@ -42,10 +42,10 @@ public class TicketEtapaDetalleBuilder {
 
     public TicketEtapaDetalleBuilder conDepartamento(PasoFlujo paso) {
         detalle.setIdDepartamento(paso != null && paso.getIdDepartamento() != null
-                ? paso.getIdDepartamento().getIdDepartamento()
+                ? paso.getDepartamento().getIdDepartamento()
                 : null);
         detalle.setDepartamento(paso != null && paso.getIdDepartamento() != null
-                ? paso.getIdDepartamento().getNombreDepartamento()
+                ? paso.getDepartamento().getNombreDepartamento()
                 : "Sin asignar");
         return this;
     }

@@ -50,11 +50,11 @@ public class TicketDetalleBuilder {
     }
 
     public TicketDetalleBuilder conDepartamento(PasoFlujo paso) {
-        ticketDetalle.setIdDepartamento(paso != null && paso.getIdDepartamento() != null
-                ? paso.getIdDepartamento().getIdDepartamento()
+        ticketDetalle.setIdDepartamento(paso != null && paso.getDepartamento() != null
+                ? paso.getDepartamento().getIdDepartamento()
                 : null);
-        ticketDetalle.setDepartamento(paso != null && paso.getIdDepartamento() != null
-                ? paso.getIdDepartamento().getNombreDepartamento()
+        ticketDetalle.setDepartamento(paso != null && paso.getDepartamento() != null
+                ? paso.getDepartamento().getNombreDepartamento()
                 : "Sin asignar");
         return this;
     }

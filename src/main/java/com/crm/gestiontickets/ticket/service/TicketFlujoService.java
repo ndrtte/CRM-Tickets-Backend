@@ -41,11 +41,11 @@ public class TicketFlujoService {
         PasoFlujo pasoActual = ticket.getPasoActual();
         PasoFlujo pasoAnterior = pasoActual;
 
-        Flujo flujo = pasoActual.getIdFlujo();
+        Flujo flujo = pasoActual.getFlujo();
 
         Integer siguienteOrden = pasoActual.getOrden() + 1;
 
-        PasoFlujo siguientePaso = pasoFlujoRepository.findByIdFlujoAndOrden(flujo, siguienteOrden);
+        PasoFlujo siguientePaso = pasoFlujoRepository.findByFlujoAndOrden(flujo, siguienteOrden);
 
         if (siguientePaso == null) {
             return cerrarTicket(ticketNvoEtapa);

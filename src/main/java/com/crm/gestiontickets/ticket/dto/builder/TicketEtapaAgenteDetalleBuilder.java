@@ -42,11 +42,11 @@ public class TicketEtapaAgenteDetalleBuilder {
     }
 
     public TicketEtapaAgenteDetalleBuilder conDepartamento(PasoFlujo paso) {
-        detalle.setIdDepartamento(paso != null && paso.getIdDepartamento() != null
-                ? paso.getIdDepartamento().getIdDepartamento()
+        detalle.setIdDepartamento(paso != null && paso.getDepartamento() != null
+                ? paso.getDepartamento().getIdDepartamento()
                 : null);
-        detalle.setDepartamento(paso != null && paso.getIdDepartamento() != null
-                ? paso.getIdDepartamento().getNombreDepartamento()
+        detalle.setDepartamento(paso != null && paso.getDepartamento() != null
+                ? paso.getDepartamento().getNombreDepartamento()
                 : "Sin asignar");
         return this;
     }
