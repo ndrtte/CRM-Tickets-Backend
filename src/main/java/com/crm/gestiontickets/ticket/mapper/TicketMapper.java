@@ -24,15 +24,17 @@ import com.crm.gestiontickets.ticket.entity.HistoricoTicket;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
 import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
+import com.crm.gestiontickets.ticket.interfaces.IFechaUtils;
+import com.crm.gestiontickets.ticket.interfaces.IPasoFlujoMapper;
+import com.crm.gestiontickets.ticket.interfaces.ITicketMapper;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
-import com.crm.gestiontickets.ticket.util.FechaUtils;
 
 @Component
-public class TicketMapper {
+public class TicketMapper implements ITicketMapper{
 
     @Autowired
-    private PasoFlujoMapper pasoFlujoMapper;
+    private IPasoFlujoMapper pasoFlujoMapper;
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -41,8 +43,9 @@ public class TicketMapper {
     private HistoricoTicketRepository historicoRepository;
 
     @Autowired
-    private FechaUtils fechaUtils;
+    private IFechaUtils fechaUtils;
 
+    @Override
     public TicketDetalle mapearTicketADetalle(Ticket ticket) {
         return new TicketDetalleBuilder()
                 .conTicket(ticket)
@@ -55,6 +58,7 @@ public class TicketMapper {
                 .build();
     }
 
+    @Override
     public Page<TicketEtapaAgenteDetalle> mapearTicketsEnProceso(
             Agente agente, Pageable pageable, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
 
@@ -90,6 +94,7 @@ public class TicketMapper {
         });
     }
 
+    @Override
     public Page<TicketEtapaAgenteDetalle> mapearTicketsFinalizados(
             Agente agente, Pageable pageable, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
 
@@ -118,6 +123,7 @@ public class TicketMapper {
         });
     }
 
+    @Override
     public Page<TicketEtapaAgenteDetalle> mapearTicketsTodos(Agente agente, Pageable pageable, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
 
         List<TicketEtapaAgenteDetalle> enProceso = mapearTicketsEnProceso(agente, Pageable.unpaged(), fechaOp, fecha).getContent();

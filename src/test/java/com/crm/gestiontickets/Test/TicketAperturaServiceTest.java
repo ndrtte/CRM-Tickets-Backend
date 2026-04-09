@@ -8,16 +8,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import com.crm.gestiontickets.shared.dto.Respuesta;
 import com.crm.gestiontickets.ticket.dto.TicketCreacion;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
+import com.crm.gestiontickets.ticket.dto.event.TicketAvanzadoEvent;
 import com.crm.gestiontickets.ticket.entity.Categoria;
 import com.crm.gestiontickets.ticket.entity.EstadoTicket;
 import com.crm.gestiontickets.ticket.entity.Flujo;
@@ -28,8 +29,6 @@ import com.crm.gestiontickets.ticket.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.ticket.repository.FlujoRepository;
 import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
-import com.crm.gestiontickets.ticket.service.HistoricoTicketService;
-import com.crm.gestiontickets.ticket.service.NotaService;
 import com.crm.gestiontickets.ticket.service.TicketAperturaService;
 
 @ExtendWith(MockitoExtension.class)
@@ -54,10 +53,7 @@ class TicketAperturaServiceTest {
     private EstadoTicketRepository estadoTicketRepository;
 
     @Mock
-    private HistoricoTicketService historialTicketService;
-
-    @Mock
-    private NotaService notaService;
+    private ApplicationEventPublisher eventPublisher;
 
     @Test
     void testCrearTicket_exitoso() {
@@ -102,7 +98,6 @@ class TicketAperturaServiceTest {
 
         // Verificaciones de interacción
         verify(ticketRepository).save(ticket);
-        verify(historialTicketService).registrarHistorico(any(), any(), any(), any(), any());
-        verify(notaService).registrarNota(eq("Nota de prueba"), any());
+        verify(eventPublisher).publishEvent(any(TicketAvanzadoEvent.class));
     }
 }

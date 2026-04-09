@@ -6,10 +6,12 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
+import com.crm.gestiontickets.ticket.interfaces.IFechaUtils;
 
 @Component
-public class FechaUtils {
+public class FechaUtils implements IFechaUtils {
 
+    @Override
     public LocalDateTime[] calcularRangoFecha(LocalDate fecha, FiltroFechaTicketEnum fechaOp) {
         LocalDateTime fechaInicio = null;
         LocalDateTime fechaFin = null;

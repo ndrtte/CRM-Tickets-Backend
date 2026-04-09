@@ -11,13 +11,14 @@ import com.crm.gestiontickets.shared.dto.Respuesta;
 import com.crm.gestiontickets.ticket.dto.IdTicket;
 import com.crm.gestiontickets.ticket.entity.HistoricoTicket;
 import com.crm.gestiontickets.ticket.entity.Ticket;
+import com.crm.gestiontickets.ticket.interfaces.ITicketAgenteService;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
-public class TicketAgenteService {
+public class TicketAgenteService implements ITicketAgenteService {
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -28,8 +29,9 @@ public class TicketAgenteService {
     @Autowired
     private HistoricoTicketRepository historicoRepository;
 
+    @Override
     @Transactional
-    public Respuesta<IdTicket> asignarAgenteATicket(String idTicket, IdAgente idAgente) {
+    public Respuesta<IdTicket> asignarAgenteATicket(String idTicket, IdAgente idAgente){
 
         Ticket ticket = ticketRepository.findById(idTicket).get();
         Agente agente = agenteRepository.findById(idAgente.getIdAgente()).get();
