@@ -1,12 +1,10 @@
-/* Patrón: estructural: Facade, centraliza la lógica de autenticación,
-   simplifica la interacción entre controller y repositorios */
-   
 package com.crm.gestiontickets.auth.service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.dto.PermisoRol;
@@ -23,19 +21,22 @@ public class AuthService {
     @Autowired
     private AgenteRepository agenteRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public Respuesta<ResumenAgente> inicioSesion(SolicitudLogin credenciales) {
         Agente agente = agenteRepository.findByUsuario(credenciales.getUsuario());
 
-        if (agente == null || !credenciales.getContrasenia().equals(agente.getContrasenia())) {
+        if (agente == null || !passwordEncoder.matches(
+                credenciales.getContrasenia(), agente.getContrasenia())) {
             return new Respuesta<>(false, "Usuario o contraseña inválidos", null);
         }
 
-        if(agente.getActivo().equals("N")){
+        if (agente.getActivo().equals("N")) {
             return new Respuesta<>(false, "Usuario desactivado", null);
         }
 
         List<PermisoRol> listaPermisosRol = new ArrayList<>();
-
         List<Permiso> listaPermisos = agente.getRol().getPermiso();
 
         for (Permiso permiso : listaPermisos) {
@@ -56,7 +57,6 @@ public class AuthService {
         agenteDTO.setDepartamento(agente.getDepartamento().getNombreDepartamento());
         agenteDTO.setListaPermisos(listaPermisosRol);
 
-        
         return new Respuesta<>(true, "Inicio de sesión exitoso", agenteDTO);
     }
 }

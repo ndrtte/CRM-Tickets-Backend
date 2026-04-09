@@ -1,14 +1,9 @@
-/* Patrón: estructural: Facade, centraliza los endpoints de ticket, delega los servicios
-   comportamental: Mediator, coordina los servicios de TicketBusquedaService, TicketAperturaService, 
-   TicketFlujoService y TicketAgenteService */
-
 package com.crm.gestiontickets.ticket.controller;
 
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +33,6 @@ import com.crm.gestiontickets.ticket.service.TicketAperturaService;
 import com.crm.gestiontickets.ticket.service.TicketBusquedaService;
 import com.crm.gestiontickets.ticket.service.TicketFlujoService;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/ticket")
 public class TicketController {
