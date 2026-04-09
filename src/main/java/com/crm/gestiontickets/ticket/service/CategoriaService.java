@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.ticket.dto.CategoriaDetalle;
 import com.crm.gestiontickets.ticket.entity.Categoria;
+import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.repository.CategoriaRepository;
+import com.crm.gestiontickets.ticket.repository.FlujoRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -34,21 +36,31 @@ public class CategoriaService {
     }
 
     private CategoriaDetalle convertirACategoriaDTO(Categoria categoria) {
-        CategoriaDetalle dto = new CategoriaDetalle();
-        dto.setIdCategoria(categoria.getIdCategoria());
-        dto.setNombreCategoria(categoria.getNombreCategoria());
-        dto.setIdCategoriaPadre(categoria.getPadre() != null ? categoria.getPadre().getIdCategoria() : null);
-        dto.setActivo(categoria.getActivo());
+    CategoriaDetalle dto = new CategoriaDetalle();
 
-        List<CategoriaDetalle> subCategoriasDTO = new ArrayList<>();
-        if (categoria.getSubcategorias() != null) {
-            for (Categoria sub : categoria.getSubcategorias()) {
-                subCategoriasDTO.add(convertirACategoriaDTO(sub));
-            }
+    dto.setIdCategoria(categoria.getIdCategoria());
+    dto.setNombreCategoria(categoria.getNombreCategoria());
+    dto.setIdCategoriaPadre(categoria.getPadre() != null ? categoria.getPadre().getIdCategoria() : null);
+    dto.setActivo(categoria.getActivo());
+
+    // OBTENER FLUJO
+    Flujo flujo = flujoRepository.findByCategoria(categoria);
+
+    if (flujo != null) {
+        dto.setIdFlujo(flujo.getIdFlujo());
+        dto.setNombreFlujo(flujo.getDescripcion()); // o campo que quieras
+    }
+
+    List<CategoriaDetalle> subCategoriasDTO = new ArrayList<>();
+    if (categoria.getSubcategorias() != null) {
+        for (Categoria sub : categoria.getSubcategorias()) {
+            subCategoriasDTO.add(convertirACategoriaDTO(sub));
         }
-        dto.setSubCategorias(subCategoriasDTO);
+    }
 
-        return dto;
+    dto.setSubCategorias(subCategoriasDTO);
+
+    return dto;
     }
 
     // Crear categoría
@@ -125,8 +137,11 @@ public class CategoriaService {
         categoriaRepository.save(categoria);
 
         return convertirACategoriaDTO(categoria);
-    
-}
+    }
 
+    @Autowired
+    public FlujoRepository flujoRepository;
+
+    
 
 }

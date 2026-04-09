@@ -12,4 +12,6 @@ public interface CategoriaRepository extends JpaRepository<Categoria, Integer>{
     boolean existsByNombreCategoriaAndIdCategoriaNot(String nombreCategoria, Integer idCategoria);
 
     public long countByActivo(String activo);
+
+    
 }

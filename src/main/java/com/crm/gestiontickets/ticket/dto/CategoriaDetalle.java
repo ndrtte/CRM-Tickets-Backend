@@ -22,4 +22,6 @@ public class CategoriaDetalle {
     private String activo;
 
     private List<CategoriaDetalle> subCategorias;
+
+    private String nombreFlujo;
 }
