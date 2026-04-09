@@ -42,6 +42,15 @@ public class AgenteMapper {
         dto.setActivo(agente.getActivo());
         dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
         dto.setIdRol(agente.getRol().getIdRol());
+        
+        if (agente.getDepartamento() != null) {
+        dto.setNombreDepartamento(agente.getDepartamento().getNombreDepartamento());
+    }
+
+    if (agente.getRol() != null) {
+        dto.setNombreRol(agente.getRol().getNombre());
+    }
+    
         return dto;
     }
 

@@ -19,4 +19,12 @@ public class AgenteDetalle {
     private String activo; 
     private Integer idDepartamento; 
     private Integer idRol;
+    public void setNombreDepartamento(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setNombreDepartamento'");
+    }
+    public void setNombreRol(Object object) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setNombreRol'");
+    }
 }

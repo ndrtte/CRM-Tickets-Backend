@@ -47,10 +47,10 @@ public class AgenteBusquedaService {
     }
  
     public Page<AgenteDetalle> buscarAgentes(String criterio, int page,int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Agente> agentesPaginados = agenteRepository.buscarPorCriterio(criterio, pageable);
-        
-        return agentesPaginados.map(agenteMapper::mapearAgenteADetalle);
-    }
+    Pageable pageable = PageRequest.of(page, pageSize);
+    Page<Agente> agentesPaginados = agenteRepository.buscarPorCriterio(criterio, pageable);
+    
+    return agentesPaginados.map(agenteMapper::mapearAgenteADetalle);
+}
 
 }
