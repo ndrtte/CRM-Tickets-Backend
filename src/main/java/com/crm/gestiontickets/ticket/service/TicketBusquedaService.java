@@ -1,4 +1,3 @@
-/*Patron: estructural: facade, obtine la informacion de un ticket y sus etapas */
 package com.crm.gestiontickets.ticket.service;
 
 import java.time.LocalDate;
@@ -30,15 +29,20 @@ import com.crm.gestiontickets.ticket.enums.FiltroFechaTicketEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketAsignadosEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketEstadoEnum;
 import com.crm.gestiontickets.ticket.enums.FiltroTicketsAgentesEnum;
-import com.crm.gestiontickets.ticket.mapper.PasoFlujoMapper;
-import com.crm.gestiontickets.ticket.mapper.TicketMapper;
+import com.crm.gestiontickets.ticket.interfaces.FiltroTicketsAgenteStrategy;
+import com.crm.gestiontickets.ticket.interfaces.IEstadoEtapaService;
+import com.crm.gestiontickets.ticket.interfaces.IFechaUtils;
+import com.crm.gestiontickets.ticket.interfaces.INotaService;
+import com.crm.gestiontickets.ticket.interfaces.IPasoFlujoMapper;
+import com.crm.gestiontickets.ticket.interfaces.ITicketBusquedaService;
+import com.crm.gestiontickets.ticket.interfaces.ITicketMapper;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
 import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
-import com.crm.gestiontickets.ticket.util.FechaUtils;
+import com.crm.gestiontickets.ticket.service.factory.FiltroFactory;
 
 @Service
-public class TicketBusquedaService {
+public class TicketBusquedaService implements ITicketBusquedaService{
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -47,13 +51,13 @@ public class TicketBusquedaService {
     private ClienteRepository clienteRepository;
 
     @Autowired
-    private TicketMapper ticketMapper;
+    private ITicketMapper ticketMapper;
 
     @Autowired
-    private PasoFlujoMapper pasoFlujoMapper;
+    private IPasoFlujoMapper pasoFlujoMapper;
 
     @Autowired
-    private NotaService notaService;
+    private INotaService notaService;
 
     @Autowired
     private HistoricoTicketRepository historicoRepository;
@@ -65,16 +69,21 @@ public class TicketBusquedaService {
     private PasoFlujoRepository pasoFlujoRepository;
 
     @Autowired
-    private EstadoEtapaService estadoEtapaService;
+    private IEstadoEtapaService estadoEtapaService;
 
     @Autowired
-    private FechaUtils fechaUtils;
+    private IFechaUtils fechaUtils;
 
+    @Autowired
+    private FiltroFactory filtroFactory;
+
+    @Override
     public TicketDetalle obtenerTicketDTO(String idTicket) {
         Ticket ticket = ticketRepository.findById(idTicket).get();
         return ticketMapper.mapearTicketADetalle(ticket);
     }
 
+    @Override
     public Page<TicketDetalle> obtenerTicketsCliente(Long idCliente, int page, int pageSize,
             FiltroTicketEstadoEnum estado, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
 
@@ -86,12 +95,15 @@ public class TicketBusquedaService {
         LocalDateTime fechaInicio = rango[0];
         LocalDateTime fechaFin = rango[1];
 
-        Page<Ticket> ticketsPaginados = ticketRepository.findByClienteConFiltros(cliente, estadoStr, fechaInicio, fechaFin, pageable);
+        Page<Ticket> ticketsPaginados = ticketRepository.findByClienteConFiltros(cliente, estadoStr, fechaInicio,
+                fechaFin, pageable);
 
         return ticketsPaginados.map(ticketMapper::mapearTicketADetalle);
     }
 
-    public Page<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento, int page, int pageSize, FiltroTicketAsignadosEnum asignacion) {
+    @Override
+    public Page<TicketDetalle> obtenerTicketsDepartamento(Integer idDepartamento, int page, int pageSize,
+            FiltroTicketAsignadosEnum asignacion) {
 
         Pageable pageable = PageRequest.of(page, pageSize);
         Boolean asignado = asignacion != null ? asignacion == FiltroTicketAsignadosEnum.ASIGNADOS : null;
@@ -100,23 +112,25 @@ public class TicketBusquedaService {
         return ticketsPaginados.map(ticketMapper::mapearTicketADetalle);
     }
 
-    public Page<TicketEtapaAgenteDetalle> obtenerTicketsAgente(Integer idAgente, int page, int pageSize,
-            FiltroTicketsAgentesEnum filtro, FiltroFechaTicketEnum fechaOp, LocalDate fecha) {
+    @Override
+    public Page<TicketEtapaAgenteDetalle> obtenerTicketsAgente(
+            Integer idAgente,
+            int page,
+            int pageSize,
+            FiltroTicketsAgentesEnum filtro,
+            FiltroFechaTicketEnum fechaOp,
+            LocalDate fecha) {
 
         Agente agente = agenteRepository.findById(idAgente).get();
-
         Pageable pageable = PageRequest.of(page, pageSize);
 
-        return switch (filtro) {
-            case EN_PROCESO ->
-                ticketMapper.mapearTicketsEnProceso(agente, pageable, fechaOp, fecha);
-            case FINALIZADOS ->
-                ticketMapper.mapearTicketsFinalizados(agente, pageable, fechaOp, fecha);
-            case TODOS ->
-                ticketMapper.mapearTicketsTodos(agente, pageable, fechaOp, fecha);
-        };
+           //Principio de Open close
+        FiltroTicketsAgenteStrategy strategy = filtroFactory.obtenerFiltro(filtro);
+
+        return strategy.aplicar(agente, pageable, fechaOp, fecha);
     }
 
+    @Override
     public Respuesta<TicketEtapaDetalle> obtenerEstadoTicketEtapa(String idTicket, Integer idPaso) {
 
         Ticket ticket = ticketRepository.findById(idTicket).get();

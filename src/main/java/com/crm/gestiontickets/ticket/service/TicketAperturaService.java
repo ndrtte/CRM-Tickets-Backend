@@ -1,9 +1,9 @@
-/*Patron: Creacional: Builder,  construccion de un ticket completo */
 package com.crm.gestiontickets.ticket.service;
 
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.entity.Agente;
@@ -14,21 +14,24 @@ import com.crm.gestiontickets.shared.dto.Respuesta;
 import com.crm.gestiontickets.ticket.dto.TicketApertura;
 import com.crm.gestiontickets.ticket.dto.TicketCreacion;
 import com.crm.gestiontickets.ticket.dto.TicketPasoResponse;
+import com.crm.gestiontickets.ticket.dto.event.TicketAvanzadoEvent;
 import com.crm.gestiontickets.ticket.entity.Categoria;
 import com.crm.gestiontickets.ticket.entity.EstadoTicket;
 import com.crm.gestiontickets.ticket.entity.Flujo;
-import com.crm.gestiontickets.ticket.entity.HistoricoTicket;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
+import com.crm.gestiontickets.ticket.interfaces.ISecuencialTicketRepository;
+import com.crm.gestiontickets.ticket.interfaces.ITicketAperturaService;
 import com.crm.gestiontickets.ticket.repository.CategoriaRepository;
 import com.crm.gestiontickets.ticket.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.ticket.repository.FlujoRepository;
 import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
-import com.crm.gestiontickets.ticket.repository.SecuencialTicketRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
-public class TicketAperturaService {
+public class TicketAperturaService implements ITicketAperturaService {
 
     
     @Autowired
@@ -41,7 +44,7 @@ public class TicketAperturaService {
     private AgenteRepository agenteRepository;
 
     @Autowired
-    private SecuencialTicketRepository secuencialTicketRepository;
+    private ISecuencialTicketRepository secuencialTicketRepository;
 
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -56,11 +59,10 @@ public class TicketAperturaService {
     private FlujoRepository flujoRepository;
 
     @Autowired
-    private HistoricoTicketService historicoTicketService;
+    private ApplicationEventPublisher eventPublisher;
 
-    @Autowired
-    private NotaService notaService;
-
+    @Override
+    @Transactional
     public Respuesta<TicketPasoResponse> aperturaTicket(TicketApertura dto) {
 
         String idTicket = secuencialTicketRepository.generarIdTicket();
@@ -78,6 +80,7 @@ public class TicketAperturaService {
         return new Respuesta<>(true, "Ticket abierto correctamente", new TicketPasoResponse(idTicket, pasoApertura.getIdPasosFlujo()));
     }
 
+    @Override
     public Respuesta<TicketPasoResponse> crearTicket(TicketCreacion dto) {
         Ticket ticket = ticketRepository.findById(dto.getIdTicket()).get();
 
@@ -100,17 +103,9 @@ public class TicketAperturaService {
         ticket.setFechaActualizacion(LocalDateTime.now());
         ticket.setAgenteAsignado(null);
 
-        HistoricoTicket historico = historicoTicketService.registrarHistorico(
-                ticket,
-                agenteOrigen,
-                ticket.getAgenteAsignado(),
-                pasoAnterior,
-                primerPaso
-        );
-
-        notaService.registrarNota(dto.getNota(), historico);
-
         ticketRepository.save(ticket);
+
+        eventPublisher.publishEvent(new TicketAvanzadoEvent(ticket, agenteOrigen, pasoAnterior, dto.getNota()));
 
         String idTicket = ticket.getIdTicket();
         Integer idPaso = ticket.getPasoActual().getIdPasosFlujo();

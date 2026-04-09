@@ -16,12 +16,15 @@ import com.crm.gestiontickets.ticket.entity.EstadoTicket;
 import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
+import com.crm.gestiontickets.ticket.interfaces.ITicketFlujoService;
 import com.crm.gestiontickets.ticket.repository.EstadoTicketRepository;
 import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
-public class TicketFlujoService {
+public class TicketFlujoService implements ITicketFlujoService {
 
     @Autowired
     private TicketRepository ticketRepository;
@@ -35,10 +38,12 @@ public class TicketFlujoService {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
+    @Override
+    @Transactional
     public Respuesta<TicketPasoResponse> avanzarEtapa(TicketAvanzarEtapa ticketNvoEtapa) {
         Ticket ticket = ticketRepository.findById(ticketNvoEtapa.getIdTicket()).get();
 
-        PasoFlujo pasoActual = ticket.getPasoActual();
+        var pasoActual = ticket.getPasoActual();
         PasoFlujo pasoAnterior = pasoActual;
 
         Flujo flujo = pasoActual.getIdFlujo();
@@ -57,7 +62,8 @@ public class TicketFlujoService {
         ticket.setAgenteAsignado(null);
         ticket.setFechaActualizacion(LocalDateTime.now());
 
-    eventPublisher.publishEvent(new TicketAvanzadoEvent(ticket, agenteOrigen, pasoAnterior, ticketNvoEtapa.getNota()));
+        eventPublisher
+                .publishEvent(new TicketAvanzadoEvent(ticket, agenteOrigen, pasoAnterior, ticketNvoEtapa.getNota()));
 
         ticketRepository.save(ticket);
 
@@ -69,6 +75,8 @@ public class TicketFlujoService {
 
     }
 
+    @Override
+    @Transactional
     public Respuesta<TicketPasoResponse> cerrarTicket(TicketAvanzarEtapa ticketNvoEtapa) {
         Ticket ticket = ticketRepository.findById(ticketNvoEtapa.getIdTicket()).get();
 
@@ -82,7 +90,8 @@ public class TicketFlujoService {
 
         ticketRepository.save(ticket);
 
-        eventPublisher.publishEvent(new TicketAvanzadoEvent(ticket, agenteOrigen, pasoActual, ticketNvoEtapa.getNota()));
+        eventPublisher
+                .publishEvent(new TicketAvanzadoEvent(ticket, agenteOrigen, pasoActual, ticketNvoEtapa.getNota()));
 
         String idTicket = ticket.getIdTicket();
 

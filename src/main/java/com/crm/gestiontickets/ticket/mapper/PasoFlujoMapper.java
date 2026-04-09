@@ -11,11 +11,12 @@ import com.crm.gestiontickets.ticket.dto.EtapaTicket;
 import com.crm.gestiontickets.ticket.entity.Categoria;
 import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
+import com.crm.gestiontickets.ticket.interfaces.IPasoFlujoMapper;
 import com.crm.gestiontickets.ticket.repository.FlujoRepository;
 import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
 
 @Component
-public class PasoFlujoMapper {
+public class PasoFlujoMapper implements IPasoFlujoMapper {
 
     @Autowired
     private FlujoRepository flujoRepository;
@@ -23,6 +24,7 @@ public class PasoFlujoMapper {
     @Autowired
     private PasoFlujoRepository pasoFlujoRepository;
 
+    @Override
     public List<EtapaTicket> mapearEtapas(Categoria categoria, PasoFlujo pasoActual) {
         List<EtapaTicket> listaEtapas = new ArrayList<>();
 

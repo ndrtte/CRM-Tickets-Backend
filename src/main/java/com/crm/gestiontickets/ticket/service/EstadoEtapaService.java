@@ -7,14 +7,16 @@ import org.springframework.stereotype.Component;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
 import com.crm.gestiontickets.ticket.enums.EstadoEtapaTicketEnum;
+import com.crm.gestiontickets.ticket.interfaces.IEstadoEtapaService;
 import com.crm.gestiontickets.ticket.repository.HistoricoTicketRepository;
 
 @Component
-public class EstadoEtapaService {
+public class EstadoEtapaService implements IEstadoEtapaService {
 
     @Autowired
     private HistoricoTicketRepository historicoRepository;
 
+    @Override
     public EstadoEtapaTicketEnum obtenerEstado(Ticket ticket, PasoFlujo paso, PasoFlujo pasoActual, boolean ticketCerrado) {
 
         if (paso.getDescripcion().equals("APERTURA")) {
