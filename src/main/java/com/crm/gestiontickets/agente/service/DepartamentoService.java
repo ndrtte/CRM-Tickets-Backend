@@ -46,24 +46,32 @@ public class DepartamentoService {
     // Actualizar un departamento
     public DepartamentoDetalle actualizarDepartamento(DepartamentoDetalle departamentoDTO) {
 
-        Departamento departamento = departamentoRepository.findById(departamentoDTO.getIdDepartamento())
-                .orElseThrow(() -> new DepartamentoNotFoundException(departamentoDTO.getIdDepartamento()));
+    Departamento departamento = departamentoRepository.findById(departamentoDTO.getIdDepartamento())
+            .orElseThrow(() -> new DepartamentoNotFoundException(departamentoDTO.getIdDepartamento()));
 
-        departamento.setNombreDepartamento(departamentoDTO.getNombreDepartamento());
-        departamento.setDescripcion(departamentoDTO.getDescripcion());
-        departamento.setFechaActualizacion(LocalDateTime.now());
+    departamento.setNombreDepartamento(departamentoDTO.getNombreDepartamento());
+    departamento.setDescripcion(departamentoDTO.getDescripcion());
 
-        departamentoRepository.save(departamento);
+    departamento.setActivo(
+        departamentoDTO.getActivo() != null 
+        ? departamentoDTO.getActivo() 
+        : departamento.getActivo()
+    );
 
-        DepartamentoDetalle dto = new DepartamentoDetalle();
-        dto.setIdDepartamento(departamento.getIdDepartamento());
-        dto.setNombreDepartamento(departamento.getNombreDepartamento());
-        dto.setDescripcion(departamento.getDescripcion());
-        dto.setFechaCreacion(departamento.getFechaCreacion());
-        dto.setFechaActualizacion(departamento.getFechaActualizacion());
+    departamento.setFechaActualizacion(LocalDateTime.now());
 
-        return dto;
-    }
+    departamentoRepository.save(departamento);
+
+    DepartamentoDetalle dto = new DepartamentoDetalle();
+    dto.setIdDepartamento(departamento.getIdDepartamento());
+    dto.setNombreDepartamento(departamento.getNombreDepartamento());
+    dto.setDescripcion(departamento.getDescripcion());
+    dto.setFechaCreacion(departamento.getFechaCreacion());
+    dto.setFechaActualizacion(departamento.getFechaActualizacion());
+    dto.setActivo(departamento.getActivo());
+
+    return dto;
+}
 
     // eliminar un departamento
     public void eliminarDepartamento(Integer idDepartamento) {
