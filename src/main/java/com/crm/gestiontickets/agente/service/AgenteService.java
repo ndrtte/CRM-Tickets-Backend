@@ -5,6 +5,7 @@ package com.crm.gestiontickets.agente.service;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.dto.AgenteDetalle;
@@ -31,22 +32,25 @@ public class AgenteService {
     @Autowired
     private AgenteMapper agenteMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public AgenteDetalle crearAgente(AgenteDetalle agenteDTO) {
 
         // valida que el departamento exista
-        Departamento departamento = departamentoRepository.findById(agenteDTO.getIdDepartamento())
-                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+        Departamento departamento = departamentoRepository.findById(agenteDTO.getIdDepartamento()).orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
 
         // valida que el rol exista
-        Rol rol = rolRepository.findById(agenteDTO.getIdRol())
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        Rol rol = rolRepository.findById(agenteDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        String contraseniaCifrada = passwordEncoder.encode(agenteDTO.getContrasenia());
 
         // Crear  Agente
         Agente agente = new Agente();
         agente.setNombre(agenteDTO.getNombre());
         agente.setApellido(agenteDTO.getApellido());
         agente.setUsuario(agenteDTO.getUsuario());
-        agente.setContrasenia(agenteDTO.getContrasenia());
+        agente.setContrasenia(contraseniaCifrada);
         agente.setActivo(agenteDTO.getActivo());
         agente.setDepartamento(departamento);
         agente.setRol(rol);
@@ -66,21 +70,20 @@ public class AgenteService {
         }
 
         // Buscar el agente en BD
-        Agente agente = agenteRepository.findById(idAgente)
-                .orElseThrow(() -> new RuntimeException("Agente no encontrado"));
+        Agente agente = agenteRepository.findById(idAgente).orElseThrow(() -> new RuntimeException("Agente no encontrado"));
 
         // Buscar departamento y rol
-        Departamento departamento = departamentoRepository.findById(agenteDTO.getIdDepartamento())
-                .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+        Departamento departamento = departamentoRepository.findById(agenteDTO.getIdDepartamento()).orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
 
-        Rol rol = rolRepository.findById(agenteDTO.getIdRol())
-                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+        Rol rol = rolRepository.findById(agenteDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
+
+        String contraseniaCifrada = passwordEncoder.encode(agenteDTO.getContrasenia());
 
         // Actualizar los campos
         agente.setNombre(agenteDTO.getNombre());
         agente.setApellido(agenteDTO.getApellido());
         agente.setUsuario(agenteDTO.getUsuario());
-        agente.setContrasenia(agenteDTO.getContrasenia());
+        agente.setContrasenia(contraseniaCifrada);
         agente.setActivo(agenteDTO.getActivo());
         agente.setDepartamento(departamento);
         agente.setRol(rol);
