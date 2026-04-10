@@ -1,7 +1,5 @@
 package com.crm.gestiontickets.ticket.dto;
 
-import com.crm.gestiontickets.ticket.entity.Flujo;
-
 import lombok.Getter;
 import lombok.Setter;
 
