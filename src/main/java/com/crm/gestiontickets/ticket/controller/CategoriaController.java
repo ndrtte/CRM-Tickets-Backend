@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.crm.gestiontickets.ticket.dto.CategoriaDetalle;
 import com.crm.gestiontickets.ticket.service.CategoriaService;
 
+
 @RestController
 @RequestMapping("/api/categorias")
+@CrossOrigin("*")
 public class CategoriaController {
     
     @Autowired
