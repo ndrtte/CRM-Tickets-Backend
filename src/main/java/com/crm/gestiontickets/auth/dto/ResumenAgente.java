@@ -23,5 +23,4 @@ public class ResumenAgente {
     private Integer idDepartamento;
     private String departamento;
     private List<PermisoRol> listaPermisos;
-    private String token;
 }
