@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mindrot.jbcrypt.BCrypt;
 
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
@@ -15,6 +14,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.crm.gestiontickets.agente.dto.AgenteDetalle;
 import com.crm.gestiontickets.agente.entity.Agente;
@@ -44,6 +44,9 @@ public class AgenteServiceTest {
     @Mock
     private AgenteMapper agenteMapper;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @Test
     void testCrearAgente_exitoso() {
 
@@ -63,7 +66,7 @@ public class AgenteServiceTest {
         Rol rol = new Rol();
         rol.setIdRol(2);
 
-        String contrasenia = BCrypt.hashpw("1234", BCrypt.gensalt());
+        String contrasenia = passwordEncoder.encode(dto.getContrasenia());
 
         Agente agenteGuardado = new Agente();
         agenteGuardado.setIdAgente(10);

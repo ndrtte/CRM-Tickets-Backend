@@ -2,8 +2,8 @@ package com.crm.gestiontickets.agente.service;
 
 import java.time.LocalDateTime;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.dto.AgenteDetalle;
@@ -30,6 +30,9 @@ public class AgenteService {
     @Autowired
     private AgenteMapper agenteMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     public AgenteDetalle crearAgente(AgenteDetalle agenteDTO) {
 
@@ -39,7 +42,7 @@ public class AgenteService {
         // valida que el rol exista
         Rol rol = rolRepository.findById(agenteDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
-        String contraseniaCifrada = BCrypt.hashpw(agenteDTO.getContrasenia(), BCrypt.gensalt());
+        String contraseniaCifrada = passwordEncoder.encode(agenteDTO.getContrasenia());
 
         // Crear  Agente
         Agente agente = new Agente();
@@ -73,7 +76,7 @@ public class AgenteService {
 
         Rol rol = rolRepository.findById(agenteDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
-        String contraseniaCifrada = BCrypt.hashpw(agenteDTO.getContrasenia(), BCrypt.gensalt());
+        String contraseniaCifrada = passwordEncoder.encode(agenteDTO.getContrasenia());
 
         // Actualizar los campos
         agente.setNombre(agenteDTO.getNombre());

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 import com.crm.gestiontickets.agente.dto.RolDetalle;
@@ -17,7 +16,6 @@ import com.crm.gestiontickets.agente.service.RolService;
 
 @RestController
 @RequestMapping("/api/roles")
-@CrossOrigin("*")
 public class RolController {
 
     @Autowired

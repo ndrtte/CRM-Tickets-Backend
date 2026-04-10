@@ -26,6 +26,21 @@ public class JwtService {
                 .compact();
     }
 
+    public boolean validarToken(final String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .build()
+                .parseClaimsJws(token) != null;
+    }
+
+    public String obtenerUsuarioDesdeToken(final String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
 
 }
 
