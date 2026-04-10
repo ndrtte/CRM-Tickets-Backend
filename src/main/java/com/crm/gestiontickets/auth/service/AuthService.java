@@ -8,11 +8,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.dto.PermisoRol;
-import com.crm.gestiontickets.agente.dto.ResumenAgente;
 import com.crm.gestiontickets.agente.entity.Agente;
 import com.crm.gestiontickets.agente.entity.Permiso;
 import com.crm.gestiontickets.agente.repository.AgenteRepository;
+import com.crm.gestiontickets.auth.dto.ResumenAgente;
 import com.crm.gestiontickets.auth.dto.SolicitudLogin;
+import com.crm.gestiontickets.security.JwtService;
 import com.crm.gestiontickets.shared.dto.Respuesta;
 
 @Service
@@ -23,6 +24,9 @@ public class AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtService jwtService;
 
     public Respuesta<ResumenAgente> inicioSesion(SolicitudLogin credenciales) {
         Agente agente = agenteRepository.findByUsuario(credenciales.getUsuario());
@@ -46,6 +50,7 @@ public class AuthService {
             listaPermisosRol.add(permisoRol);
         }
 
+        String token = jwtService.generarToken(agente);
         String nombre = agente.getNombre() + " " + agente.getApellido();
         ResumenAgente agenteDTO = new ResumenAgente();
         agenteDTO.setIdAgente(agente.getIdAgente());
@@ -56,6 +61,7 @@ public class AuthService {
         agenteDTO.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
         agenteDTO.setDepartamento(agente.getDepartamento().getNombreDepartamento());
         agenteDTO.setListaPermisos(listaPermisosRol);
+        agenteDTO.setToken(token);
 
         return new Respuesta<>(true, "Inicio de sesión exitoso", agenteDTO);
     }

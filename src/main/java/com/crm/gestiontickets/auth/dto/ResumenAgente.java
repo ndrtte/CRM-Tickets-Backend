@@ -1,6 +1,8 @@
-package com.crm.gestiontickets.agente.dto;
+package com.crm.gestiontickets.auth.dto;
 
 import java.util.List;
+
+import com.crm.gestiontickets.agente.dto.PermisoRol;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,4 +23,5 @@ public class ResumenAgente {
     private Integer idDepartamento;
     private String departamento;
     private List<PermisoRol> listaPermisos;
+    private String token;
 }

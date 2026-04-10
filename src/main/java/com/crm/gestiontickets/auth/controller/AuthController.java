@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.crm.gestiontickets.agente.dto.ResumenAgente;
+import com.crm.gestiontickets.auth.dto.ResumenAgente;
 import com.crm.gestiontickets.auth.dto.SolicitudLogin;
 import com.crm.gestiontickets.auth.service.AuthService;
 import com.crm.gestiontickets.shared.dto.Respuesta;
