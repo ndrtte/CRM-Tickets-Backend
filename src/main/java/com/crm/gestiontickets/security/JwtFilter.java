@@ -3,6 +3,7 @@ package com.crm.gestiontickets.security;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.crm.gestiontickets.agente.entity.Agente;
+import com.crm.gestiontickets.agente.entity.Permiso;
 import com.crm.gestiontickets.agente.repository.AgenteRepository;
 
 import jakarta.servlet.FilterChain;
@@ -34,15 +36,9 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
-            FilterChain filterChain) throws ServletException, IOException {
-
-        String path = request.getRequestURI();
-
-        if (path.startsWith("/api/auth")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
+            FilterChain filterChain
+    ) throws ServletException, IOException {
+        
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -51,39 +47,26 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authHeader.substring(7);
+        String usuario = jwtService.extraerUsuario(token);
 
-        String usuario = null;
+        if (usuario != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        try {
-            usuario = jwtService.extraerUsuario(token);
-        } catch (Exception e) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+            Agente agente = agenteRepository.findByUsuario(usuario);
 
-        try {
-            if (usuario != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (agente != null) {
 
-                Agente agente = agenteRepository.findByUsuario(usuario);
+                Stream<Permiso> permisos = agente.getRol().getPermiso().stream();
 
-                if (agente != null) {
+                List<GrantedAuthority> authorities = permisos.map(p -> new SimpleGrantedAuthority(p.getCodigo())).collect(Collectors.toList());
 
-                    List<GrantedAuthority> authorities = agente.getRol().getPermiso().stream()
-                            .map(p -> new SimpleGrantedAuthority(p.getCodigo()))
-                            .collect(Collectors.toList());
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario,null,authorities);
 
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario,
-                            null, authorities);
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-                    authToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-        } catch (Exception e) {
-            filterChain.doFilter(request, response);
-            return;
         }
 
         filterChain.doFilter(request, response);
