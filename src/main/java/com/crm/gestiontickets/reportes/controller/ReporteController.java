@@ -14,12 +14,10 @@ import com.crm.gestiontickets.reportes.dto.AdminDashboardDTO;
 import com.crm.gestiontickets.reportes.dto.ReporteTicketDTO;
 import com.crm.gestiontickets.reportes.service.AdminDashboardService;
 import com.crm.gestiontickets.reportes.service.ReporteTicketService;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 
 @RestController
 @RequestMapping("/api/reportes")
-@CrossOrigin("*")
 public class ReporteController {
 
     @Autowired

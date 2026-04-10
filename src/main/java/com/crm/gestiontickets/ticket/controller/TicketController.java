@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +35,6 @@ import com.crm.gestiontickets.ticket.service.TicketFlujoService;
 
 @RestController
 @RequestMapping("/api/ticket")
-@CrossOrigin("*")
 public class TicketController {
 
     @Autowired

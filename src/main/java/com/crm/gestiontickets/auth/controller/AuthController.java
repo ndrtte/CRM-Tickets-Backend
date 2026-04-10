@@ -11,11 +11,9 @@ import com.crm.gestiontickets.auth.dto.ResumenAgente;
 import com.crm.gestiontickets.auth.dto.SolicitudLogin;
 import com.crm.gestiontickets.auth.service.AuthService;
 import com.crm.gestiontickets.shared.dto.Respuesta;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin("*")
 public class AuthController {
 
     @Autowired

@@ -3,8 +3,8 @@ package com.crm.gestiontickets.auth.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.dto.PermisoRol;
@@ -25,11 +25,13 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public Respuesta<ResumenAgente> inicioSesion(SolicitudLogin credenciales) {
         Agente agente = agenteRepository.findByUsuario(credenciales.getUsuario());
 
-        if (agente == null || !BCrypt.checkpw(
-                credenciales.getContrasenia(), agente.getContrasenia())) {
+        if (agente == null || !passwordEncoder.matches(credenciales.getContrasenia(), agente.getContrasenia())) {
             return new Respuesta<>(false, "Usuario o contraseña inválidos", null);
         }
 
