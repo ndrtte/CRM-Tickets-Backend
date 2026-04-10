@@ -1,11 +1,9 @@
-/*Patron: estructural: Facade, deega la logica de negocios al service 
-command: los metodos representan una accion especifica del sistema*/
 package com.crm.gestiontickets.agente.service;
 
 import java.time.LocalDateTime;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.dto.AgenteDetalle;
@@ -32,8 +30,6 @@ public class AgenteService {
     @Autowired
     private AgenteMapper agenteMapper;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public AgenteDetalle crearAgente(AgenteDetalle agenteDTO) {
 
@@ -43,7 +39,7 @@ public class AgenteService {
         // valida que el rol exista
         Rol rol = rolRepository.findById(agenteDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
-        String contraseniaCifrada = passwordEncoder.encode(agenteDTO.getContrasenia());
+        String contraseniaCifrada = BCrypt.hashpw(agenteDTO.getContrasenia(), BCrypt.gensalt());
 
         // Crear  Agente
         Agente agente = new Agente();
@@ -77,7 +73,7 @@ public class AgenteService {
 
         Rol rol = rolRepository.findById(agenteDTO.getIdRol()).orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
-        String contraseniaCifrada = passwordEncoder.encode(agenteDTO.getContrasenia());
+        String contraseniaCifrada = BCrypt.hashpw(agenteDTO.getContrasenia(), BCrypt.gensalt());
 
         // Actualizar los campos
         agente.setNombre(agenteDTO.getNombre());
