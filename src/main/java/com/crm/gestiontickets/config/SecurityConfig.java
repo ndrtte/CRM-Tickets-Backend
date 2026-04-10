@@ -2,6 +2,7 @@ package com.crm.gestiontickets.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,14 +19,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.crm.gestiontickets.security.JwtFilter;
 
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtFilter jwtFilter;
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Value("${app.allowedOrigins}")
     private String allowedOrigins;
