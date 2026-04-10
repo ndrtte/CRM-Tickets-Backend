@@ -2,7 +2,6 @@
 package com.crm.gestiontickets.ticket.entity;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -47,4 +46,13 @@ public class Flujo {
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
+
+    //activar o desactivar flujo
+    @Column(name = "activo", nullable = false, length = 1)
+    private String activo;
+
+    public void setFechaActualizacion(LocalDateTime now) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setFechaActualizacion'");
+    }
 }

@@ -18,4 +18,10 @@ public class FlujoController {
     public FlujoDetalle crearFlujo(@RequestBody FlujoDetalle dto) {
         return flujoService.crearFlujo(dto);
     }
+
+    //habilitar o deshabilitar flujo
+    @PutMapping("/estado/{idFlujo}")
+public FlujoDetalle cambiarEstadoFlujo(@PathVariable Integer idFlujo) {
+    return flujoService.cambiarEstadoFlujo(idFlujo);
+}
 }

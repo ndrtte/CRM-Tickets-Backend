@@ -60,4 +60,31 @@ public class FlujoService {
 
         return dto;
     }
+
+    // Obtener listado de flujos
+
+    //habilitar o deshabilitar flujo
+    @Transactional
+public FlujoDetalle cambiarEstadoFlujo(Integer idFlujo) {
+
+    Flujo flujo = flujoRepository.findById(idFlujo)
+            .orElseThrow(() -> new RuntimeException("Flujo no encontrado"));
+
+    if ("S".equalsIgnoreCase(flujo.getActivo())) {
+        flujo.setActivo("N");
+    } else {
+        flujo.setActivo("S");
+    }
+
+    flujo.setFechaActualizacion(LocalDateTime.now());
+
+    flujoRepository.save(flujo);
+
+    FlujoDetalle dto = new FlujoDetalle();
+    dto.setIdFlujo(flujo.getIdFlujo());
+    dto.setDescripcion(flujo.getDescripcion());
+    dto.setIdCategoria(flujo.getCategoria().getIdCategoria());
+
+    return dto;
+}
 }
