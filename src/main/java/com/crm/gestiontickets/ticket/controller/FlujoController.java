@@ -5,8 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.crm.gestiontickets.shared.dto.Respuesta;
 import com.crm.gestiontickets.ticket.dto.FlujoDetalle;
+import com.crm.gestiontickets.ticket.dto.PasoFlujoDetalle;
 import com.crm.gestiontickets.ticket.service.FlujoService;
+import com.crm.gestiontickets.ticket.service.PasoFlujoService;
 
 @RestController
 @RequestMapping("/api/flujos")
@@ -14,6 +17,9 @@ public class FlujoController {
 
     @Autowired
     private FlujoService flujoService;
+
+    @Autowired
+    private PasoFlujoService pasoFlujoService;
     
     //crear flujo 
     @PostMapping("/crear")
@@ -46,5 +52,14 @@ public class FlujoController {
         @RequestBody FlujoDetalle dto) {
 
     return flujoService.actualizarFlujo(idFlujo, dto);
+}
+
+    //agregar una etapa al flujo
+    @PostMapping("/agregar/{idFlujo}")
+    public Respuesta<PasoFlujoDetalle> agregarPaso(
+        @PathVariable Integer idFlujo,
+        @RequestBody PasoFlujoDetalle dto) {
+
+    return pasoFlujoService.agregarPaso(idFlujo, dto);
 }
 }

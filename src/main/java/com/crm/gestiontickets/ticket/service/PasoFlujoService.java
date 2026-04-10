@@ -4,11 +4,15 @@ package com.crm.gestiontickets.ticket.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.crm.gestiontickets.agente.entity.Departamento;
+import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
 import com.crm.gestiontickets.shared.dto.Respuesta;
 import com.crm.gestiontickets.ticket.dto.IdPasoFlujo;
 import com.crm.gestiontickets.ticket.dto.PasoFlujoDetalle;
+import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
+import com.crm.gestiontickets.ticket.repository.FlujoRepository;
 import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
 
@@ -56,6 +60,51 @@ public Respuesta<PasoFlujoDetalle> cambiarEstado(Integer idPaso) {
     dto.setActivo(paso.getActivo());
 
     return new Respuesta<>(true, "OK", dto);
+}
+
+        //agregar etapa a un flujo
+    @Autowired
+    private FlujoRepository flujoRepository;
+
+    @Autowired
+    private DepartamentoRepository departamentoRepository;
+    @Transactional
+    public Respuesta<PasoFlujoDetalle> agregarPaso(Integer idFlujo, PasoFlujoDetalle dto) {
+
+    Flujo flujo = flujoRepository.findById(idFlujo)
+            .orElseThrow(() -> new RuntimeException("Flujo no encontrado"));
+
+    Departamento dep = departamentoRepository.findById(dto.getIdDepartamento())
+            .orElseThrow(() -> new RuntimeException("Departamento no encontrado"));
+
+    PasoFlujo paso = new PasoFlujo();
+
+    paso.setDescripcion(dto.getDescripcion());
+    paso.setIdFlujo(flujo);
+    paso.setIdDepartamento(dep);
+    paso.setActivo("S");
+
+    Integer maxOrden = pasoFlujoRepository
+            .findByIdFlujoOrderByOrdenAsc(flujo)
+            .stream()
+            .map(PasoFlujo::getOrden)
+            .filter(o -> o != null)
+            .max(Integer::compareTo)
+            .orElse(0);
+
+    paso.setOrden(maxOrden + 1);
+
+    pasoFlujoRepository.save(paso);
+
+    PasoFlujoDetalle resp = new PasoFlujoDetalle();
+    resp.setIdPaso(paso.getIdPasosFlujo());
+    resp.setOrden(paso.getOrden());
+    resp.setDescripcion(paso.getDescripcion());
+    resp.setIdDepartamento(dep.getIdDepartamento());
+    resp.setNombreDepartamento(dep.getNombreDepartamento()); // 👈 revisar entidad real
+    resp.setActivo(paso.getActivo());
+
+    return new Respuesta<>(true, "Paso agregado correctamente", resp);
 }
 
 }
