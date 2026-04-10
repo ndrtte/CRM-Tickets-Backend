@@ -94,6 +94,7 @@ DB_URL=jdbc:sqlserver://localhost:1433;database=NOMBRE_DB;encrypt=true;trustServ
 DB_USER=Usuario123
 DB_PASSWORD=ContraseñaSegura1234.
 JWT_SECRET = EjemploDeSecret1234+
+ALLOWED_ORIGINS=http://localhost:5173
 ```
 #### 3.2 Para trabajar con el docker, utilizar:
 ```
@@ -102,6 +103,7 @@ DB_PORT=1434
 DB_USER=Usuario123
 DB_PASSWORD=ContraseñaSegura1234.
 JWT_SECRET = EjemploDeSecret1234+
+ALLOWED_ORIGINS=http://localhost:5173
 ```
 
 ### Notas importantes
