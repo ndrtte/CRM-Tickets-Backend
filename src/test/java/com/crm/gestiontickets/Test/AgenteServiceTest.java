@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.crm.gestiontickets.agente.dto.AgenteDetalle;
 import com.crm.gestiontickets.agente.entity.Agente;
@@ -41,6 +42,9 @@ public class AgenteServiceTest {
 
     @Mock
     private AgenteMapper agenteMapper;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @Test
     void testCrearAgente_exitoso() {
