@@ -33,4 +33,18 @@ public class FlujoController {
     public List<FlujoDetalle> obtenerFlujos() {
         return flujoService.obtenerFlujos();
     }
+
+    //etapas de un flujo
+    @GetMapping("/{idFlujo}")
+    public FlujoDetalle obtenerFlujoPorId(@PathVariable Integer idFlujo) {
+    return flujoService.obtenerFlujoPorId(idFlujo);
+}
+    //editar un flujo
+    @PutMapping("/editar/{idFlujo}")
+    public FlujoDetalle actualizarFlujo(
+        @PathVariable Integer idFlujo,
+        @RequestBody FlujoDetalle dto) {
+
+    return flujoService.actualizarFlujo(idFlujo, dto);
+}
 }

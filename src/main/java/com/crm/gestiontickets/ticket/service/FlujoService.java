@@ -1,6 +1,7 @@
 package com.crm.gestiontickets.ticket.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,39 +30,42 @@ public class FlujoService {
     @Autowired
     private DepartamentoRepository departamentoRepository;
 
-    // CREATE FLUJO CON PASOS
+    // Creaar flujo
     @Transactional
     public FlujoDetalle crearFlujo(FlujoDetalle dto) {
 
-        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
-                .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
+    Categoria categoria = categoriaRepository.findById(dto.getIdCategoria())
+            .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
-        Flujo flujo = new Flujo();
-        flujo.setDescripcion(dto.getDescripcion());
-        flujo.setCategoria(categoria);
-        flujo.setFechaCreacion(LocalDateTime.now());
+    Flujo flujo = new Flujo();
+    flujo.setDescripcion(dto.getDescripcion());
+    flujo.setCategoria(categoria);
+    flujo.setActivo("S");
+    flujo.setFechaCreacion(LocalDateTime.now());
 
-        flujoRepository.save(flujo);
+    List<PasoFlujo> pasos = new ArrayList<>();
 
-        for (PasoFlujoDetalle pasoDTO : dto.getPasos()) {
+    for (PasoFlujoDetalle pasoDTO : dto.getPasos()) {
 
-            PasoFlujo paso = new PasoFlujo();
-            paso.setOrden(pasoDTO.getOrden());
-            paso.setDescripcion(pasoDTO.getDescripcion());
-            paso.setIdFlujo(flujo);
+        PasoFlujo paso = new PasoFlujo();
+        paso.setOrden(pasoDTO.getOrden());
+        paso.setDescripcion(pasoDTO.getDescripcion());
 
-            paso.setIdDepartamento(
-                    departamentoRepository.findById(pasoDTO.getIdDepartamento())
-                            .orElseThrow(() -> new RuntimeException("Departamento no encontrado"))
-            );
+        paso.setIdFlujo(flujo); 
+        paso.setIdDepartamento(
+                departamentoRepository.findById(pasoDTO.getIdDepartamento())
+                        .orElseThrow(() -> new RuntimeException("Departamento no encontrado"))
+        );
 
-            flujo.getPasos().add(paso);
-        }
-
-        flujoRepository.save(flujo);
-
-        return dto;
+        pasos.add(paso);
     }
+
+    flujo.setPasos(pasos); 
+
+    flujoRepository.save(flujo);
+
+    return dto;
+}
 
     // Obtener listado de flujos
     public List<FlujoDetalle> obtenerFlujos() {
@@ -111,6 +115,75 @@ public FlujoDetalle cambiarEstadoFlujo(Integer idFlujo) {
     dto.setIdFlujo(flujo.getIdFlujo());
     dto.setDescripcion(flujo.getDescripcion());
     dto.setIdCategoria(flujo.getCategoria().getIdCategoria());
+
+    return dto;
+}
+
+//obtener flujo por id
+public FlujoDetalle obtenerFlujoPorId(Integer idFlujo) {
+
+    Flujo flujo = flujoRepository.findById(idFlujo)
+            .orElseThrow(() -> new RuntimeException("Flujo no encontrado"));
+
+    FlujoDetalle dto = new FlujoDetalle();
+
+    dto.setIdFlujo(flujo.getIdFlujo());
+    dto.setDescripcion(flujo.getDescripcion());
+    dto.setActivo(flujo.getActivo());
+    dto.setIdCategoria(flujo.getCategoria().getIdCategoria());
+    dto.setNombreCategoria(flujo.getCategoria().getNombreCategoria());
+
+    List<PasoFlujoDetalle> pasosDTO = new ArrayList<>();
+
+    for (PasoFlujo paso : flujo.getPasos()) {
+
+        PasoFlujoDetalle p = new PasoFlujoDetalle();
+
+        p.setOrden(paso.getOrden());
+        p.setDescripcion(paso.getDescripcion());
+        p.setIdDepartamento(paso.getIdDepartamento().getIdDepartamento());
+
+        pasosDTO.add(p);
+    }
+
+    dto.setPasos(pasosDTO);
+
+    return dto;
+}
+
+    //Editar un flujo
+    @Transactional
+public FlujoDetalle actualizarFlujo(Integer idFlujo, FlujoDetalle dto) {
+
+    Flujo flujo = flujoRepository.findById(idFlujo)
+            .orElseThrow(() -> new RuntimeException("Flujo no encontrado"));
+
+    flujo.setDescripcion(dto.getDescripcion());
+    flujo.setFechaActualizacion(LocalDateTime.now());
+
+    List<PasoFlujo> pasosActualizados = new ArrayList<>();
+
+    for (PasoFlujoDetalle pasoDTO : dto.getPasos()) {
+
+        PasoFlujo paso = new PasoFlujo();
+
+        paso.setOrden(pasoDTO.getOrden());
+        paso.setDescripcion(pasoDTO.getDescripcion());
+
+        paso.setIdFlujo(flujo);
+
+        paso.setIdDepartamento(
+                departamentoRepository.findById(pasoDTO.getIdDepartamento())
+                        .orElseThrow(() -> new RuntimeException("Departamento no encontrado"))
+        );
+
+        pasosActualizados.add(paso);
+    }
+
+    flujo.getPasos().clear();   
+    flujo.getPasos().addAll(pasosActualizados);
+
+    flujoRepository.save(flujo);
 
     return dto;
 }
