@@ -24,12 +24,18 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll()) 
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("*")); 
-                    config.setAllowedMethods(List.of("*")); 
-                    config.setAllowedHeaders(List.of("*")); 
+                    config.setAllowedOrigins(List.of("*"));
+                    config.setAllowedMethods(List.of(
+                            "GET",
+                            "POST",
+                            "PUT",
+                            "DELETE",
+                            "PATCH",
+                            "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
                     return config;
                 }));
 
