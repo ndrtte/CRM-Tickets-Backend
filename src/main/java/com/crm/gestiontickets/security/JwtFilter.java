@@ -38,10 +38,12 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        
+
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/api/auth")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -59,7 +61,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 List<GrantedAuthority> authorities = permisos.map(p -> new SimpleGrantedAuthority(p.getCodigo())).collect(Collectors.toList());
 
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario,null,authorities);
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario, null, authorities);
 
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
