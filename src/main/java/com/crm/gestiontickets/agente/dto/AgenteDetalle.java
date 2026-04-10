@@ -19,4 +19,8 @@ public class AgenteDetalle {
     private String activo; 
     private Integer idDepartamento; 
     private Integer idRol;
+
+    private String nombreRol;
+    private String nombreDepartamento;
+
 }
