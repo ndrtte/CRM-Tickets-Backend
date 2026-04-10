@@ -53,5 +53,14 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    private <T> T extraerClaim(String token, java.util.function.Function<Claims, T> claimsResolver) {
+        Claims claims = extraerTodosLosClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
+    public String extraerAuthorities(String token) {
+        return extraerClaim(token, claims -> claims.get("authorities", String.class));
+    }
 }
 

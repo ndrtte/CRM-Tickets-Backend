@@ -17,7 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.crm.gestiontickets.security.JwtAuthenticationFilter;
+import com.crm.gestiontickets.security.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -34,7 +34,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
