@@ -32,4 +32,13 @@ public class JwtService {
                 .build()
                 .parseClaimsJws(token);
     }
+
+    public String extraerUsuario(String token) {
+    return Jwts.parserBuilder()
+            .setSigningKey(jwtSecret.getBytes())
+            .build()
+            .parseClaimsJws(token)
+            .getBody()
+            .getSubject();
+}
 }
