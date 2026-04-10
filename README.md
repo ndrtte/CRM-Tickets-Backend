@@ -93,6 +93,7 @@ Este archivo es únicamente una plantilla del archivo real que utilizaremos para
 DB_URL=jdbc:sqlserver://localhost:1433;database=NOMBRE_DB;encrypt=true;trustServerCertificate=true
 DB_USER=Usuario123
 DB_PASSWORD=ContraseñaSegura1234.
+JWT_SECRET = EjemploDeSecret1234+
 ```
 #### 3.2 Para trabajar con el docker, utilizar:
 ```
@@ -100,6 +101,7 @@ DB_URL=jdbc:sqlserver://sqlserver:1433;database=NOMBRE_DB;encrypt=true;trustServ
 DB_PORT=1434
 DB_USER=Usuario123
 DB_PASSWORD=ContraseñaSegura1234.
+JWT_SECRET = EjemploDeSecret1234+
 ```
 
 ### Notas importantes
