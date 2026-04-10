@@ -1,10 +1,7 @@
-/* Patrón: estructural: Facade, expone los endpoints REST,
-   delega la lógica de negocio al service */
 package com.crm.gestiontickets.cliente.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,7 +17,6 @@ import com.crm.gestiontickets.cliente.service.ClienteService;
 
 @RestController
 @RequestMapping("/api/clientes")
-@CrossOrigin("*")
 public class ClienteController {
 
     @Autowired
