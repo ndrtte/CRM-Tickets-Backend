@@ -49,5 +49,6 @@ public class CategoriaController {
    public CategoriaDetalle cambiarEstadoCategoria(@PathVariable Integer id) {
         return categoriaService.cambiarEstadoCategoria(id);
     }
-    
+
+
 }
