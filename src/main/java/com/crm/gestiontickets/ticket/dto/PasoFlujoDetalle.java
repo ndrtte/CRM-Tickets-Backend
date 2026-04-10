@@ -14,5 +14,6 @@ public class PasoFlujoDetalle {
     private String descripcion;
     private Integer idDepartamento;
     private String nombreDepartamento;
+    private String activo;
 
 }

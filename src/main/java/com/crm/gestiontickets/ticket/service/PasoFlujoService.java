@@ -6,8 +6,13 @@ import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.shared.dto.Respuesta;
 import com.crm.gestiontickets.ticket.dto.IdPasoFlujo;
+import com.crm.gestiontickets.ticket.dto.PasoFlujoDetalle;
+import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.entity.Ticket;
+import com.crm.gestiontickets.ticket.repository.PasoFlujoRepository;
 import com.crm.gestiontickets.ticket.repository.TicketRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class PasoFlujoService {
@@ -26,5 +31,31 @@ public class PasoFlujoService {
 
         return new Respuesta<>(true, "Paso de flujo actual recuperado correctamente.", new IdPasoFlujo(idPasoFlujo));
     }
+
+    //habilitar o desabilitar una etapa del flujo
+ @Autowired
+private PasoFlujoRepository pasoFlujoRepository;
+
+@Transactional
+public Respuesta<PasoFlujoDetalle> cambiarEstado(Integer idPaso) {
+
+    PasoFlujo paso = pasoFlujoRepository.findById(idPaso)
+            .orElseThrow(() -> new RuntimeException("Paso no encontrado"));
+
+    // toggle estado
+    paso.setActivo("S".equals(paso.getActivo()) ? "N" : "S");
+
+    pasoFlujoRepository.save(paso);
+
+    PasoFlujoDetalle dto = new PasoFlujoDetalle();
+    dto.setIdPaso(paso.getIdPasosFlujo());
+    dto.setOrden(paso.getOrden());
+    dto.setDescripcion(paso.getDescripcion());
+    dto.setIdDepartamento(paso.getIdDepartamento().getIdDepartamento());
+    dto.setNombreDepartamento(paso.getIdDepartamento().getNombreCategoria()); // revisa entidad
+    dto.setActivo(paso.getActivo());
+
+    return new Respuesta<>(true, "OK", dto);
+}
 
 }

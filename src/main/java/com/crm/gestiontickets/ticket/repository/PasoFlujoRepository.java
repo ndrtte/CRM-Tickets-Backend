@@ -12,6 +12,7 @@ import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 
 public interface PasoFlujoRepository extends JpaRepository<PasoFlujo, Integer>{
     
+    public static final PasoFlujoRepository pasoFlujoRepository = null;
     public PasoFlujo findByIdFlujoAndOrden(Flujo idFlujo, Integer orden);
 
     public List<PasoFlujo> findByIdFlujoOrderByOrdenAsc (Flujo idFlujo);

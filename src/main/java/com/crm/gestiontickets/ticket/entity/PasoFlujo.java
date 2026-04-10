@@ -35,6 +35,9 @@ public class PasoFlujo {
 
     private String descripcion;
 
+    @Column(name = "activo")
+    private String activo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_flujo")
     private Flujo idFlujo;
