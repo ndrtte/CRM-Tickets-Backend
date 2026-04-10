@@ -8,11 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.crm.gestiontickets.agente.dto.AgenteDetalle;
 import com.crm.gestiontickets.agente.entity.Agente;
@@ -41,6 +43,9 @@ public class AgenteServiceTest {
 
     @Mock
     private AgenteMapper agenteMapper;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @Test
     void testCrearAgente_exitoso() {
@@ -71,6 +76,9 @@ public class AgenteServiceTest {
         agenteGuardado.setDepartamento(departamento);
         agenteGuardado.setRol(rol);
         agenteGuardado.setFechaCreacion(LocalDateTime.now());
+
+        when(passwordEncoder.encode(anyString()))
+                .thenReturn("contrasenia-encriptada");
 
         when(departamentoRepository.findById(1))
                 .thenReturn(Optional.of(departamento));

@@ -1,12 +1,9 @@
-/*Patron: estructural: Facade, expone los endpoint REST, simplifica la interaccion de con el cliente,
-delega la logica de negocios al service */
 package com.crm.gestiontickets.agente.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,13 +18,11 @@ import com.crm.gestiontickets.agente.dto.AgenteDetalle;
 import com.crm.gestiontickets.agente.service.AgenteBusquedaService;
 import com.crm.gestiontickets.agente.service.AgenteService;
 
-
-
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/agentes")
 
 public class AgenteController {
+    
     @Autowired
     private AgenteService agenteService;
     

@@ -1,9 +1,6 @@
-/* Patrón: estructural: Facade, delega la lógica de obtener el paso de flujo al service */
-
 package com.crm.gestiontickets.ticket.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,7 +14,6 @@ import com.crm.gestiontickets.ticket.service.PasoFlujoService;
 
 @RestController
 @RequestMapping("api/paso-flujo")
-@CrossOrigin("*")
 public class PasoFlujoController {
 
     @Autowired
