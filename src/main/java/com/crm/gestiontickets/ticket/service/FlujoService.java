@@ -1,6 +1,8 @@
 package com.crm.gestiontickets.ticket.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,6 +64,31 @@ public class FlujoService {
     }
 
     // Obtener listado de flujos
+    public List<FlujoDetalle> obtenerFlujos() {
+        List<Flujo> flujos = flujoRepository.findAll();
+        return flujos.stream().map(flujo -> {
+            FlujoDetalle dto = new FlujoDetalle();
+            dto.setIdFlujo(flujo.getIdFlujo());
+            dto.setDescripcion(flujo.getDescripcion());
+            dto.setIdCategoria(flujo.getCategoria().getIdCategoria());
+            dto.setNombreCategoria(flujo.getCategoria().getNombreCategoria());
+            dto.setActivo(flujo.getActivo());
+
+            List<PasoFlujoDetalle> pasosDTO = flujo.getPasos().stream().map(paso -> {
+                PasoFlujoDetalle pasoDTO = new PasoFlujoDetalle();
+                pasoDTO.setIdPaso(paso.getIdPasosFlujo());
+                pasoDTO.setOrden(paso.getOrden());
+                pasoDTO.setDescripcion(paso.getDescripcion());
+                pasoDTO.setIdDepartamento(paso.getIdDepartamento().getIdDepartamento());
+                pasoDTO.setNombreDepartamento(paso.getIdDepartamento().getNombreCategoria());
+                return pasoDTO;
+            }).toList();
+
+            dto.setPasos(pasosDTO);
+            return dto;
+        }).toList();
+    }
+    
 
     //habilitar o deshabilitar flujo
     @Transactional

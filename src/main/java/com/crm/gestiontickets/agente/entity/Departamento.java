@@ -42,4 +42,9 @@ public class Departamento {
 
     @Column(name = "activo")
     private String activo;
+
+    public String getNombreCategoria() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getNombreCategoria'");
+    }
 }

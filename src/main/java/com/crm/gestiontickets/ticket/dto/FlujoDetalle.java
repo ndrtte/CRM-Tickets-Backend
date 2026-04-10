@@ -11,6 +11,10 @@ public class FlujoDetalle {
     private Integer idFlujo;
     private String descripcion;
     private Integer idCategoria;
+    private String nombreCategoria;
+    private String activo;
 
+
+    
     private List<PasoFlujoDetalle> pasos;
 }

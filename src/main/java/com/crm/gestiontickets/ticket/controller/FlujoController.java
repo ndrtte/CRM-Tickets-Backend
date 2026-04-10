@@ -1,5 +1,7 @@
 package com.crm.gestiontickets.ticket.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +23,14 @@ public class FlujoController {
 
     //habilitar o deshabilitar flujo
     @PutMapping("/estado/{idFlujo}")
-public FlujoDetalle cambiarEstadoFlujo(@PathVariable Integer idFlujo) {
+    public FlujoDetalle cambiarEstadoFlujo(@PathVariable Integer idFlujo) {
     return flujoService.cambiarEstadoFlujo(idFlujo);
+
 }
+
+    //obtener lista de flujos
+    @GetMapping
+    public List<FlujoDetalle> obtenerFlujos() {
+        return flujoService.obtenerFlujos();
+    }
 }
