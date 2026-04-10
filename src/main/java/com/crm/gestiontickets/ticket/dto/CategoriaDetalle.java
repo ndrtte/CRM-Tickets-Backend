@@ -20,6 +20,9 @@ public class CategoriaDetalle {
     private Integer idCategoriaPadre;
     private Integer idFlujo; 
     private String activo;
+    private String nombreFlujo;
+
 
     private List<CategoriaDetalle> subCategorias;
+
 }

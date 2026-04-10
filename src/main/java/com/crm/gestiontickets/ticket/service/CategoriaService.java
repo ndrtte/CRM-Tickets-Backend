@@ -12,10 +12,16 @@ import com.crm.gestiontickets.ticket.dto.CategoriaDetalle;
 import com.crm.gestiontickets.ticket.entity.Categoria;
 import com.crm.gestiontickets.ticket.repository.CategoriaRepository;
 
+import com.crm.gestiontickets.ticket.repository.FlujoRepository;
+import com.crm.gestiontickets.ticket.entity.Flujo;
+
 import jakarta.transaction.Transactional;
 
 @Service
 public class CategoriaService {
+
+    @Autowired
+    private FlujoRepository flujoRepository;
 
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -34,22 +40,37 @@ public class CategoriaService {
     }
 
     private CategoriaDetalle convertirACategoriaDTO(Categoria categoria) {
-        CategoriaDetalle dto = new CategoriaDetalle();
-        dto.setIdCategoria(categoria.getIdCategoria());
-        dto.setNombreCategoria(categoria.getNombreCategoria());
-        dto.setIdCategoriaPadre(categoria.getPadre() != null ? categoria.getPadre().getIdCategoria() : null);
-        dto.setActivo(categoria.getActivo());
 
-        List<CategoriaDetalle> subCategoriasDTO = new ArrayList<>();
-        if (categoria.getSubcategorias() != null) {
-            for (Categoria sub : categoria.getSubcategorias()) {
-                subCategoriasDTO.add(convertirACategoriaDTO(sub));
-            }
-        }
-        dto.setSubCategorias(subCategoriasDTO);
+    CategoriaDetalle dto = new CategoriaDetalle();
 
-        return dto;
+    dto.setIdCategoria(categoria.getIdCategoria());
+    dto.setNombreCategoria(categoria.getNombreCategoria());
+    dto.setIdCategoriaPadre(
+            categoria.getPadre() != null ? categoria.getPadre().getIdCategoria() : null
+    );
+    dto.setActivo(categoria.getActivo());
+
+    // buscar flujo real
+    Flujo flujo = flujoRepository.findByCategoria(categoria);
+
+    if (flujo != null) {
+        dto.setIdFlujo(flujo.getIdFlujo());
+        dto.setNombreFlujo(flujo.getDescripcion());
     }
+
+    // subcategorías
+    List<CategoriaDetalle> subCategoriasDTO = new ArrayList<>();
+
+    if (categoria.getSubcategorias() != null) {
+        for (Categoria sub : categoria.getSubcategorias()) {
+            subCategoriasDTO.add(convertirACategoriaDTO(sub));
+        }
+    }
+
+    dto.setSubCategorias(subCategoriasDTO);
+
+    return dto;
+}
 
     // Crear categoría
     @Transactional
