@@ -33,16 +33,31 @@ public class AgenteMapper {
     }
 
     public AgenteDetalle mapearAgenteADetalle(Agente agente) {
-        AgenteDetalle dto = new AgenteDetalle();
-        dto.setIdAgente(agente.getIdAgente());
-        dto.setNombre(agente.getNombre());
-        dto.setApellido(agente.getApellido());
-        dto.setUsuario(agente.getUsuario());
-        dto.setContrasenia(agente.getContrasenia());
-        dto.setActivo(agente.getActivo());
-        dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
-        dto.setIdRol(agente.getRol().getIdRol());
-        return dto;
-    }
+
+    AgenteDetalle dto = new AgenteDetalle();
+
+    dto.setIdAgente(agente.getIdAgente());
+    dto.setNombre(agente.getNombre());
+    dto.setApellido(agente.getApellido());
+    dto.setUsuario(agente.getUsuario());
+    dto.setContrasenia(agente.getContrasenia());
+    dto.setActivo(agente.getActivo());
+
+    dto.setIdDepartamento(agente.getDepartamento().getIdDepartamento());
+    dto.setNombreDepartamento(
+        agente.getDepartamento() != null 
+        ? agente.getDepartamento().getNombreDepartamento() 
+        : null
+    );
+
+    dto.setIdRol(agente.getRol().getIdRol());
+    dto.setNombreRol(
+        agente.getRol() != null 
+        ? agente.getRol().getNombre() 
+        : null
+    );
+
+    return dto;
+}
 
 }
