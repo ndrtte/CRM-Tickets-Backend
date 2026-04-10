@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
@@ -75,6 +76,9 @@ public class AgenteServiceTest {
         agenteGuardado.setDepartamento(departamento);
         agenteGuardado.setRol(rol);
         agenteGuardado.setFechaCreacion(LocalDateTime.now());
+
+        when(passwordEncoder.encode(anyString()))
+                .thenReturn("contrasenia-encriptada");
 
         when(departamentoRepository.findById(1))
                 .thenReturn(Optional.of(departamento));
