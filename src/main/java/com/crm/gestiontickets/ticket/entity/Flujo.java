@@ -51,8 +51,6 @@ public class Flujo {
     @Column(name = "activo", nullable = false, length = 1)
     private String activo;
 
-    public void setFechaActualizacion(LocalDateTime now) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setFechaActualizacion'");
-    }
+    @Column(name= "fecha_actualizacion")
+    private LocalDateTime fechaActualizacion;
 }

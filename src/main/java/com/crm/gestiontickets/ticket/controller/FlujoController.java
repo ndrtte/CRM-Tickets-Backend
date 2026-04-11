@@ -20,7 +20,7 @@ public class FlujoController {
 
     @Autowired
     private FlujoService flujoService;
-    
+
     //crear flujo 
     @PostMapping("/crear")
     public FlujoDetalle crearFlujo(@RequestBody FlujoDetalle dto) {
@@ -30,12 +30,12 @@ public class FlujoController {
     //habilitar o deshabilitar flujo
     @PutMapping("/estado/{idFlujo}")
     public FlujoDetalle cambiarEstadoFlujo(@PathVariable Integer idFlujo) {
-    return flujoService.cambiarEstadoFlujo(idFlujo);
+        return flujoService.cambiarEstadoFlujo(idFlujo);
 
-}
+    }
 
     //obtener lista de flujos
-    @GetMapping
+    @GetMapping("/listar")
     public List<FlujoDetalle> obtenerFlujos() {
         return flujoService.obtenerFlujos();
     }
