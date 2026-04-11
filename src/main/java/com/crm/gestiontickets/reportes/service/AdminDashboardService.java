@@ -25,7 +25,7 @@ public class AdminDashboardService {
     private DepartamentoRepository departamentoRepository;
     
     public AdminDashboardDTO obtenerDashboardAdmin() {
-        long flujosActivos = flujoRepository.countFlujosActivos();
+        long flujosActivos = flujoRepository.countByActivo("S");
         long categoriasActivas = categoriaRepository.countByActivo("S");
         long agentesActivos = agenteRepository.countByActivo("S");
         long departamentosActivos = departamentoRepository.countByActivo("S");
