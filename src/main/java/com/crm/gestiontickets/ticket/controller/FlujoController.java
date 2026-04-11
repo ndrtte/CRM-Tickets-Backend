@@ -28,13 +28,6 @@ public class FlujoController {
         return flujoService.crearFlujo(dto);
     }
 
-    //habilitar o deshabilitar flujo
-    @PutMapping("/estado/{idFlujo}")
-    public FlujoDetalle cambiarEstadoFlujo(@PathVariable Integer idFlujo) {
-        return flujoService.cambiarEstadoFlujo(idFlujo);
-
-    }
-
     //obtener lista de flujos
     @GetMapping("/listar")
     public List<FlujoDetalle> obtenerFlujos() {
