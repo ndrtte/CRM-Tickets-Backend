@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.ticket.dto.CategoriaDetalle;
 import com.crm.gestiontickets.ticket.entity.Categoria;
+import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.repository.CategoriaRepository;
+import com.crm.gestiontickets.ticket.repository.FlujoRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -19,6 +21,9 @@ public class CategoriaService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+    @Autowired
+    private FlujoRepository flujoRepository;
 
     public List<CategoriaDetalle> obtenerCategorias() {
         List<CategoriaDetalle> listaCategoriasDTO = new ArrayList<>();
@@ -39,6 +44,11 @@ public class CategoriaService {
         dto.setNombreCategoria(categoria.getNombreCategoria());
         dto.setIdCategoriaPadre(categoria.getPadre() != null ? categoria.getPadre().getIdCategoria() : null);
         dto.setActivo(categoria.getActivo());
+
+        Flujo flujo = flujoRepository.findByCategoria(categoria);
+
+        dto.setIdFlujo(flujo != null ? flujo.getIdFlujo() : null);
+        dto.setDescripcionFlujo(flujo != null ? flujo.getDescripcion(): "Sin flujo asignado");
 
         List<CategoriaDetalle> subCategoriasDTO = new ArrayList<>();
         if (categoria.getSubcategorias() != null) {
