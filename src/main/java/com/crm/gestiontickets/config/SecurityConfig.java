@@ -59,7 +59,7 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(allowedOrigins.split(",")));
 
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 
         configuration.setAllowedHeaders(List.of("*"));
 
