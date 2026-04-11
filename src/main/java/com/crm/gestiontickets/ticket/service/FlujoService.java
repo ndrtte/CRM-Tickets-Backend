@@ -1,6 +1,7 @@
 package com.crm.gestiontickets.ticket.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,13 @@ public class FlujoService {
                 .orElseThrow(() -> new RuntimeException("Categoría no encontrada"));
 
         Flujo flujo = new Flujo();
+        flujo.setActivo("S");
         flujo.setDescripcion(dto.getDescripcion());
         flujo.setCategoria(categoria);
-        flujo.setFechaCreacion(LocalDateTime.now());
 
         flujoRepository.save(flujo);
+
+        List<PasoFlujo> pasos = new ArrayList<>();
 
         for (PasoFlujoDetalle pasoDTO : dto.getPasos()) {
 
@@ -55,10 +58,28 @@ public class FlujoService {
                             .orElseThrow(() -> new RuntimeException("Departamento no encontrado"))
             );
 
-            flujo.getPasos().add(paso);
+            pasos.add(paso);
         }
 
+        flujo.setPasos(pasos);
         flujoRepository.save(flujo);
+
+        dto.setIdFlujo(flujo.getIdFlujo());
+        dto.setActivo(flujo.getActivo());
+        dto.setNombreCategoria(categoria.getNombreCategoria());
+        dto.setPasos(pasos.stream().map(paso -> {
+            PasoFlujoDetalle pasoDTO = new PasoFlujoDetalle();
+            pasoDTO.setIdPaso(paso.getIdPasosFlujo());
+            pasoDTO.setOrden(paso.getOrden());
+            pasoDTO.setDescripcion(paso.getDescripcion());
+
+            Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
+            String nombreDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
+
+            pasoDTO.setIdDepartamento(idDepartamento);
+            pasoDTO.setNombreDepartamento(nombreDepartamento);
+            return pasoDTO;
+        }).toList());
 
         return dto;
     }

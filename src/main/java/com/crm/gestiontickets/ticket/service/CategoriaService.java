@@ -61,7 +61,6 @@ public class CategoriaService {
         Categoria categoria = new Categoria();
         categoria.setNombreCategoria(dto.getNombreCategoria());
         categoria.setActivo("S"); // Activa por defecto
-        categoria.setFechaCreacion(LocalDateTime.now());
 
         // Asignar categoría padre si existe
         if (dto.getIdCategoriaPadre() != null) {
