@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
 import com.crm.gestiontickets.ticket.dto.FlujoDetalle;
 import com.crm.gestiontickets.ticket.dto.PasoFlujoDetalle;
 import com.crm.gestiontickets.ticket.entity.Categoria;
@@ -13,7 +14,6 @@ import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
 import com.crm.gestiontickets.ticket.repository.CategoriaRepository;
 import com.crm.gestiontickets.ticket.repository.FlujoRepository;
-import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -70,8 +70,12 @@ public class FlujoService {
             FlujoDetalle dto = new FlujoDetalle();
             dto.setIdFlujo(flujo.getIdFlujo());
             dto.setDescripcion(flujo.getDescripcion());
-            dto.setIdCategoria(flujo.getCategoria().getIdCategoria());
-            dto.setNombreCategoria(flujo.getCategoria().getNombreCategoria());
+
+            Integer idCategoria = flujo.getCategoria() != null ? flujo.getCategoria().getIdCategoria() : null;
+            String nombreCategoria = flujo.getCategoria() != null ? flujo.getCategoria().getNombreCategoria() : "Sin categoría";
+
+            dto.setIdCategoria(idCategoria);
+            dto.setNombreCategoria(nombreCategoria);
             dto.setActivo(flujo.getActivo());
 
             List<PasoFlujoDetalle> pasosDTO = flujo.getPasos().stream().map(paso -> {
@@ -79,8 +83,13 @@ public class FlujoService {
                 pasoDTO.setIdPaso(paso.getIdPasosFlujo());
                 pasoDTO.setOrden(paso.getOrden());
                 pasoDTO.setDescripcion(paso.getDescripcion());
-                pasoDTO.setIdDepartamento(paso.getIdDepartamento().getIdDepartamento());
-                pasoDTO.setNombreDepartamento(paso.getIdDepartamento().getNombreCategoria());
+
+                Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
+                String nombreDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
+
+
+                pasoDTO.setIdDepartamento(idDepartamento);
+                pasoDTO.setNombreDepartamento(nombreDepartamento);
                 return pasoDTO;
             }).toList();
 
@@ -108,9 +117,24 @@ public FlujoDetalle cambiarEstadoFlujo(Integer idFlujo) {
     flujoRepository.save(flujo);
 
     FlujoDetalle dto = new FlujoDetalle();
+    dto.setActivo(flujo.getActivo());
     dto.setIdFlujo(flujo.getIdFlujo());
     dto.setDescripcion(flujo.getDescripcion());
     dto.setIdCategoria(flujo.getCategoria().getIdCategoria());
+    dto.setNombreCategoria(flujo.getCategoria().getNombreCategoria());
+    dto.setPasos(flujo.getPasos().stream().map(paso -> {
+        PasoFlujoDetalle pasoDTO = new PasoFlujoDetalle();
+        pasoDTO.setIdPaso(paso.getIdPasosFlujo());
+        pasoDTO.setOrden(paso.getOrden());
+        pasoDTO.setDescripcion(paso.getDescripcion());
+
+        Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
+        String nombreDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
+
+        pasoDTO.setIdDepartamento(idDepartamento);
+        pasoDTO.setNombreDepartamento(nombreDepartamento);
+        return pasoDTO;
+    }).toList());
 
     return dto;
 }
