@@ -14,6 +14,7 @@ import com.crm.gestiontickets.ticket.dto.PasoFlujoDetalle;
 import com.crm.gestiontickets.ticket.entity.Categoria;
 import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.entity.PasoFlujo;
+import com.crm.gestiontickets.ticket.interfaces.IPasoFlujoService;
 import com.crm.gestiontickets.ticket.repository.CategoriaRepository;
 import com.crm.gestiontickets.ticket.repository.FlujoRepository;
 
@@ -30,6 +31,10 @@ public class FlujoService {
 
     @Autowired
     private DepartamentoRepository departamentoRepository;
+
+    @Autowired
+    private IPasoFlujoService pasoFlujoService;
+
 
     // CREATE FLUJO CON PASOS
     @Transactional
@@ -125,60 +130,23 @@ public class FlujoService {
         }).toList();
     }
 
-    // habilitar o deshabilitar flujo
-    @Transactional
-    public FlujoDetalle cambiarEstadoFlujo(Integer idFlujo) {
-
-        Flujo flujo = flujoRepository.findById(idFlujo)
-                .orElseThrow(() -> new RuntimeException("Flujo no encontrado"));
-
-        if ("S".equalsIgnoreCase(flujo.getActivo())) {
-            flujo.setActivo("N");
-        } else {
-            flujo.setActivo("S");
-        }
-
-        flujo.setFechaActualizacion(LocalDateTime.now());
-
-        flujoRepository.save(flujo);
-
-        FlujoDetalle dto = new FlujoDetalle();
-        dto.setActivo(flujo.getActivo());
-        dto.setIdFlujo(flujo.getIdFlujo());
-        dto.setDescripcion(flujo.getDescripcion());
-        dto.setIdCategoria(flujo.getCategoria().getIdCategoria());
-        dto.setNombreCategoria(flujo.getCategoria().getNombreCategoria());
-        dto.setPasos(flujo.getPasos().stream().map(paso -> {
-            PasoFlujoDetalle pasoDTO = new PasoFlujoDetalle();
-            pasoDTO.setIdPaso(paso.getIdPasosFlujo());
-            pasoDTO.setOrden(paso.getOrden());
-            pasoDTO.setDescripcion(paso.getDescripcion());
-
-            Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento()
-                    : null;
-            String nombreDepartamento = paso.getIdDepartamento() != null
-                    ? paso.getIdDepartamento().getNombreDepartamento()
-                    : "Sin departamento";
-
-            pasoDTO.setIdDepartamento(idDepartamento);
-            pasoDTO.setNombreDepartamento(nombreDepartamento);
-            return pasoDTO;
-        }).toList());
-
-        return dto;
-    }
-
-
     @Transactional
     public IdFlujo editarFlujo(Integer idFlujo, FlujoDetalle dto) {
 
         Flujo flujo = flujoRepository.findById(idFlujo).get();
         Categoria categoria = categoriaRepository.findById(dto.getIdCategoria()).get();
         String descripcion = dto.getDescripcion();
+        String activo = dto.getActivo();
+        List<PasoFlujoDetalle> pasosDTO = dto.getPasos();
+        List<PasoFlujo> pasos = pasoFlujoService.editarPasos(pasosDTO);
         
         flujo.setDescripcion(descripcion);
         flujo.setCategoria(categoria);
+        flujo.setActivo(activo);
         flujo.setFechaActualizacion(LocalDateTime.now());
+        flujo.setPasos(pasos);
+
+        flujoRepository.save(flujo);
 
         return new IdFlujo(flujo.getIdFlujo());
     }
