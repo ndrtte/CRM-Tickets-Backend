@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.crm.gestiontickets.ticket.dto.FlujoDetalle;
+import com.crm.gestiontickets.ticket.dto.IdFlujo;
 import com.crm.gestiontickets.ticket.service.FlujoService;
 
 @RestController
@@ -38,5 +39,10 @@ public class FlujoController {
     @GetMapping("/listar")
     public List<FlujoDetalle> obtenerFlujos() {
         return flujoService.obtenerFlujos();
+    }
+
+    @PutMapping("/editar/{idFlujo}")
+    public IdFlujo editarFlujo(@PathVariable Integer idFlujo, @RequestBody FlujoDetalle dto) {
+        return flujoService.editarFlujo(idFlujo, dto);
     }
 }
