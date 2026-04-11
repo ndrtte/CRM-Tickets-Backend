@@ -1,9 +1,7 @@
 /*Patron: estructural: Composite, maneja los documentos dentro de la nota */
 package com.crm.gestiontickets.ticket.entity;
 
-import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,6 +37,4 @@ public class Nota {
     @Lob
     private String descripcion;
 
-    @OneToMany(mappedBy = "nota", cascade = CascadeType.ALL)
-    private List<Documento> documentos;
 }
