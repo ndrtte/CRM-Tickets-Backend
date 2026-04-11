@@ -11,7 +11,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.crm.gestiontickets.ticket.dto.CategoriaDetalle;
 import com.crm.gestiontickets.ticket.entity.Categoria;
+import com.crm.gestiontickets.ticket.entity.Flujo;
 import com.crm.gestiontickets.ticket.repository.CategoriaRepository;
+import com.crm.gestiontickets.ticket.repository.FlujoRepository;
 import com.crm.gestiontickets.ticket.service.CategoriaService;
 
 @ExtendWith(MockitoExtension.class)
@@ -19,6 +21,9 @@ public class CategoriaServiceTest {
 
     @Mock
     private CategoriaRepository categoriaRepository;
+
+    @Mock
+    private FlujoRepository flujoRepository;
 
     @InjectMocks
     private CategoriaService categoriaService;
@@ -41,6 +46,13 @@ public class CategoriaServiceTest {
         when(categoriaRepository.save(any(Categoria.class)))
                 .thenReturn(categoriaGuardada);
 
+        Flujo flujo = new Flujo();
+        flujo.setIdFlujo(1);
+        flujo.setDescripcion("Flujo asignado");
+
+        when(flujoRepository.findByCategoria(any(Categoria.class)))
+                .thenReturn(flujo);
+
         // Act
         CategoriaDetalle resultado = categoriaService.crearCategoria(dto);
 
@@ -54,23 +66,23 @@ public class CategoriaServiceTest {
     }
 
     @Test
-void testCrearCategoria_duplicada() {
+    void testCrearCategoria_duplicada() {
 
-    // Arrange
-    CategoriaDetalle dto = new CategoriaDetalle();
-    dto.setNombreCategoria("Soporte Técnico");
+        // Arrange
+        CategoriaDetalle dto = new CategoriaDetalle();
+        dto.setNombreCategoria("Soporte Técnico");
 
-    when(categoriaRepository.existsByNombreCategoria("Soporte Técnico"))
-            .thenReturn(true);
+        when(categoriaRepository.existsByNombreCategoria("Soporte Técnico"))
+                .thenReturn(true);
 
-    // Act & Assert
-    RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-        categoriaService.crearCategoria(dto);
-    });
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            categoriaService.crearCategoria(dto);
+        });
 
-    assertEquals("La categoría ya existe", exception.getMessage());
+        assertEquals("La categoría ya existe", exception.getMessage());
 
-    verify(categoriaRepository).existsByNombreCategoria("Soporte Técnico");
-    verify(categoriaRepository, never()).save(any());
-}
+        verify(categoriaRepository).existsByNombreCategoria("Soporte Técnico");
+        verify(categoriaRepository, never()).save(any());
+    }
 }
