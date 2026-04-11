@@ -134,9 +134,17 @@ public class FlujoService {
     public IdFlujo editarFlujo(Integer idFlujo, FlujoDetalle dto) {
 
         Flujo flujo = flujoRepository.findById(idFlujo).get();
-        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria()).get();
         String descripcion = dto.getDescripcion();
         String activo = dto.getActivo();
+        Categoria categoria;
+
+        if(activo.equals("S")){
+            categoria = categoriaRepository.findById(dto.getIdCategoria()).get();
+        }
+        else {
+            categoria = null;
+        }
+
         List<PasoFlujoDetalle> pasosDTO = dto.getPasos();
         List<PasoFlujo> pasos = pasoFlujoService.editarPasos(pasosDTO);
         
