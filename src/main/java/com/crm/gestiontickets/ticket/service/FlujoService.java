@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.crm.gestiontickets.agente.repository.DepartamentoRepository;
 import com.crm.gestiontickets.ticket.dto.FlujoDetalle;
+import com.crm.gestiontickets.ticket.dto.IdFlujo;
 import com.crm.gestiontickets.ticket.dto.PasoFlujoDetalle;
 import com.crm.gestiontickets.ticket.entity.Categoria;
 import com.crm.gestiontickets.ticket.entity.Flujo;
@@ -55,8 +56,7 @@ public class FlujoService {
 
             paso.setIdDepartamento(
                     departamentoRepository.findById(pasoDTO.getIdDepartamento())
-                            .orElseThrow(() -> new RuntimeException("Departamento no encontrado"))
-            );
+                            .orElseThrow(() -> new RuntimeException("Departamento no encontrado")));
 
             pasos.add(paso);
         }
@@ -73,8 +73,11 @@ public class FlujoService {
             pasoDTO.setOrden(paso.getOrden());
             pasoDTO.setDescripcion(paso.getDescripcion());
 
-            Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
-            String nombreDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
+            Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento()
+                    : null;
+            String nombreDepartamento = paso.getIdDepartamento() != null
+                    ? paso.getIdDepartamento().getNombreDepartamento()
+                    : "Sin departamento";
 
             pasoDTO.setIdDepartamento(idDepartamento);
             pasoDTO.setNombreDepartamento(nombreDepartamento);
@@ -93,7 +96,8 @@ public class FlujoService {
             dto.setDescripcion(flujo.getDescripcion());
 
             Integer idCategoria = flujo.getCategoria() != null ? flujo.getCategoria().getIdCategoria() : null;
-            String nombreCategoria = flujo.getCategoria() != null ? flujo.getCategoria().getNombreCategoria() : "Sin categoría";
+            String nombreCategoria = flujo.getCategoria() != null ? flujo.getCategoria().getNombreCategoria()
+                    : "Sin categoría";
 
             dto.setIdCategoria(idCategoria);
             dto.setNombreCategoria(nombreCategoria);
@@ -105,9 +109,11 @@ public class FlujoService {
                 pasoDTO.setOrden(paso.getOrden());
                 pasoDTO.setDescripcion(paso.getDescripcion());
 
-                Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
-                String nombreDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
-
+                Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento()
+                        : null;
+                String nombreDepartamento = paso.getIdDepartamento() != null
+                        ? paso.getIdDepartamento().getNombreDepartamento()
+                        : "Sin departamento";
 
                 pasoDTO.setIdDepartamento(idDepartamento);
                 pasoDTO.setNombreDepartamento(nombreDepartamento);
@@ -118,45 +124,63 @@ public class FlujoService {
             return dto;
         }).toList();
     }
-    
 
-    //habilitar o deshabilitar flujo
+    // habilitar o deshabilitar flujo
     @Transactional
-public FlujoDetalle cambiarEstadoFlujo(Integer idFlujo) {
+    public FlujoDetalle cambiarEstadoFlujo(Integer idFlujo) {
 
-    Flujo flujo = flujoRepository.findById(idFlujo)
-            .orElseThrow(() -> new RuntimeException("Flujo no encontrado"));
+        Flujo flujo = flujoRepository.findById(idFlujo)
+                .orElseThrow(() -> new RuntimeException("Flujo no encontrado"));
 
-    if ("S".equalsIgnoreCase(flujo.getActivo())) {
-        flujo.setActivo("N");
-    } else {
-        flujo.setActivo("S");
+        if ("S".equalsIgnoreCase(flujo.getActivo())) {
+            flujo.setActivo("N");
+        } else {
+            flujo.setActivo("S");
+        }
+
+        flujo.setFechaActualizacion(LocalDateTime.now());
+
+        flujoRepository.save(flujo);
+
+        FlujoDetalle dto = new FlujoDetalle();
+        dto.setActivo(flujo.getActivo());
+        dto.setIdFlujo(flujo.getIdFlujo());
+        dto.setDescripcion(flujo.getDescripcion());
+        dto.setIdCategoria(flujo.getCategoria().getIdCategoria());
+        dto.setNombreCategoria(flujo.getCategoria().getNombreCategoria());
+        dto.setPasos(flujo.getPasos().stream().map(paso -> {
+            PasoFlujoDetalle pasoDTO = new PasoFlujoDetalle();
+            pasoDTO.setIdPaso(paso.getIdPasosFlujo());
+            pasoDTO.setOrden(paso.getOrden());
+            pasoDTO.setDescripcion(paso.getDescripcion());
+
+            Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento()
+                    : null;
+            String nombreDepartamento = paso.getIdDepartamento() != null
+                    ? paso.getIdDepartamento().getNombreDepartamento()
+                    : "Sin departamento";
+
+            pasoDTO.setIdDepartamento(idDepartamento);
+            pasoDTO.setNombreDepartamento(nombreDepartamento);
+            return pasoDTO;
+        }).toList());
+
+        return dto;
     }
 
-    flujo.setFechaActualizacion(LocalDateTime.now());
 
-    flujoRepository.save(flujo);
+    @Transactional
+    public IdFlujo editarFlujo(Integer idFlujo, FlujoDetalle dto) {
 
-    FlujoDetalle dto = new FlujoDetalle();
-    dto.setActivo(flujo.getActivo());
-    dto.setIdFlujo(flujo.getIdFlujo());
-    dto.setDescripcion(flujo.getDescripcion());
-    dto.setIdCategoria(flujo.getCategoria().getIdCategoria());
-    dto.setNombreCategoria(flujo.getCategoria().getNombreCategoria());
-    dto.setPasos(flujo.getPasos().stream().map(paso -> {
-        PasoFlujoDetalle pasoDTO = new PasoFlujoDetalle();
-        pasoDTO.setIdPaso(paso.getIdPasosFlujo());
-        pasoDTO.setOrden(paso.getOrden());
-        pasoDTO.setDescripcion(paso.getDescripcion());
+        Flujo flujo = flujoRepository.findById(idFlujo).get();
+        Categoria categoria = categoriaRepository.findById(dto.getIdCategoria()).get();
+        String descripcion = dto.getDescripcion();
+        
+        flujo.setDescripcion(descripcion);
+        flujo.setCategoria(categoria);
+        flujo.setFechaActualizacion(LocalDateTime.now());
 
-        Integer idDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getIdDepartamento() : null;
-        String nombreDepartamento = paso.getIdDepartamento() != null ? paso.getIdDepartamento().getNombreDepartamento() : "Sin departamento";
+        return new IdFlujo(flujo.getIdFlujo());
+    }
 
-        pasoDTO.setIdDepartamento(idDepartamento);
-        pasoDTO.setNombreDepartamento(nombreDepartamento);
-        return pasoDTO;
-    }).toList());
-
-    return dto;
-}
 }
